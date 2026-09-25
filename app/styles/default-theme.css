@@ -1,13 +1,13 @@
 :root {
-  --theme-color-name: #cc7d24;
+  --theme-color-name: #b8956a;
   --c-primary: rgb(var(--rgb-primary));
-  --c-primary-active: #b16605;
-  --c-primary-light: #cc7d2480;
-  --c-primary-fade: #c7781f1a;
-  --rgb-primary: 204, 125, 36;
+  --c-primary-active: #a08050;
+  --c-primary-light: #b8956a80;
+  --c-primary-fade: #b8956a14;
+  --rgb-primary: 184, 149, 106;
   --c-dark-primary: rgb(var(--rgb-dark-primary));
-  --c-dark-primary-active: #b66b0d;
-  --c-dark-primary-light: #d1822980;
-  --c-dark-primary-fade: #cc7d241a;
-  --rgb-dark-primary: 204, 125, 36;
+  --c-dark-primary-active: #e0b584;
+  --c-dark-primary-light: #d4a57480;
+  --c-dark-primary-fade: #d4a5741f;
+  --rgb-dark-primary: 212, 165, 116;
 }
