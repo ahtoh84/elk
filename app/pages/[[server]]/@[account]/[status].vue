@@ -73,6 +73,7 @@ onReactivated(() => {
             <StatusCard
               v-for="(comment, i) of context?.ancestors" :key="comment.id"
               :status="comment" :actions="comment.visibility !== 'direct'" context="account"
+              :in-notification="comment.visibility === 'direct'"
               :has-older="true" :newer="context?.ancestors[Number(i) - 1]"
             />
           </template>
@@ -102,6 +103,7 @@ onReactivated(() => {
               <StatusCard
                 :key="item.id"
                 :status="item"
+                :in-notification="item.visibility === 'direct'"
                 context="account"
                 :older="context?.descendants[index + 1]"
                 :newer="index > 0 ? context?.descendants[index - 1] : status"

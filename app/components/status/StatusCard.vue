@@ -78,7 +78,7 @@ const forceShow = ref(false)
   <StatusLink
     cursor-pointer
     hover-bg-active
-    rounded-3
+    :class="inNotification ? 'rounded-none' : 'rounded-3'"
     transition-100
     :status="status" :hover="hover" :disable-link="disableLink"
   >

@@ -21,7 +21,7 @@ const likesTimeAgo = useTimeAgo(() => likesTimeAgoCreatedAt.value ?? '', timeAgo
     <StatusLink
       cursor-pointer
       hover-bg-active
-      rounded-3
+      rounded-none
       transition-100
       :status="group.status!" pb4 pt5
     >

@@ -12,7 +12,12 @@ const withAccounts = computed(() =>
 
 <template>
   <article v-if="conversation.lastStatus" flex flex-col gap-2>
-    <StatusCard v-if="conversation.lastStatus" :status="conversation.lastStatus" :actions="false">
+    <StatusCard
+      v-if="conversation.lastStatus"
+      :status="conversation.lastStatus"
+      :actions="false"
+      :in-notification="true"
+    >
       <template #meta>
         <div flex gap-2 text-sm text-secondary font-bold>
           <p me-1>

@@ -85,15 +85,15 @@ const timeAgo = useTimeAgo(() => notification.createdAt, timeAgoOptions)
     <template v-else-if="notification.type === 'admin.report'">
       <NuxtLink :to="getReportRoute(notification.report?.id!)">
         <div flex p4 items-center bg-shaded>
-          <div i-ri:flag-line text-xl me-2 color-purple />
+          <div i-ri:flag-line text-xl me-2 text-primary />
           <i18n-t keypath="notification.reported">
             <AccountDisplayName
               :account="notification.account"
-              text-purple me-1 font-bold line-clamp-1 ws-pre-wrap break-all
+              text-primary me-1 font-bold line-clamp-1 ws-pre-wrap break-all
             />
             <AccountDisplayName
               :account="notification.report?.targetAccount!"
-              text-purple ms-1 font-bold line-clamp-1 ws-pre-wrap break-all
+              text-primary ms-1 font-bold line-clamp-1 ws-pre-wrap break-all
             />
           </i18n-t>
         </div>
@@ -141,7 +141,7 @@ const timeAgo = useTimeAgo(() => notification.createdAt, timeAgoOptions)
           || notification.type === 'quote'
       "
     >
-      <StatusCard :status="notification.status!" />
+      <StatusCard :status="notification.status!" :in-notification="true" />
     </template>
     <template v-else-if="notification.type === 'annual_report'">
       <div flex p4 items-center bg-shaded>
