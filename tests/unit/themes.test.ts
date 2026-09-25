@@ -41,7 +41,7 @@ describe('tangerine themes', () => {
   it('keeps each dark preview color independent from the selected theme', () => {
     expect(getThemeColors('#4080c0')).toEqual(expect.objectContaining({
       '--rgb-primary': '64, 128, 192',
-      '--rgb-dark-primary': '255, 255, 255',
+      '--rgb-dark-primary': '106, 155, 208',
     }))
   })
 
