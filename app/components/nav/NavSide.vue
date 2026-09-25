@@ -107,7 +107,7 @@ const exploreLink = computed(() => {
         </div>
       </template>
     </NavSideItem>
-    <NavSideItem :text="$t('nav.conversations')" to="/conversations" icon="i-ri:at-line" user-only :command="command" />
+    <NavSideItem :text="$t('nav.local')" :to="isHydrated ? `/${currentServer}/public/local` : '/public/local'" icon="i-ri:group-2-line" :command="command" />
 
     <div class="spacer" shrink hidden sm:block />
     <NavSideItem :text="$t('action.compose')" to="/compose" icon="i-ri:quill-pen-line" user-only :command="command" />
@@ -152,8 +152,8 @@ const exploreLink = computed(() => {
           <NuxtLink to="/scheduled-posts" :class="userOnlyDisabled ? 'op25 pointer-events-none' : undefined" :tabindex="userOnlyDisabled ? -1 : undefined">
             <CommonDropdownItem :text="$t('nav.scheduled_posts')" icon="i-ri:calendar-schedule-line" :command="command" />
           </NuxtLink>
-          <NuxtLink :to="isHydrated ? `/${currentServer}/public/local` : '/public/local'">
-            <CommonDropdownItem :text="$t('nav.local')" icon="i-ri:group-2-line" :command="command" />
+          <NuxtLink to="/conversations" :class="userOnlyDisabled ? 'op25 pointer-events-none' : undefined" :tabindex="userOnlyDisabled ? -1 : undefined">
+            <CommonDropdownItem :text="$t('nav.conversations')" icon="i-ri:at-line" :command="command" />
           </NuxtLink>
           <NuxtLink :to="isHydrated ? `/${currentServer}/public` : '/public'">
             <CommonDropdownItem :text="$t('nav.federated')" icon="i-ri:earth-line" :command="command" />
@@ -197,7 +197,7 @@ const exploreLink = computed(() => {
         <NavSideItem :text="$t('nav.favourites')" to="/favourites" :icon="useStarFavoriteIcon ? 'i-ri:star-line' : 'i-ri:heart-3-line'" user-only :command="command" />
         <NavSideItem :text="$t('nav.bookmarks')" to="/bookmarks" icon="i-ri:bookmark-line" user-only :command="command" />
         <NavSideItem :text="$t('nav.scheduled_posts')" to="/scheduled-posts" icon="i-ri:calendar-schedule-line" user-only :command="command" />
-        <NavSideItem :text="$t('nav.local')" :to="isHydrated ? `/${currentServer}/public/local` : '/public/local'" icon="i-ri:group-2-line " :command="command" />
+        <NavSideItem :text="$t('nav.conversations')" to="/conversations" icon="i-ri:at-line" user-only :command="command" />
         <NavSideItem :text="$t('nav.federated')" :to="isHydrated ? `/${currentServer}/public` : '/public'" icon="i-ri:earth-line" :command="command" />
         <NavSideItem :text="$t('nav.lists')" :to="isHydrated ? `/${currentServer}/lists` : '/lists'" icon="i-ri:list-check" user-only :command="command" />
         <NavSideItem :text="$t('nav.hashtags')" to="/hashtags" icon="i-ri:hashtag" user-only :command="command" />
