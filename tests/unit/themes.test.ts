@@ -16,6 +16,7 @@ describe('tangerine themes', () => {
   it('contains light and dark surface variables for each palette', () => {
     for (const color of themesColor) {
       expect(getThemeColors(color)).toEqual(expect.objectContaining({
+        '--theme-color-label': expect.any(String),
         '--c-bg-base': expect.any(String),
         '--c-bg-panel': expect.any(String),
         '--c-text-base': expect.any(String),
@@ -35,5 +36,21 @@ describe('tangerine themes', () => {
       '--c-dark-bg-base': '#16141c',
       '--c-dark-bg-panel': '#221f2c',
     }))
+  })
+
+  it('keeps each dark preview color independent from the selected theme', () => {
+    expect(getThemeColors('#4080c0')).toEqual(expect.objectContaining({
+      '--rgb-primary': '64, 128, 192',
+      '--rgb-dark-primary': '255, 255, 255',
+    }))
+  })
+
+  it('exposes English names for the palette controls', () => {
+    expect(getThemeColors('#b8956a')['--theme-color-label']).toBe('Paper')
+    expect(getThemeColors('#8a70c0')['--theme-color-label']).toBe('Dusk')
+    expect(getThemeColors('#c05050')['--theme-color-label']).toBe('Ember')
+    expect(getThemeColors('#242424')['--theme-color-label']).toBe('Ink')
+    expect(getThemeColors('#4080c0')['--theme-color-label']).toBe('Midnight')
+    expect(getThemeColors('#0a9a9a')['--theme-color-label']).toBe('Ocean')
   })
 })

@@ -322,6 +322,15 @@ const TANGERINE_PALETTES: Record<string, TangerinePalette> = {
   },
 }
 
+const TANGERINE_PALETTE_NAMES: Record<string, string> = {
+  '#b8956a': 'Paper',
+  '#8a70c0': 'Dusk',
+  '#c05050': 'Ember',
+  '#242424': 'Ink',
+  '#4080c0': 'Midnight',
+  '#0a9a9a': 'Ocean',
+}
+
 export const themesColor = Object.keys(TANGERINE_PALETTES)
 
 function rgba(hex: string, alpha: number) {
@@ -367,6 +376,7 @@ export function getThemeColors(primary: string): ThemeColors {
 
   return {
     '--theme-color-name': primary,
+    '--theme-color-label': TANGERINE_PALETTE_NAMES[primary],
     '--rgb-primary': hexToRgb(palette.light.primary),
     '--rgb-dark-primary': hexToRgb(palette.dark.primary),
     '--rgb-bg-base': hexToRgb(palette.light.bgBase),

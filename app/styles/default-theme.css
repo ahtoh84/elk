@@ -1,5 +1,6 @@
 :root {
   --theme-color-name: #b8956a;
+  --theme-color-label: Paper;
   --rgb-primary: 184, 149, 106;
   --rgb-dark-primary: 212, 165, 116;
   --rgb-bg-base: 250, 248, 245;

@@ -50,6 +50,7 @@ export interface UserSettings {
 
 export interface ThemeColors {
   '--theme-color-name': string
+  '--theme-color-label': string
   [key: string]: string
 }
 

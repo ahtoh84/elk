@@ -75,14 +75,15 @@ function updateTheme(theme: ThemeColors) {
       <button
         v-for="[key, theme] in useThemes" :key="key"
         :style="{
-          '--rgb-primary': theme['--rgb-primary'],
-          'background': theme['--c-primary'],
-          '--local-ring-color': theme['--c-primary'],
+          '--theme-preview-rgb': theme['--rgb-primary'],
+          'background': 'rgb(var(--theme-preview-rgb))',
+          '--local-ring-color': 'rgb(var(--theme-preview-rgb))',
         }"
         type="button"
         :class="currentTheme === theme['--theme-color-name'] ? 'ring-2' : 'scale-90'"
         :aria-pressed="currentTheme === theme['--theme-color-name'] ? 'true' : 'false'"
-        :title="theme['--theme-color-name']"
+        :aria-label="theme['--theme-color-label']"
+        :title="theme['--theme-color-label']"
         w-8 h-8 rounded-full transition-all
         ring="$local-ring-color offset-3 offset-$c-bg-base"
         @click="updateTheme(theme)"

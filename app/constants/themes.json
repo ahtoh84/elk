@@ -3,6 +3,7 @@
     "#b8956a",
     {
       "--theme-color-name": "#b8956a",
+      "--theme-color-label": "Paper",
       "--rgb-primary": "184, 149, 106",
       "--rgb-dark-primary": "212, 165, 116",
       "--rgb-bg-base": "250, 248, 245",
@@ -65,6 +66,7 @@
     "#8a70c0",
     {
       "--theme-color-name": "#8a70c0",
+      "--theme-color-label": "Dusk",
       "--rgb-primary": "138, 112, 192",
       "--rgb-dark-primary": "149, 117, 205",
       "--rgb-bg-base": "248, 246, 251",
@@ -127,6 +129,7 @@
     "#c05050",
     {
       "--theme-color-name": "#c05050",
+      "--theme-color-label": "Ember",
       "--rgb-primary": "192, 80, 80",
       "--rgb-dark-primary": "208, 96, 80",
       "--rgb-bg-base": "251, 246, 245",
@@ -189,6 +192,7 @@
     "#242424",
     {
       "--theme-color-name": "#242424",
+      "--theme-color-label": "Ink",
       "--rgb-primary": "36, 36, 36",
       "--rgb-dark-primary": "238, 238, 238",
       "--rgb-bg-base": "255, 255, 255",
@@ -251,6 +255,7 @@
     "#4080c0",
     {
       "--theme-color-name": "#4080c0",
+      "--theme-color-label": "Midnight",
       "--rgb-primary": "64, 128, 192",
       "--rgb-dark-primary": "255, 255, 255",
       "--rgb-bg-base": "248, 249, 250",
@@ -313,6 +318,7 @@
     "#0a9a9a",
     {
       "--theme-color-name": "#0a9a9a",
+      "--theme-color-label": "Ocean",
       "--rgb-primary": "10, 154, 154",
       "--rgb-dark-primary": "38, 166, 154",
       "--rgb-bg-base": "245, 250, 250",
