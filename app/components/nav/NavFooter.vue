@@ -26,16 +26,6 @@ function toggleDark() {
       <CommonTooltip :content="$t('magic_keys.dialog_header')">
         <button flex i-ri:keyboard-box-line dark-i-ri:keyboard-box-line text-lg :aria-label="$t('magic_keys.dialog_header')" @click="toggleKeyboardShortcuts" />
       </CommonTooltip>
-      <CommonTooltip :content="$t('settings.about.sponsor_action')">
-        <NuxtLink
-          flex
-          text-lg
-          i-ri-heart-3-line hover="i-ri-heart-3-fill text-rose"
-          :aria-label="$t('settings.about.sponsor_action')"
-          href="https://github.com/sponsors/elk-zone"
-          target="_blank"
-        />
-      </CommonTooltip>
     </div>
     <div>
       <NuxtLink href="https://qaf.men" target="_blank" external hover:underline>
