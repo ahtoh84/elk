@@ -42,7 +42,7 @@ export const NOTIFICATION_FILTER_TYPES: mastodon.v1.NotificationType[] = [
 ]
 
 export const THEME_COLORS = {
-  defaultTheme: '#b8956a',
+  defaultTheme: '#242424',
   themeDark: '#111111',
   themeLight: '#fafafa',
   backgroundDark: '#fafafa',
