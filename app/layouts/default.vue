@@ -35,7 +35,7 @@ const isGrayscale = usePreferences('grayscaleMode')
                         hover:bg-active cursor-pointer transition-100
                         :to="getAccountRoute(currentUser.account)"
                       >
-                        <AccountInfo :account="currentUser.account" md:break-words square />
+                        <AccountInfo :account="currentUser.account" md:break-words />
                       </NuxtLink>
                       <UserDropdown />
                     </div>

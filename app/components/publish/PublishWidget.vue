@@ -401,7 +401,7 @@ const detectLanguage = useDebounceFn(async () => {
     <div flex gap-3 flex-1>
       <div>
         <NuxtLink self-start :to="getAccountRoute(currentUser.account)">
-          <AccountBigAvatar :account="currentUser.account" square />
+          <AccountBigAvatar :account="currentUser.account" />
         </NuxtLink>
         <div v-if="!isFinalItemOfThread" w-full h-full flex mt--3px justify-center>
           <div w-1px border="x base" mb-6 />

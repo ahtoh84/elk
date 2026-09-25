@@ -69,10 +69,10 @@ const timeAgo = useTimeAgo(() => notification.createdAt, timeAgoOptions)
     <template v-else-if="notification.type === 'admin.sign_up'">
       <NuxtLink :to="getAccountRoute(notification.account)">
         <div flex p4 items-center bg-shaded>
-          <div i-ri:user-add-line text-xl me-2 color-purple />
+          <div i-ri:user-add-line text-xl me-2 text-primary />
           <AccountDisplayName
             :account="notification.account"
-            text-purple me-1 font-bold line-clamp-1 ws-pre-wrap break-all
+            text-primary me-1 font-bold line-clamp-1 ws-pre-wrap break-all
           />
           <span>{{ $t("notification.signed_up") }}
             <time text-secondary :datetime="notification.createdAt">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { STORAGE_KEY_LAST_ACCESSED_EXPLORE_ROUTE, STORAGE_KEY_LAST_ACCESSED_NOTIFICATION_ROUTE, STORAGE_KEY_SIDE_NAV_MORE } from '~/constants'
+import { STORAGE_KEY_LAST_ACCESSED_EXPLORE_ROUTE, STORAGE_KEY_LAST_ACCESSED_NOTIFICATION_ROUTE } from '~/constants'
 
 const props = withDefaults(defineProps<{
   command?: boolean
@@ -11,54 +11,23 @@ const { notifications } = useNotifications()
 const useStarFavoriteIcon = usePreferences('useStarFavoriteIcon')
 const route = useRoute()
 const moreOpen = useState<boolean>('nav-side-more-open', () => false)
-const moreOpenInitialized = useState<boolean>('nav-side-more-open-initialized', () => false)
 const lastAccessedNotificationRoute = useLocalStorage(STORAGE_KEY_LAST_ACCESSED_NOTIFICATION_ROUTE, '')
 const lastAccessedExploreRoute = useLocalStorage(STORAGE_KEY_LAST_ACCESSED_EXPLORE_ROUTE, '')
 const moreButtonId = computed(() => `nav-side-more-${props.variant}`)
 const moreItemsId = computed(() => `nav-side-more-items-${props.variant}`)
 const floatingMoreOpen = ref(false)
 
-const isMoreRoute = computed(() => {
-  const path = route.path
-  const fixedRoutes = ['/explore', '/favourites', '/bookmarks', '/scheduled-posts', '/lists', '/hashtags', '/settings']
-
-  return fixedRoutes.some(route => path === route || path.endsWith(route) || path.includes(`${route}/`))
-    || path.endsWith('/public')
-    || path.endsWith('/public/local')
-    || path.includes('/collections')
-})
-
 const showMoreItems = computed(() => props.variant === 'desktop' ? floatingMoreOpen.value : moreOpen.value)
 const userOnlyDisabled = computed(() => !isHydrated.value || !currentUser.value)
 
-watch(moreOpen, (value) => {
-  if (import.meta.client)
-    localStorage.setItem(STORAGE_KEY_SIDE_NAV_MORE, String(value))
-})
-
 watch(() => route.path, () => {
   floatingMoreOpen.value = false
-  if (isMoreRoute.value)
-    moreOpen.value = true
-})
-
-onMounted(() => {
-  if (!moreOpenInitialized.value) {
-    const stored = localStorage.getItem(STORAGE_KEY_SIDE_NAV_MORE)
-    if (stored !== null)
-      moreOpen.value = stored === 'true'
-    moreOpenInitialized.value = true
-  }
-
-  if (isMoreRoute.value)
-    moreOpen.value = true
+  moreOpen.value = false
 })
 
 function toggleMore() {
   if (props.variant === 'desktop') {
-    const next = !floatingMoreOpen.value
-    floatingMoreOpen.value = next
-    moreOpen.value = next
+    floatingMoreOpen.value = !floatingMoreOpen.value
     return
   }
 
@@ -92,7 +61,7 @@ const exploreLink = computed(() => {
 </script>
 
 <template>
-  <nav sm:px3 flex="~ col gap2" shrink text-size-base leading-normal md:text-lg h-full mt-1 overflow-y-auto>
+  <nav sm:px3 flex="~ col gap2" shrink text-size-base leading-normal md:text-lg h-full mt-1 overflow-y-auto overflow-x-hidden>
     <NavSideItem :text="$t('nav.search')" to="/search" icon="i-ri:search-line" xl:hidden :command="command" />
 
     <div class="spacer" shrink xl:hidden />
@@ -185,7 +154,7 @@ const exploreLink = computed(() => {
           :aria-label="$t('nav.more_menu')"
           :aria-expanded="showMoreItems"
           :aria-controls="`${moreItemsId}-inline`"
-          @click="toggleMore"
+          @click.stop="toggleMore"
         >
           <span :class="showMoreItems ? 'i-ri:arrow-down-s-line' : 'i-ri:more-fill'" text-xl />
           <span select-none>{{ $t('nav.more_menu') }}</span>

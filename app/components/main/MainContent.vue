@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { back = false, flushTop = false } = defineProps<{
+const { back = false, flushTop = false, noOverflowHidden = false } = defineProps<{
   /**
    * Should we show a back button?
    * Note: this will be forced to false on xl screens to avoid duplicating the sidebar's back button.
@@ -79,6 +79,7 @@ const showBackButton = computed(() => {
     <PwaInstallPrompt xl:hidden />
     <div
       class="main-content-body"
+      :style="noOverflowHidden ? { overflow: 'visible' } : undefined"
       :class="isHydrated && wideLayout ? 'xl:w-full sm:max-w-600px' : 'sm:max-w-600px md:shrink-0'"
       m-auto
     >

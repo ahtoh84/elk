@@ -10,7 +10,6 @@ const { busy, oauth, singleInstanceServer } = useSignIn()
         h-8
         w-8
         :draggable="false"
-        square
       />
     </div>
 

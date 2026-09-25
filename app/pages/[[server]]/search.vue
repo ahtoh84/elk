@@ -23,14 +23,14 @@ watch(keys['/'], (v) => {
 </script>
 
 <template>
-  <MainContent>
+  <MainContent flush-top no-overflow-hidden>
     <template #title>
       <MainTitle as="router-link" to="/search" icon="i-ri:search-line rtl-flip">
         {{ $t('nav.search') }}
       </MainTitle>
     </template>
 
-    <div px2 mt3>
+    <div px2 mt2>
       <SearchWidget v-if="isHydrated" ref="search" m-1 />
     </div>
   </MainContent>

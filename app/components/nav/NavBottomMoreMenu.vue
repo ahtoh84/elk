@@ -3,6 +3,7 @@ import { invoke } from '@vueuse/core'
 
 const modelValue = defineModel<boolean>({ required: true })
 const colorMode = useColorMode()
+const mobileMoreOpen = useState<boolean>('nav-side-more-open', () => false)
 
 const userSettings = useUserSettings()
 
@@ -33,6 +34,9 @@ function toggleDark() {
 watch(modelValue, (val) => {
   if (val && typeof document !== 'undefined')
     document.addEventListener('click', clickEvent)
+
+  if (!val)
+    mobileMoreOpen.value = false
 })
 
 onBeforeUnmount(() => {

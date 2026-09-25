@@ -28,14 +28,19 @@ function toggleDark() {
       </CommonTooltip>
     </div>
     <div>
-      <NuxtLink href="https://qaf.men" target="_blank" external hover:underline>
-        QAF.MEN
+      <span>based on </span>
+      <NuxtLink
+        href="https://github.com/elk-zone/elk"
+        target="_blank"
+        external
+        inline-flex
+        items-center
+        align-middle
+        hover:underline
+        aria-label="Elk"
+      >
+        <img src="/elk.png" alt="Elk" class="relative top-[-0.3em] h-[1.25em] w-[1.25em] object-contain">
       </NuxtLink>
-      <span> based on </span>
-      <NuxtLink href="https://github.com/elk-zone/elk" target="_blank" external hover:underline>
-        Elk
-      </NuxtLink>
-      <span>.</span>
       <template v-if="config.public.privacyPolicyUrl">
         <span> · </span>
         <NuxtLink cursor-pointer hover:underline :to="config.public.privacyPolicyUrl">
