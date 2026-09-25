@@ -25,7 +25,7 @@ function clickUser(user: UserLogin) {
             hover="filter-none op100"
             @click="clickUser(user)"
           >
-            <AccountAvatar w-13 h-13 :account="user.account" square />
+            <AccountAvatar w-13 h-13 :account="user.account" />
           </button>
 
           <template #popper>

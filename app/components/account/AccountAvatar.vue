@@ -3,7 +3,6 @@ import type { mastodon } from 'masto'
 
 const { account } = defineProps<{
   account: mastodon.v1.Account
-  square?: boolean
 }>()
 
 const loaded = ref(false)
@@ -24,9 +23,8 @@ const accountAvatarSrc = computed(() => {
     :src="(error || !loaded) ? 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' : accountAvatarSrc"
     :alt="$t('account.avatar_description', [account.username])"
     loading="lazy"
-    class="account-avatar object-cover"
-    :class="(loaded ? 'bg-base' : 'bg-gray:10') + (square ? ' ' : ' rounded-full')"
-    :style="{ 'clip-path': square ? `url(#avatar-mask)` : 'none' }"
+    class="account-avatar object-cover rounded-full"
+    :class="loaded ? 'bg-base' : 'bg-gray:10'"
     v-bind="$attrs"
     @load="loaded = true"
     @error="error = true"
