@@ -97,6 +97,7 @@ const exploreLink = computed(() => {
 
     <div class="spacer" shrink xl:hidden />
     <NavSideItem :text="$t('nav.home')" to="/home" icon="i-ri:home-5-line" user-only :command="command" />
+    <NavSideItem :text="$t('nav.local')" :to="isHydrated ? `/${currentServer}/public/local` : '/public/local'" icon="i-ri:group-2-line" :command="command" />
     <NavSideItem :text="$t('nav.notifications')" :to="notificationsLink" icon="i-ri:notification-4-line" user-only :command="command">
       <template #icon>
         <div flex relative>
@@ -107,7 +108,6 @@ const exploreLink = computed(() => {
         </div>
       </template>
     </NavSideItem>
-    <NavSideItem :text="$t('nav.local')" :to="isHydrated ? `/${currentServer}/public/local` : '/public/local'" icon="i-ri:group-2-line" :command="command" />
 
     <div class="spacer" shrink hidden sm:block />
     <NavSideItem :text="$t('action.compose')" to="/compose" icon="i-ri:quill-pen-line" user-only :command="command" />
