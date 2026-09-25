@@ -1,11 +1,6 @@
 <script setup lang="ts">
-const buildInfo = useBuildInfo()
-const timeAgoOptions = useTimeAgoOptions()
 const config = useRuntimeConfig()
 const userSettings = useUserSettings()
-
-const buildTimeDate = new Date(buildInfo.time)
-const buildTimeAgo = useTimeAgo(buildTimeDate, timeAgoOptions)
 
 const colorMode = useColorMode()
 function toggleDark() {
@@ -41,36 +36,6 @@ function toggleDark() {
           target="_blank"
         />
       </CommonTooltip>
-    </div>
-    <div>
-      <i18n-t v-if="isHydrated" keypath="nav.built_at">
-        <time :datetime="String(buildTimeDate)" :title="$d(buildTimeDate, 'long')">{{ buildTimeAgo }}</time>
-      </i18n-t>
-      <span v-else>
-        {{ $t('nav.built_at', [$d(buildTimeDate, 'shortDate')]) }}
-      </span>
-      &middot;
-      <NuxtLink
-        v-if="buildInfo.env === 'release'"
-        external
-        :href="`https://github.com/elk-zone/elk/releases/tag/v${buildInfo.version}`"
-        target="_blank"
-        font-mono
-      >
-        v{{ buildInfo.version }}
-      </NuxtLink>
-      <span v-else>{{ buildInfo.env }}</span>
-      <template v-if="buildInfo.commit && buildInfo.branch !== 'release'">
-        &middot;
-        <NuxtLink
-          external
-          :href="`https://github.com/elk-zone/elk/commit/${buildInfo.commit}`"
-          target="_blank"
-          font-mono
-        >
-          {{ buildInfo.shortCommit }}
-        </NuxtLink>
-      </template>
     </div>
     <div>
       <NuxtLink href="https://qaf.men" target="_blank" external hover:underline>
