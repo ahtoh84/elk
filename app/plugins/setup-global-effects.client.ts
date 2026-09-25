@@ -12,7 +12,11 @@ export default defineNuxtPlugin(() => {
   watchEffect(() => {
     html.classList.toggle('zen', getPreferences(userSettings.value, 'zenMode'))
   })
-  watchEffect(() => {
-    Object.entries(userSettings.value.themeColors || {}).forEach(([k, v]) => html.style.setProperty(k, v))
-  })
+  watch(
+    () => userSettings.value.themeColors,
+    (themeColors) => {
+      Object.entries(themeColors || {}).forEach(([k, v]) => html.style.setProperty(k, v))
+    },
+    { deep: true, immediate: true },
+  )
 })
