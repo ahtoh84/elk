@@ -26,9 +26,10 @@ if (currentUser.value !== undefined) {
 </script>
 
 <template>
-  <div>
-    <PublishWidgetList draft-key="home" />
-    <div h="1px" w-auto bg-border mb-3 />
+  <div class="timeline-feed timeline-home-feed">
+    <div class="timeline-composer">
+      <PublishWidgetList draft-key="home" />
+    </div>
     <TimelinePaginator :followed-tags="followedTags" v-bind="{ paginator, stream }" :preprocess="preprocess" context="home" />
   </div>
 </template>

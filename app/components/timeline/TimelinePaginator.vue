@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
 
-const { account, buffer = 10, endMessage = true, followedTags = [] } = defineProps<{
+const { account, buffer = 10, endMessage = true, feed = true, followedTags = [] } = defineProps<{
   paginator: mastodon.Paginator<mastodon.v1.Status[], mastodon.rest.v1.ListAccountStatusesParams>
   stream?: mastodon.streaming.Subscription
   context?: mastodon.v2.FilterContext
@@ -10,6 +10,7 @@ const { account, buffer = 10, endMessage = true, followedTags = [] } = definePro
   preprocess?: (items: mastodon.v1.Status[]) => mastodon.v1.Status[]
   buffer?: number
   endMessage?: boolean | string
+  feed?: boolean
 }>()
 
 const { formatNumber } = useHumanReadableNumber()
@@ -27,38 +28,40 @@ function getFollowedTag(status: mastodon.v1.Status): string | null {
 </script>
 
 <template>
-  <CommonPaginator v-bind="{ paginator, stream, preprocess, buffer, endMessage }" :virtual-scroller="virtualScroller">
-    <template #updater="{ number, update }">
-      <button id="elk_show_new_items" py-4 border="b base" flex="~ col" p-3 w-full text-primary font-bold @click="update">
-        {{ $t('timeline.show_new_items', number, { named: { v: formatNumber(number) } }) }}
-      </button>
-    </template>
-    <template #default="{ item, older, newer }">
-      <template v-if="virtualScroller">
-        <StatusCard :followed-tag="getFollowedTag(item)" :status="item" :context="context" :older="older" :newer="newer" :account="account" />
+  <div :class="{ 'timeline-feed': feed }">
+    <CommonPaginator v-bind="{ paginator, stream, preprocess, buffer, endMessage }" :virtual-scroller="virtualScroller">
+      <template #updater="{ number, update }">
+        <button id="elk_show_new_items" py-4 border="b base" flex="~ col" p-3 w-full text-primary font-bold @click="update">
+          {{ $t('timeline.show_new_items', number, { named: { v: formatNumber(number) } }) }}
+        </button>
       </template>
-      <template v-else>
-        <StatusCard :followed-tag="getFollowedTag(item)" :status="item" :context="context" :older="older" :newer="newer" :account="account" />
-      </template>
-    </template>
-    <template v-if="context === 'account'" #done="{ items }">
-      <div
-        v-if="showOriginSite || items.length === 0"
-        p5 text-secondary text-center flex flex-col items-center gap1
-      >
-        <template v-if="showOriginSite">
-          <span italic>{{ $t('timeline.view_older_posts') }}</span>
-          <NuxtLink
-            :href="account!.url" target="_blank" external
-            flex="~ gap-1" items-center text-primary
-            hover="underline text-primary-active"
-          >
-            <div i-ri:external-link-fill />
-            {{ $t('menu.open_in_original_site') }}
-          </NuxtLink>
+      <template #default="{ item, older, newer }">
+        <template v-if="virtualScroller">
+          <StatusCard class="timeline-post" :followed-tag="getFollowedTag(item)" :status="item" :context="context" :older="older" :newer="newer" :account="account" />
         </template>
-        <span v-else-if="items.length === 0">{{ $t('timeline.no_posts') }}</span>
-      </div>
-    </template>
-  </CommonPaginator>
+        <template v-else>
+          <StatusCard class="timeline-post" :followed-tag="getFollowedTag(item)" :status="item" :context="context" :older="older" :newer="newer" :account="account" />
+        </template>
+      </template>
+      <template v-if="context === 'account'" #done="{ items }">
+        <div
+          v-if="showOriginSite || items.length === 0"
+          p5 text-secondary text-center flex flex-col items-center gap1
+        >
+          <template v-if="showOriginSite">
+            <span italic>{{ $t('timeline.view_older_posts') }}</span>
+            <NuxtLink
+              :href="account!.url" target="_blank" external
+              flex="~ gap-1" items-center text-primary
+              hover="underline text-primary-active"
+            >
+              <div i-ri:external-link-fill />
+              {{ $t('menu.open_in_original_site') }}
+            </NuxtLink>
+          </template>
+          <span v-else-if="items.length === 0">{{ $t('timeline.no_posts') }}</span>
+        </div>
+      </template>
+    </CommonPaginator>
+  </div>
 </template>

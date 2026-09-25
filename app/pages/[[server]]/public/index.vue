@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: 'auth',
+})
+
 const { t } = useI18n()
 
 useHydratedHead({
@@ -14,6 +18,6 @@ useHydratedHead({
       </MainTitle>
     </template>
 
-    <TimelinePublic v-if="isHydrated" />
+    <TimelinePublic v-if="isHydrated && currentUser" />
   </MainContent>
 </template>

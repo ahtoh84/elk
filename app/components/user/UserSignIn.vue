@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import Fuse from 'fuse.js'
 
+const { defaultServer = '' } = defineProps<{
+  defaultServer?: string
+}>()
+
 const input = ref<HTMLInputElement | undefined>()
 const knownServers = ref<string[]>([])
 const autocompleteIndex = ref(0)
 const autocompleteShow = ref(false)
 
 const { busy, error, displayError, server, oauth } = useSignIn(input)
+
+if (defaultServer)
+  server.value = defaultServer
 
 const fuse = shallowRef(new Fuse([] as string[]))
 

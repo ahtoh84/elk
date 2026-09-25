@@ -73,27 +73,20 @@ function toggleDark() {
       </template>
     </div>
     <div>
-      <NuxtLink cursor-pointer hover:underline to="/settings/about">
-        {{ $t('settings.about.label') }}
+      <NuxtLink href="https://qaf.men" target="_blank" external hover:underline>
+        QAF.MEN
       </NuxtLink>
+      <span> based on </span>
+      <NuxtLink href="https://github.com/elk-zone/elk" target="_blank" external hover:underline>
+        Elk
+      </NuxtLink>
+      <span>.</span>
       <template v-if="config.public.privacyPolicyUrl">
-        &middot;
+        <span> · </span>
         <NuxtLink cursor-pointer hover:underline :to="config.public.privacyPolicyUrl">
           {{ $t('nav.privacy') }}
         </NuxtLink>
       </template>
-      &middot;
-      <NuxtLink href="/m.webtoo.ls/@elk" target="_blank">
-        Mastodon
-      </NuxtLink>
-      &middot;
-      <NuxtLink href="https://chat.elk.zone" target="_blank" external>
-        Discord
-      </NuxtLink>
-      &middot;
-      <NuxtLink href="https://github.com/elk-zone/elk" target="_blank" external>
-        GitHub
-      </NuxtLink>
     </div>
   </footer>
 </template>

@@ -21,26 +21,26 @@ const status = computed(() => {
         {{ $t('settings.language.label') }}
       </MainTitle>
     </template>
-    <div p6>
-      <section space-y-2>
-        <h2 py2 font-bold text-xl flex="~ gap-1" items-center>
+    <div class="settings-detail-content">
+      <section class="settings-section">
+        <h2 class="settings-section-title">
           {{ $t('settings.language.display_language') }}
         </h2>
-        <div>
+        <p class="settings-section-description">
           {{ status }}
-        </div>
+        </p>
         <SettingsLanguage select-settings />
         <NuxtLink
           href="https://docs.elk.zone/guide/contributing"
           target="_blank"
-          hover:underline text-primary inline-flex items-center gap-1
+          class="settings-inline-link"
         >
           <span inline-block i-ri:information-line />
           {{ $t('settings.language.how_to_contribute') }}
         </NuxtLink>
       </section>
-      <section mt4>
-        <h2 font-bold text-xl flex="~ gap-1" items-center>
+      <section class="settings-section">
+        <h2 class="settings-section-title">
           {{ $t('settings.language.post_language') }}
         </h2>
         <SettingsItem
@@ -53,8 +53,8 @@ const status = computed(() => {
           external target="_blank"
         />
       </section>
-      <section>
-        <h2 py4 mt2 font-bold text-xl flex="~ gap-1" items-center>
+      <section class="settings-section">
+        <h2 class="settings-section-title">
           {{ $t('settings.language.translations.heading') }}
         </h2>
         <SettingsTranslations />

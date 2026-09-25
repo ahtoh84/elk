@@ -83,7 +83,7 @@ const forceShow = ref(false)
     :status="status" :hover="hover" :disable-link="disableLink"
   >
     <!-- Upper border -->
-    <div :h="showUpperBorder ? '1px' : '0'" w-auto bg-border mb-1 z--1 />
+    <div class="timeline-post-divider" :h="showUpperBorder ? '1px' : '0'" w-auto bg-border mb-1 z--1 />
 
     <slot name="meta">
       <!-- followed hashtag badge -->

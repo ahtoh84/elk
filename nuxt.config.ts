@@ -174,8 +174,8 @@ export default defineNuxtConfig({
       // We use LibreTranslate (https://github.com/LibreTranslate/LibreTranslate) as
       // our default translation server #76
       translateApi: '',
-      // Use the instance where Elk has its Mastodon account as the default
-      defaultServer: 'm.webtoo.ls',
+      // Use the preferred instance as the default for logged-out visitors
+      defaultServer: 'qaf.men',
       singleInstance: false,
     },
     storage: {
@@ -274,8 +274,7 @@ export default defineNuxtConfig({
         class: 'overflow-x-hidden',
       },
       link: [
-        { rel: 'icon', href: '/favicon.ico', sizes: 'any' },
-        { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' },
+        { rel: 'icon', href: '/favicon.ico?v=rainbow', sizes: 'any' },
         { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
         { rel: 'me', href: 'https://m.webtoo.ls/@elk' },
       ],

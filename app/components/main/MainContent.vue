@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { back = false } = defineProps<{
+const { back = false, flushTop = false } = defineProps<{
   /**
    * Should we show a back button?
    * Note: this will be forced to false on xl screens to avoid duplicating the sidebar's back button.
@@ -9,6 +9,8 @@ const { back = false } = defineProps<{
   backOnSmallScreen?: boolean
   /** Do not applying overflow hidden to let use floatable components in title */
   noOverflowHidden?: boolean
+  /** Attach the first body element to the top edge of the content panel */
+  flushTop?: boolean
 }>()
 
 const container = ref()
@@ -75,8 +77,12 @@ const showBackButton = computed(() => {
       </slot>
     </div>
     <PwaInstallPrompt xl:hidden />
-    <div :class="isHydrated && wideLayout ? 'xl:w-full sm:max-w-600px' : 'sm:max-w-600px md:shrink-0'" m-auto>
-      <div hidden :class="{ 'xl:block': $route.name !== 'tag' && !$slots.header }" h-6 />
+    <div
+      class="main-content-body"
+      :class="isHydrated && wideLayout ? 'xl:w-full sm:max-w-600px' : 'sm:max-w-600px md:shrink-0'"
+      m-auto
+    >
+      <div hidden :class="{ 'xl:block': !flushTop && $route.name !== 'tag' && !$slots.header }" h-6 />
       <slot />
     </div>
   </div>

@@ -11,6 +11,7 @@
 
   --c-bg-active: #f2f2f2;
   --c-bg-card: #00000006;
+  --c-bg-panel: #fff;
   --c-bg-code: #00000006;
   --c-bg-selection: #8885;
   --c-bg-dm: #f1e8e6;
@@ -45,6 +46,7 @@
 
   --c-bg-active: #191919;
   --c-bg-card: #ffffff06;
+  --c-bg-panel: #151515;
   --c-bg-code: #ffffff06;
   --c-bg-dm: #0a2f35;
 

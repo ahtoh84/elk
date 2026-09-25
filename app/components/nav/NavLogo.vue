@@ -6,6 +6,17 @@
     xmlns="http://www.w3.org/2000/svg" w-full
     aspect="1/1" sm:h-8 xl:h-10 sm:w-8 xl:w-10 viewBox="0 0 250 250" fill="none"
   >
+    <defs>
+      <linearGradient id="nav-logo-rainbow" x1="0" y1="0" x2="250" y2="0" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#ef4444" />
+        <stop offset="0.18" stop-color="#f97316" />
+        <stop offset="0.36" stop-color="#facc15" />
+        <stop offset="0.54" stop-color="#22c55e" />
+        <stop offset="0.7" stop-color="#06b6d4" />
+        <stop offset="0.86" stop-color="#3b82f6" />
+        <stop offset="1" stop-color="#a855f7" />
+      </linearGradient>
+    </defs>
     <mask
       id="a"
       width="240"
@@ -49,7 +60,7 @@
 
 <style scoped>
 svg path.wood {
-    fill: var(--c-primary);
+    fill: url(#nav-logo-rainbow);
 }
 svg path.body {
     fill: var(--c-text-secondary);

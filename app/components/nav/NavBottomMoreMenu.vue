@@ -153,7 +153,7 @@ const { dragging, dragDistance } = invoke(() => {
           border-t-1 border-base
         >
           <!-- Nav -->
-          <NavSide />
+          <NavSide variant="mobile" />
 
           <!-- Divider line -->
           <div border="neutral-300 dark:neutral-700 t-1" m="x-3 y-2" />

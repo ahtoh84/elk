@@ -22,7 +22,7 @@ const state = ref<'error' | 'reloading'>('error')
 async function reload() {
   state.value = 'reloading'
   try {
-    clearError({ redirect: currentUser.value ? '/home' : `/${currentServer.value}/public/local` })
+    clearError({ redirect: currentUser.value ? '/home' : '/' })
   }
   catch (err) {
     console.error(err)

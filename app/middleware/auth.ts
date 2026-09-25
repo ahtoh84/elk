@@ -15,12 +15,13 @@ export default defineNuxtRouteMiddleware((to) => {
 
 function handleAuth(to: RouteLocationNormalized) {
   if (to.path === '/') {
+    if (!currentUser.value)
+      return
+
     // Installed PWA shortcut to notifications
     if (to.query['notifications-pwa-shortcut'] !== undefined) {
       if (currentUser.value)
         return navigateTo('/notifications')
-      else
-        return navigateTo(`/${currentServer.value}/public/local`)
     }
 
     // Installed PWA shortcut to local
@@ -32,7 +33,7 @@ function handleAuth(to: RouteLocationNormalized) {
     if (to.path === '/home' && to.query['share-target'] !== undefined)
       return navigateTo('/share-target')
     else
-      return navigateTo(`/${currentServer.value}/public/local`)
+      return navigateTo('/')
   }
 
   if (to.path === '/')

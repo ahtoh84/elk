@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { text, description, icon, to, command, external, target } = defineProps<{
+const { text, description, icon, to, command, external, target, navigation } = defineProps<{
   text?: string
   content?: string
   description?: string
@@ -9,6 +9,7 @@ const { text, description, icon, to, command, external, target } = defineProps<{
   disabled?: boolean
   external?: true
   large?: true
+  navigation?: true
   match?: boolean
   target?: string
 }>()
@@ -43,14 +44,21 @@ useCommand({
     :external="external"
     :target="target"
     exact-active-class="text-primary"
-    :class="disabled ? 'op25 pointer-events-none ' : match ? 'text-primary' : ''"
+    :class="[
+      navigation ? 'settings-nav-link' : 'settings-item-link',
+      disabled ? 'op25 pointer-events-none' : '',
+      match ? 'text-primary' : '',
+      navigation && match ? 'settings-nav-link-active' : '',
+    ]"
+    :aria-current="match ? 'page' : undefined"
     block w-full group focus:outline-none
     :tabindex="disabled ? -1 : undefined"
     @click="scrollOnClick ? $scrollToTop() : undefined"
   >
     <div
+      class="settings-item-row"
       w-full flex px5 py3 md:gap2 gap4 items-center
-      transition-250 group-hover:bg-active
+      transition-150 group-hover:bg-active
       group-focus-visible:ring="2 current"
     >
       <div flex-1 flex items-center md:gap2 gap4>

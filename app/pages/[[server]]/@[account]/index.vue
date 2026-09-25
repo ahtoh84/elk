@@ -21,7 +21,7 @@ onReactivated(() => {
 </script>
 
 <template>
-  <MainContent back>
+  <MainContent back flush-top>
     <template #title>
       <MainTitle>
         <ContentRich

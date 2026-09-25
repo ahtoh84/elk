@@ -12,7 +12,6 @@ const showUserPicker = logicAnd(
 )
 
 const isGrayscale = usePreferences('grayscaleMode')
-const instance = computed(() => instanceStorage.value[currentServer.value])
 </script>
 
 <template>
@@ -23,13 +22,10 @@ const instance = computed(() => instanceStorage.value[currentServer.value])
           <slot name="left">
             <div flex="~ col" overflow-y-auto justify-between h-full max-w-full overflow-x-hidden>
               <NavTitle />
-              <NavSide command />
+              <NavSide command variant="desktop" />
               <div flex-auto />
-              <div v-if="isHydrated" flex flex-col sticky bottom-0 bg-base>
-                <div hidden xl:block>
-                  <UserSignInEntry v-if="!currentUser" />
-                </div>
-                <div v-if="currentUser" p6 pb8 w-full>
+              <div v-if="isHydrated && currentUser" flex flex-col sticky bottom-0 bg-base>
+                <div p6 pb8 w-full>
                   <div hidden xl-block>
                     <UserPicker v-if="showUserPicker" />
                     <div v-else flex="~" items-center justify-between>
@@ -64,15 +60,6 @@ const instance = computed(() => instanceStorage.value[currentServer.value])
         <div sticky top-0 h-100dvh flex="~ col" gap-2 py3 ms-2>
           <slot name="right">
             <SearchWidget mt-4 mx-1 hidden xl:block />
-
-            <!-- server info -->
-            <div v-if="!currentUser && instance" grid gap-3 m3>
-              <span text-size-lg text-primary font-bold>{{ instance.title }}</span>
-              <img v-if="instance.thumbnail?.url" rounded-3 :src="instance.thumbnail.url" :alt="$t('server.thumbnail_description', [instance.title])">
-              <p text-secondary>
-                {{ instance.description }}
-              </p>
-            </div>
 
             <div flex-auto />
             <PwaPrompt />
