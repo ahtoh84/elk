@@ -264,12 +264,12 @@ body {
 @media (max-width: 639px) {
   .main-content-body {
     margin-block: 0.5rem 1rem;
-    border-radius: 1rem;
+    border-radius: 0;
   }
 
   .timeline-feed {
     margin-block: 0.5rem 1rem;
-    border-radius: 1rem;
+    border-radius: 0;
   }
 }
 
