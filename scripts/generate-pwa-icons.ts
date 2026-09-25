@@ -17,7 +17,7 @@ type IconType = 'transparent' | 'maskable' | 'apple'
 
 /**
  * PWA Icons definition:
- * - transparent: [{ sizes: [192, 512], padding: 0.05, resizeOptions: { fit: 'contain', background: 'transparent' } }]
+ * - transparent: [{ sizes: [192, 512], padding: 0.05, resizeOptions: { fit: 'contain', background: 'white' } }]
  * - maskable: [{ sizes: [512], padding: 0.3 }, resizeOptions: { fit: 'contain', background: 'white' } }]
  * - apple: [{ sizes: [180], padding: 0.3 }, resizeOptions: { fit: 'contain', background: 'white' } }]
  */
@@ -58,7 +58,9 @@ const defaultIcons: Icons = {
     padding: 0.05,
     resizeOptions: {
       fit: 'contain',
-      background: 'transparent',
+      // Keep the full icon opaque. Some mobile launchers render transparent
+      // PWA icon pixels with a black fill on the home screen.
+      background: 'white',
     },
   },
   maskable: {
@@ -97,7 +99,7 @@ async function generateTransparentIcons(icons: ResolvedIcons, svgLogo: string, f
         width: size,
         height: size,
         channels: 4,
-        background: { r: 0, g: 0, b: 0, alpha: 0 },
+        background: resizeOptions?.background ?? { r: 0, g: 0, b: 0, alpha: 0 },
       },
     }).composite([{
       input: await sharp(svgLogo)
@@ -197,7 +199,7 @@ async function generatePWAIcons(folders: string[], icons: Icons) {
 
 console.log('Generating Elk PWA Icons...')
 
-generatePWAIcons(publicFolders, <Icons>{
+generatePWAIcons(publicFolders, {
   transparent: { ...defaultIcons.transparent, sizes: [64, 192, 512] },
   ico: { sizes: [64], icoName: _ => 'favicon.ico' },
   iconName: (type, size) => {
@@ -210,4 +212,4 @@ generatePWAIcons(publicFolders, <Icons>{
         return 'apple-touch-icon-temp.png'
     }
   },
-}).then(() => console.log('Elk PWA Icons generated')).catch(console.error)
+} as Icons).then(() => console.log('Elk PWA Icons generated')).catch(console.error)
