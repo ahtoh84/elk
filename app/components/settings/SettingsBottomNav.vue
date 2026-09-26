@@ -26,12 +26,8 @@ const availableNavButtons: NavButton[] = [
   { name: 'moreMenu', label: 'nav.more_menu', icon: 'i-ri:more-fill' },
 ] as const
 
-const defaultSelectedNavButtonNames = computed<NavButtonName[]>(() =>
-  currentUser.value
-    ? ['home', 'search', 'notification', 'mention', 'moreMenu']
-    : ['explore', 'local', 'federated', 'moreMenu'],
-)
-const navButtonNamesSetting = useLocalStorage<NavButtonName[]>(STORAGE_KEY_BOTTOM_NAV_BUTTONS, defaultSelectedNavButtonNames.value)
+const defaultSelectedNavButtonNames: NavButtonName[] = ['home', 'local', 'compose', 'notification', 'moreMenu']
+const navButtonNamesSetting = useLocalStorage<NavButtonName[]>(STORAGE_KEY_BOTTOM_NAV_BUTTONS, defaultSelectedNavButtonNames)
 const selectedNavButtonNames = ref<NavButtonName[]>(navButtonNamesSetting.value)
 
 const selectedNavButtons = computed<NavButton[]>(() =>
@@ -65,7 +61,7 @@ function clear() {
 }
 
 function reset() {
-  selectedNavButtonNames.value = defaultSelectedNavButtonNames.value
+  selectedNavButtonNames.value = [...defaultSelectedNavButtonNames]
 }
 
 function save() {

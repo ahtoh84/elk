@@ -45,9 +45,7 @@ const navButtons: NavButton[] = [
   { name: 'moreMenu', component: NavButtonMoreMenu },
 ]
 
-const defaultSelectedNavButtonNames: NavButtonName[] = currentUser.value
-  ? ['home', 'search', 'notification', 'mention', 'moreMenu']
-  : ['explore', 'local', 'federated', 'moreMenu']
+const defaultSelectedNavButtonNames: NavButtonName[] = ['home', 'local', 'compose', 'notification', 'moreMenu']
 const selectedNavButtonNames = useLocalStorage<NavButtonName[]>(STORAGE_KEY_BOTTOM_NAV_BUTTONS, defaultSelectedNavButtonNames)
 
 const selectedNavButtons = computed(() => selectedNavButtonNames.value.map(name => navButtons.find(navButton => navButton.name === name)))
