@@ -1,4 +1,4 @@
-import { STORAGE_KEY_CURRENT_USER_HANDLE, STORAGE_KEY_SETTINGS } from '~/constants'
+import { LEGACY_DEFAULT_THEME, STORAGE_KEY_CURRENT_USER_HANDLE, STORAGE_KEY_SETTINGS } from '~/constants'
 import { oldFontSizeMap } from '~/constants/options'
 
 const WHITESPACE_REGEX = /\s*\n\s*/g
@@ -30,7 +30,8 @@ export default defineNuxtPlugin(() => {
   if (settings.preferences.zenMode) {
     html.classList.add('zen')
   }
-  if (settings.themeColors) {
+  const hasLegacyDefaultTheme = settings.themeSettingsVersion == null && settings.themeColors?.['--theme-color-name'] === ${JSON.stringify(LEGACY_DEFAULT_THEME)}
+  if (settings.themeColors && !hasLegacyDefaultTheme) {
     Object.entries(settings.themeColors).map(i => html.style.setProperty(i[0], i[1]))
   }
 })()`.trim().replace(WHITESPACE_REGEX, ';'),

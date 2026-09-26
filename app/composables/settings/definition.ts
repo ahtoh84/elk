@@ -46,6 +46,7 @@ export interface UserSettings {
   language: string
   disabledTranslationLanguages: string[]
   themeColors?: ThemeColors
+  themeSettingsVersion?: number
 }
 
 export interface ThemeColors {
