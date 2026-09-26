@@ -4,10 +4,10 @@ import { getThemeColors, themesColor } from '../../scripts/generate-themes'
 describe('tangerine themes', () => {
   it('exposes all Tangerine palettes', () => {
     expect(themesColor).toEqual([
+      '#242424',
       '#b8956a',
       '#8a70c0',
       '#c05050',
-      '#242424',
       '#4080c0',
       '#0a9a9a',
     ])

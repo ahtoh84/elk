@@ -331,7 +331,16 @@ const TANGERINE_PALETTE_NAMES: Record<string, string> = {
   '#0a9a9a': 'Ocean',
 }
 
-export const themesColor = Object.keys(TANGERINE_PALETTES)
+// Keep the default palette first because the first generated theme is used by
+// `scripts/prepare.ts` to create the initial CSS variables before hydration.
+export const themesColor = [
+  '#242424', // Ink
+  '#b8956a', // Paper
+  '#8a70c0', // Dusk
+  '#c05050', // Ember
+  '#4080c0', // Midnight
+  '#0a9a9a', // Ocean
+] as const
 
 function rgba(hex: string, alpha: number) {
   return `rgba(${hexToRgb(hex)}, ${alpha})`
