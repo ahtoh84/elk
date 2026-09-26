@@ -3,6 +3,7 @@ import type { Mutable } from '#shared/types/utils'
 import type { mastodon } from 'masto'
 import type { ComputedRef, Ref } from 'vue'
 import { STORAGE_KEY_DRAFTS } from '~/constants'
+import { ensureDraftItems } from './statusDraftsUtils'
 
 const MENTION_REGEX = /^(@\S+\s?)+/
 const CODE_BLOCK_REGEX = /```/g
@@ -166,12 +167,11 @@ export function useDraft(
 ): UseDraft {
   const draftItems = computed({
     get() {
-      if (!currentUserDrafts.value[draftKey])
-        currentUserDrafts.value[draftKey] = [initial()]
       const drafts = currentUserDrafts.value[draftKey]
-      if (Array.isArray(drafts))
-        return drafts
-      return [drafts]
+      const normalizedDrafts = ensureDraftItems(drafts, initial)
+      if (normalizedDrafts !== drafts)
+        currentUserDrafts.value[draftKey] = normalizedDrafts
+      return normalizedDrafts
     },
     set(val) {
       currentUserDrafts.value[draftKey] = val

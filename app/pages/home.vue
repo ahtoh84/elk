@@ -27,6 +27,6 @@ useHydratedHead({
       </MainTitle>
     </template>
 
-    <TimelineHome v-if="isHydrated" />
+    <TimelineHome v-if="isHydrated && currentUser" />
   </MainContent>
 </template>
