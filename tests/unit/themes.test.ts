@@ -45,6 +45,13 @@ describe('tangerine themes', () => {
     }))
   })
 
+  it('uses a distinct ink accent in both color modes', () => {
+    expect(getThemeColors('#242424')).toEqual(expect.objectContaining({
+      '--rgb-primary': '89, 98, 115',
+      '--rgb-dark-primary': '168, 180, 196',
+    }))
+  })
+
   it('exposes English names for the palette controls', () => {
     expect(getThemeColors('#b8956a')['--theme-color-label']).toBe('Paper')
     expect(getThemeColors('#8a70c0')['--theme-color-label']).toBe('Dusk')
