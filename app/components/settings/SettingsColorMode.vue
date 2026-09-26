@@ -38,7 +38,7 @@ const modes = [
         type="button"
         btn-text flex-1 flex="~ gap-1 center" p4 border="~ base rounded" bg-base ws-nowrap
         :aria-pressed="colorMode.preference === mode ? 'true' : 'false'"
-        :class="colorMode.preference === mode ? 'pointer-events-none' : 'filter-saturate-0'"
+        :class="colorMode.preference === mode ? 'pointer-events-none text-primary' : 'filter-saturate-0 text-secondary-light'"
         @click="setColorMode(mode)"
       >
         <span :class="`${icon}`" />
