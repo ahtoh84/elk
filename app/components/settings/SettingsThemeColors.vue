@@ -1,61 +1,12 @@
 <script setup lang="ts">
 import type { ThemeColors } from '~/composables/settings'
+import { getThemeOptions } from '~/composables/theme-colors'
 import { THEME_COLORS } from '~/constants'
 
-const DARK_THEME_KEY_REGEX = /^--(c|rgb)-/
-
-const themes = await import('~/constants/themes.json').then((r) => {
-  const map = new Map<'dark' | 'light', [string, ThemeColors][]>([['dark', []], ['light', []]])
-  const themes = r.default as [string, ThemeColors][]
-  for (const [key, theme] of themes) {
-    map.get('dark')!.push([key, resolveTheme(theme, true)])
-    map.get('light')!.push([key, resolveTheme(theme, false)])
-  }
-  return map
-})
-
-function resolveTheme(theme: ThemeColors, dark: boolean) {
-  const resolved = { ...theme }
-
-  if (dark) {
-    for (const key of Object.keys(theme)) {
-      if (!key.startsWith('--c-') && !key.startsWith('--rgb-'))
-        continue
-
-      const darkKey = key.replace(DARK_THEME_KEY_REGEX, '--$1-dark-')
-      const darkValue = theme[darkKey]
-      if (darkValue) {
-        resolved[key] = darkValue
-      }
-    }
-  }
-  else {
-    resolved['--c-primary'] = `color-mix(in srgb, ${theme['--c-primary']}, black 25%)`
-  }
-
-  return resolved
-}
-
 const settings = useUserSettings()
-
-const media = useMediaQuery('(prefers-color-scheme: dark)')
-
 const colorMode = useColorMode()
 
-const useThemes = shallowRef<[string, ThemeColors][]>([])
-
-watch(() => colorMode.preference, (cm) => {
-  const dark = cm === 'dark' || (cm === 'system' && media.value)
-  const newThemes = dark ? themes.get('dark')! : themes.get('light')!
-  const key = settings.value.themeColors?.['--theme-color-name'] || THEME_COLORS.defaultTheme
-  for (const [k, theme] of newThemes) {
-    if (k === key) {
-      settings.value.themeColors = theme
-      break
-    }
-  }
-  useThemes.value = newThemes
-}, { immediate: true, flush: 'post' })
+const useThemes = computed(() => getThemeOptions(colorMode.value === 'dark'))
 
 const currentTheme = computed(() => settings.value.themeColors?.['--theme-color-name'] || THEME_COLORS.defaultTheme)
 

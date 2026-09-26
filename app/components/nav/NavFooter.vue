@@ -1,19 +1,11 @@
 <script setup lang="ts">
 const config = useRuntimeConfig()
 const userSettings = useUserSettings()
-
-const colorMode = useColorMode()
-function toggleDark() {
-  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
-}
 </script>
 
 <template>
   <footer p4 text-sm text-secondary-light flex="~ col">
     <div flex="~ gap2" items-center mb4>
-      <CommonTooltip :content="$t('nav.toggle_theme')">
-        <button flex dark-i-ri:sun-line i-ri:moon-line text-lg :aria-label="$t('nav.toggle_theme')" @click="toggleDark()" />
-      </CommonTooltip>
       <CommonTooltip :content="$t('nav.zen_mode')">
         <button
           flex
