@@ -17,9 +17,9 @@ type IconType = 'transparent' | 'maskable' | 'apple'
 
 /**
  * PWA Icons definition:
- * - transparent: [{ sizes: [192, 512], padding: 0.05, resizeOptions: { fit: 'contain', background: 'white' } }]
- * - maskable: [{ sizes: [512], padding: 0.3 }, resizeOptions: { fit: 'contain', background: 'white' } }]
- * - apple: [{ sizes: [180], padding: 0.3 }, resizeOptions: { fit: 'contain', background: 'white' } }]
+ * - transparent: [{ sizes: [192, 512], padding: 0.05, resizeOptions: { fit: 'contain', background: transparent } }]
+ * - maskable: [{ sizes: [512], padding: 0.3 }, resizeOptions: { fit: 'contain', background: transparent } }]
+ * - apple: [{ sizes: [180], padding: 0.3 }, resizeOptions: { fit: 'contain', background: transparent } }]
  */
 interface Icons extends Record<IconType, Icon> {
   /**
@@ -52,15 +52,15 @@ interface ResolvedIcons extends Required<Omit<Icons, 'ico'>> {
   }
 }
 
+const transparentBackground = { r: 0, g: 0, b: 0, alpha: 0 }
+
 const defaultIcons: Icons = {
   transparent: {
     sizes: [192, 512],
     padding: 0.05,
     resizeOptions: {
       fit: 'contain',
-      // Keep the full icon opaque. Some mobile launchers render transparent
-      // PWA icon pixels with a black fill on the home screen.
-      background: 'white',
+      background: transparentBackground,
     },
   },
   maskable: {
@@ -68,7 +68,7 @@ const defaultIcons: Icons = {
     padding: 0.3,
     resizeOptions: {
       fit: 'contain',
-      background: 'white',
+      background: transparentBackground,
     },
   },
   apple: {
@@ -76,7 +76,7 @@ const defaultIcons: Icons = {
     padding: 0.3,
     resizeOptions: {
       fit: 'contain',
-      background: 'white',
+      background: transparentBackground,
     },
   },
 }
