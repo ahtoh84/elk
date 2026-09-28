@@ -203,5 +203,24 @@ function onCarouselClick(event: MouseEvent) {
   flex: 0 0 auto;
   width: auto;
   height: clamp(12rem, 62vw, 32rem);
+  transform-origin: center;
+  transition: transform 420ms cubic-bezier(0.22, 1.2, 0.36, 1);
+  will-change: transform;
+}
+
+.status-media-item:active {
+  transform: scale(0.97);
+  transition-duration: 120ms;
+  transition-timing-function: ease-out;
+}
+
+.status-media-container--dragging .status-media-item:active {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-media-item {
+    transition: none;
+  }
 }
 </style>
