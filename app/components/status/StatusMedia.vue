@@ -20,9 +20,14 @@ const gridColumnNumber = computed(() => {
 
 const isCarousel = computed(() => status.mediaAttachments.length > 1)
 
+const isSingleVideo = computed(() => {
+  const attachment = status.mediaAttachments[0]
+  return !isCarousel.value && !!attachment && (attachment.type === 'video' || attachment.type === 'gifv')
+})
+
 const isSinglePortrait = computed(() => {
   const attachment = status.mediaAttachments[0]
-  return !isCarousel.value && !!attachment && getMediaAspectRatio(attachment) < 1
+  return !isCarousel.value && !isSingleVideo.value && !!attachment && getMediaAspectRatio(attachment) < 1
 })
 
 const isDragging = ref(false)
@@ -185,6 +190,7 @@ onBeforeUnmount(() => resetCarouselDrag())
       'status-media-container--carousel': isCarousel,
       'status-media-container--breakout': isCarousel && breakout,
       'status-media-container--dragging': isDragging,
+      'status-media-container--single-video': isSingleVideo,
       'status-media-container--single-portrait': isSinglePortrait,
     }"
     @pointerdown="onCarouselPointerDown"
@@ -249,6 +255,34 @@ onBeforeUnmount(() => resetCarouselDrag())
 .status-media-container:not(.status-media-container--carousel) > .status-media-attachment {
   min-height: 0;
   height: 100%;
+}
+
+.status-media-container:not(.status-media-container--carousel).status-media-container--single-video {
+  height: auto;
+}
+
+.status-media-container:not(.status-media-container--carousel).status-media-container--single-video > .status-media-attachment {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  margin: 0;
+  justify-self: start;
+}
+
+.status-media-container--single-video > .status-media-attachment > button {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  height: auto;
+}
+
+.status-media-container--single-video video {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: min(430px, 70vh);
+  object-fit: contain;
 }
 
 .status-media-container--single-portrait > .status-media-attachment {

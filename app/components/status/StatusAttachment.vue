@@ -21,31 +21,6 @@ const srcset = computed(() => [
   [attachment.previewUrl, attachment.meta?.small?.width],
 ].filter(([url]) => url).map(([url, size]) => `${url} ${size}w`).join(', '))
 
-const rawAspectRatio = computed(() => {
-  if (attachment.meta?.original?.aspect)
-    return attachment.meta.original.aspect
-  if (attachment.meta?.small?.aspect)
-    return attachment.meta.small.aspect
-  return undefined
-})
-
-const aspectRatio = computed(() => {
-  if (fullSize)
-    return rawAspectRatio.value
-  if (rawAspectRatio.value)
-    return clamp(rawAspectRatio.value, 0.8, 6)
-  return undefined
-})
-
-const objectPosition = computed(() => {
-  const focusX = attachment.meta?.focus?.x || 0
-  const focusY = attachment.meta?.focus?.y || 0
-  const x = ((focusX / 2) + 0.5) * 100
-  const y = ((focusY / -2) + 0.5) * 100
-
-  return `${x}% ${y}%`
-})
-
 const typeExtsMap = {
   video: ['mp4', 'webm', 'mov', 'avi', 'mkv', 'flv', 'wmv', 'mpg', 'mpeg'],
   audio: ['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a', 'wma'],
@@ -64,11 +39,38 @@ const type = computed(() => {
   return 'unknown'
 })
 
+const isVideoAttachment = computed(() => type.value === 'video' || type.value === 'gifv')
+
+const rawAspectRatio = computed(() => {
+  if (attachment.meta?.original?.aspect)
+    return attachment.meta.original.aspect
+  if (attachment.meta?.small?.aspect)
+    return attachment.meta.small.aspect
+  return undefined
+})
+
+const aspectRatio = computed(() => {
+  if (fullSize || isVideoAttachment.value)
+    return rawAspectRatio.value
+  if (rawAspectRatio.value)
+    return clamp(rawAspectRatio.value, 0.8, 6)
+  return undefined
+})
+
+const objectPosition = computed(() => {
+  const focusX = attachment.meta?.focus?.x || 0
+  const focusY = attachment.meta?.focus?.y || 0
+  const x = ((focusX / 2) + 0.5) * 100
+  const y = ((focusY / -2) + 0.5) * 100
+
+  return `${x}% ${y}%`
+})
+
 const video = ref<HTMLVideoElement | undefined>()
 const prefersReducedMotion = usePreferredReducedMotion()
 const isAudio = computed(() => attachment.type === 'audio')
-const isVideo = computed(() => attachment.type === 'video')
-const isGif = computed(() => attachment.type === 'gifv')
+const isVideo = computed(() => type.value === 'video')
+const isGif = computed(() => type.value === 'gifv')
 
 const enableAutoplay = usePreferences('enableAutoplay')
 const unmuteVideos = usePreferences('unmuteVideos')
