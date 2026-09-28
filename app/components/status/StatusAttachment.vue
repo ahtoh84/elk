@@ -69,8 +69,6 @@ const objectPosition = computed(() => {
 })
 
 const video = ref<HTMLVideoElement | undefined>()
-const videoReady = ref(false)
-let videoFrameToken = 0
 const prefersReducedMotion = usePreferredReducedMotion()
 const isAudio = computed(() => attachment.type === 'audio')
 const isVideo = computed(() => type.value === 'video')
@@ -120,38 +118,10 @@ const videoThumbnail = ref(shouldLoadAttachment.value
   ? attachment.previewUrl
   : blurHashSrc.value)
 
-function onVideoReady() {
-  const element = video.value
-  if (!element || videoReady.value)
-    return
-
-  const token = ++videoFrameToken
-  const markVideoReady = () => {
-    if (token === videoFrameToken)
-      videoReady.value = true
-  }
-
-  if ('requestVideoFrameCallback' in element) {
-    element.requestVideoFrameCallback(markVideoReady)
-  }
-  else {
-    requestAnimationFrame(() => requestAnimationFrame(markVideoReady))
-  }
-}
-
 watch(shouldLoadAttachment, () => {
   videoThumbnail.value = shouldLoadAttachment.value
     ? attachment.previewUrl
     : blurHashSrc.value
-})
-
-watch(() => attachment.url, () => {
-  videoFrameToken++
-  videoReady.value = false
-})
-
-onBeforeUnmount(() => {
-  videoFrameToken++
 })
 </script>
 
@@ -167,7 +137,6 @@ onBeforeUnmount(() => {
           v-if="videoThumbnail"
           :src="videoThumbnail"
           class="status-video-poster"
-          :class="{ 'status-video-poster--hidden': videoReady }"
           aria-hidden="true"
           :width="attachment.meta?.original?.width"
           :height="attachment.meta?.original?.height"
@@ -195,11 +164,7 @@ onBeforeUnmount(() => {
             objectPosition,
           }"
           class="status-video"
-          :class="[
-            !shouldLoadAttachment ? 'brightness-60 hover:brightness-70 transition-filter' : '',
-            { 'status-video--ready': videoReady },
-          ]"
-          @loadeddata="onVideoReady"
+          :class="!shouldLoadAttachment ? 'brightness-60 hover:brightness-70 transition-filter' : ''"
         >
           <source :src="attachment.url || attachment.previewUrl" type="video/mp4">
         </video>
@@ -226,7 +191,6 @@ onBeforeUnmount(() => {
           v-if="videoThumbnail"
           :src="videoThumbnail"
           class="status-video-poster"
-          :class="{ 'status-video-poster--hidden': videoReady }"
           aria-hidden="true"
           :width="attachment.meta?.original?.width"
           :height="attachment.meta?.original?.height"
@@ -252,8 +216,6 @@ onBeforeUnmount(() => {
             objectPosition,
           }"
           class="status-video"
-          :class="{ 'status-video--ready': videoReady }"
-          @loadeddata="onVideoReady"
         >
           <source :src="attachment.url || attachment.previewUrl" type="video/mp4">
         </video>
@@ -374,29 +336,11 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  transition: opacity 180ms ease;
-}
-
-.status-video-poster--hidden {
-  opacity: 0;
 }
 
 .status-video {
   position: relative;
   z-index: 1;
-  opacity: 0;
-  transition: opacity 180ms ease;
-}
-
-.status-video--ready {
-  opacity: 1;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .status-video-poster,
-  .status-video {
-    transition: none;
-  }
 }
 
 .status-attachment-load {
