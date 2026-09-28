@@ -70,6 +70,7 @@ const objectPosition = computed(() => {
 
 const video = ref<HTMLVideoElement | undefined>()
 const videoReady = ref(false)
+const videoPlayFailed = ref(false)
 let videoFrameToken = 0
 const prefersReducedMotion = usePreferredReducedMotion()
 const isAudio = computed(() => attachment.type === 'audio')
@@ -96,7 +97,9 @@ useIntersectionObserver(video, (entries) => {
     else {
       video.value?.play().then(() => {
         video.value!.dataset.ready = 'true'
-      }).catch(noop)
+      }).catch(() => {
+        videoPlayFailed.value = true
+      })
     }
   })
 }, { threshold: 0.75 })
@@ -140,6 +143,7 @@ function onVideoFrameReady() {
 watch(shouldLoadAttachment, () => {
   videoFrameToken++
   videoReady.value = false
+  videoPlayFailed.value = false
   videoThumbnail.value = shouldLoadAttachment.value
     ? attachment.previewUrl
     : blurHashSrc.value
@@ -148,6 +152,7 @@ watch(shouldLoadAttachment, () => {
 watch(() => attachment.url, () => {
   videoFrameToken++
   videoReady.value = false
+  videoPlayFailed.value = false
 })
 
 onBeforeUnmount(() => {
@@ -196,7 +201,13 @@ onBeforeUnmount(() => {
           class="status-video"
           :class="[
             !shouldLoadAttachment ? 'brightness-60 hover:brightness-70 transition-filter' : '',
-            { 'status-video--pending': videoThumbnail && !videoReady },
+            {
+              'status-video--pending': videoThumbnail
+                && enableAutoplay
+                && prefersReducedMotion !== 'reduce'
+                && !videoReady
+                && !videoPlayFailed,
+            },
           ]"
           @loadeddata="onVideoFrameReady"
           @playing="onVideoFrameReady"
@@ -251,7 +262,13 @@ onBeforeUnmount(() => {
             objectPosition,
           }"
           class="status-video"
-          :class="{ 'status-video--pending': videoThumbnail && !videoReady }"
+          :class="{
+            'status-video--pending': videoThumbnail
+              && enableAutoplay
+              && prefersReducedMotion !== 'reduce'
+              && !videoReady
+              && !videoPlayFailed,
+          }"
           @loadeddata="onVideoFrameReady"
           @playing="onVideoFrameReady"
         >
