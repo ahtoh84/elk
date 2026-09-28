@@ -51,7 +51,6 @@ function onCarouselPointerDown(event: PointerEvent) {
     startY: event.clientY,
     startScrollLeft: element.scrollLeft,
   }
-  element.setPointerCapture(event.pointerId)
 }
 
 function onCarouselPointerMove(event: PointerEvent) {
@@ -66,11 +65,11 @@ function onCarouselPointerMove(event: PointerEvent) {
       return
 
     if (Math.abs(deltaY) > Math.abs(deltaX)) {
-      dragState.element.releasePointerCapture(event.pointerId)
       dragState = undefined
       return
     }
 
+    dragState.element.setPointerCapture(event.pointerId)
     isDragging.value = true
   }
 
