@@ -59,6 +59,7 @@ const allowEmbeddedMedia = computed(() => status.card?.html && embeddedMediaPref
         v-if="status.mediaAttachments?.length"
         :status="status"
         :is-preview="isPreview"
+        :breakout="!isNested"
       />
       <StatusPreviewCard
         v-if="status.card && !allowEmbeddedMedia && !isNested"
