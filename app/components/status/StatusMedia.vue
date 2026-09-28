@@ -39,11 +39,16 @@ let dragState: {
 let dragSafetyListenersAttached = false
 
 function getMediaAspectRatio(attachment: mastodon.v1.MediaAttachment) {
+  const aspect = getRawMediaAspectRatio(attachment)
+  return Math.min(Math.max(aspect, 0.8), 6)
+}
+
+function getRawMediaAspectRatio(attachment: mastodon.v1.MediaAttachment) {
   const aspect = attachment.meta?.original?.aspect || attachment.meta?.small?.aspect
   if (!aspect)
     return 1
 
-  return Math.min(Math.max(aspect, 0.8), 6)
+  return aspect
 }
 
 function onWindowPointerUp(event: PointerEvent) {
@@ -216,6 +221,7 @@ onBeforeUnmount(() => resetCarouselDrag())
         :attachment="attachment"
         :attachments="status.mediaAttachments"
         :full-size="fullSize"
+        :style="isSinglePortrait ? { aspectRatio: getRawMediaAspectRatio(attachment) } : undefined"
         w-full
         h-full
         :is-preview="isPreview"
@@ -243,6 +249,13 @@ onBeforeUnmount(() => resetCarouselDrag())
 .status-media-container:not(.status-media-container--carousel) > .status-media-attachment {
   min-height: 0;
   height: 100%;
+}
+
+.status-media-container--single-portrait > .status-media-attachment {
+  width: auto;
+  max-width: 100%;
+  margin: 0;
+  justify-self: start;
 }
 
 .status-media-container--single-portrait img,
