@@ -20,6 +20,11 @@ const gridColumnNumber = computed(() => {
 
 const isCarousel = computed(() => status.mediaAttachments.length > 1)
 
+const isSinglePortrait = computed(() => {
+  const attachment = status.mediaAttachments[0]
+  return !isCarousel.value && !!attachment && getMediaAspectRatio(attachment) < 1
+})
+
 const isDragging = ref(false)
 const suppressClick = ref(false)
 
@@ -175,6 +180,7 @@ onBeforeUnmount(() => resetCarouselDrag())
       'status-media-container--carousel': isCarousel,
       'status-media-container--breakout': isCarousel && breakout,
       'status-media-container--dragging': isDragging,
+      'status-media-container--single-portrait': isSinglePortrait,
     }"
     @pointerdown="onCarouselPointerDown"
     @pointermove="onCarouselPointerMove"
@@ -201,6 +207,7 @@ onBeforeUnmount(() => resetCarouselDrag())
       </div>
       <StatusAttachment
         v-else
+        class="status-media-attachment"
         :attachment="attachment"
         :attachments="status.mediaAttachments"
         :full-size="fullSize"
@@ -226,6 +233,16 @@ onBeforeUnmount(() => resetCarouselDrag())
 
 .status-media-container:not(.status-media-container--carousel) {
   height: var(--status-media-height);
+}
+
+.status-media-container:not(.status-media-container--carousel) > .status-media-attachment {
+  min-height: 0;
+  height: 100%;
+}
+
+.status-media-container--single-portrait img,
+.status-media-container--single-portrait video {
+  object-fit: contain;
 }
 
 .status-media-container--carousel {
