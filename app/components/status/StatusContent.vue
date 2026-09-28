@@ -32,6 +32,7 @@ const hideAllMedia = computed(
 )
 const embeddedMediaPreference = usePreferences('experimentalEmbeddedMedia')
 const allowEmbeddedMedia = computed(() => status.card?.html && embeddedMediaPreference.value)
+const hasStatusText = computed(() => !!status.content?.trim() || !!status.spoilerText?.trim())
 </script>
 
 <template>
@@ -59,7 +60,7 @@ const allowEmbeddedMedia = computed(() => status.card?.html && embeddedMediaPref
         v-if="status.mediaAttachments?.length"
         :status="status"
         :is-preview="isPreview"
-        :breakout="!isNested"
+        :breakout="!isNested && hasStatusText"
       />
       <StatusPreviewCard
         v-if="status.card && !allowEmbeddedMedia && !isNested"
