@@ -55,6 +55,10 @@ const selectedNavButtons = computed(() => selectedNavButtonNames.value.map(name 
 const moreMenuVisible = ref(false)
 const route = useRoute()
 
+watch(() => route.path, () => {
+  moreMenuVisible.value = false
+})
+
 const activeNavButtonIndex = computed(() => {
   const activeName = moreMenuVisible.value ? 'moreMenu' : getActiveNavButtonName(route.path)
   return activeName ? selectedNavButtonNames.value.indexOf(activeName) : -1
@@ -69,7 +73,7 @@ const navIndicatorStyle = computed(() => ({
 <template>
   <!-- This weird styles above are used for scroll locking, don't change it unless you know exactly what you're doing. -->
   <nav
-    relative h-14 border="t base" flex flex-row text-xl
+    h-14 border="t base" flex flex-row text-xl
     of-y-scroll scrollbar-hide overscroll-none
     class="nav-bottom after-content-empty after:(h-[calc(100%+0.5px)] w-0.1px pointer-events-none)"
   >
@@ -79,7 +83,7 @@ const navIndicatorStyle = computed(() => ({
       :style="navIndicatorStyle"
       aria-hidden="true"
     >
-      <span class="nav-bottom-indicator-dot" />
+      <span class="nav-bottom-indicator-bar" />
     </span>
 
     <template v-for="navButton in selectedNavButtons" :key="navButton!.name">
@@ -111,10 +115,10 @@ const navIndicatorStyle = computed(() => ({
   transition: transform 340ms cubic-bezier(0.22, 1.28, 0.36, 1);
 }
 
-.nav-bottom-indicator-dot {
+.nav-bottom-indicator-bar {
   display: block;
-  width: 0.375rem;
-  height: 0.375rem;
+  width: 1.5rem;
+  height: 0.125rem;
   border-radius: 9999px;
   background: var(--c-primary);
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const model = defineModel<boolean>()
+const model = defineModel<boolean>({ default: false })
 </script>
 
 <template>
@@ -11,7 +11,7 @@ const model = defineModel<boolean>()
       flex items-center place-content-center h-full flex-1 class="select-none"
       :class="show ? '!text-primary' : ''"
       :aria-label="$t('nav.more_menu')"
-      @click="toggleVisible"
+      @click.stop="toggleVisible"
     >
       <span :class="show ? 'i-ri:close-fill' : 'i-ri:more-fill'" />
     </button>

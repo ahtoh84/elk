@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { invoke } from '@vueuse/core'
 
-const modelValue = defineModel<boolean>({ required: true })
+const modelValue = defineModel<boolean>({ default: false })
 const colorMode = useColorMode()
 const mobileMoreOpen = useState<boolean>('nav-side-more-open', () => false)
 
@@ -19,7 +19,7 @@ const buttonEl = ref<HTMLDivElement>()
  * @param mouse
  */
 function clickEvent(mouse: MouseEvent) {
-  if (mouse.target && !buttonEl.value?.children[0].contains(mouse.target as any)) {
+  if (mouse.target && !buttonEl.value?.contains(mouse.target as Node)) {
     if (modelValue.value) {
       document.removeEventListener('click', clickEvent)
       modelValue.value = false
