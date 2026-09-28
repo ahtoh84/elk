@@ -190,6 +190,11 @@ onBeforeUnmount(() => resetCarouselDrag())
     @dragstart.prevent
     @click.capture="onCarouselClick"
   >
+    <div
+      v-if="isCarousel && breakout"
+      class="status-media-spacer"
+      aria-hidden="true"
+    />
     <template v-for="attachment of status.mediaAttachments" :key="attachment.id">
       <div
         v-if="isCarousel"
@@ -221,7 +226,7 @@ onBeforeUnmount(() => resetCarouselDrag())
 
 <style lang="postcss">
 .status-media-container {
-  --status-media-height: clamp(10rem, 52vw, 26rem);
+  --status-media-height: clamp(10rem, 52vw, 280px);
   --grid-cols: v-bind(gridColumnNumber);
   display: grid;
   grid-template-columns: repeat(var(--grid-cols, 1), 1fr);
@@ -247,12 +252,11 @@ onBeforeUnmount(() => resetCarouselDrag())
 
 .status-media-container--carousel {
   display: flex;
-  gap: 0.75rem;
+  gap: 0;
   overflow-x: auto;
   overflow-y: hidden;
   overscroll-behavior-inline: contain;
   scrollbar-width: none;
-  touch-action: pan-x pan-y;
   cursor: grab;
 }
 
@@ -264,7 +268,12 @@ onBeforeUnmount(() => resetCarouselDrag())
   --status-media-offset: calc(54px + 1.5rem);
   width: calc(100% + var(--status-media-offset));
   margin-inline-start: calc(-1 * var(--status-media-offset));
-  padding-inline-start: var(--status-media-offset);
+}
+
+.status-media-spacer {
+  flex: 0 0 var(--status-media-offset);
+  width: var(--status-media-offset);
+  align-self: stretch;
 }
 
 .status-media-container--dragging {
@@ -281,6 +290,8 @@ onBeforeUnmount(() => resetCarouselDrag())
   flex: 0 0 auto;
   width: auto;
   height: var(--status-media-height);
+  box-sizing: content-box;
+  padding-inline-end: 0.375rem;
   transform-origin: center;
   transition: transform 420ms cubic-bezier(0.22, 1.2, 0.36, 1);
   will-change: transform;
