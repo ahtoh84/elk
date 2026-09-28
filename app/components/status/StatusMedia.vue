@@ -31,6 +31,8 @@ let dragState: {
   startScrollLeft: number
 } | undefined
 
+let dragSafetyListenersAttached = false
+
 function getMediaAspectRatio(attachment: mastodon.v1.MediaAttachment) {
   const aspect = attachment.meta?.original?.aspect || attachment.meta?.small?.aspect
   if (!aspect)
@@ -39,9 +41,68 @@ function getMediaAspectRatio(attachment: mastodon.v1.MediaAttachment) {
   return Math.min(Math.max(aspect, 0.8), 6)
 }
 
+function onWindowPointerUp(event: PointerEvent) {
+  resetCarouselDrag(event.pointerId, true)
+}
+
+function onWindowPointerCancel(event: PointerEvent) {
+  resetCarouselDrag(event.pointerId)
+}
+
+function onWindowBlur() {
+  resetCarouselDrag(undefined, isDragging.value)
+}
+
+function onVisibilityChange() {
+  if (document.visibilityState !== 'visible')
+    resetCarouselDrag(undefined, isDragging.value)
+}
+
+function attachDragSafetyListeners() {
+  if (dragSafetyListenersAttached)
+    return
+
+  window.addEventListener('pointerup', onWindowPointerUp)
+  window.addEventListener('pointercancel', onWindowPointerCancel)
+  window.addEventListener('blur', onWindowBlur)
+  document.addEventListener('visibilitychange', onVisibilityChange)
+  dragSafetyListenersAttached = true
+}
+
+function detachDragSafetyListeners() {
+  if (!dragSafetyListenersAttached)
+    return
+
+  window.removeEventListener('pointerup', onWindowPointerUp)
+  window.removeEventListener('pointercancel', onWindowPointerCancel)
+  window.removeEventListener('blur', onWindowBlur)
+  document.removeEventListener('visibilitychange', onVisibilityChange)
+  dragSafetyListenersAttached = false
+}
+
+function resetCarouselDrag(pointerId?: number, shouldSuppressClick = false) {
+  const state = dragState
+  if (!state || (pointerId !== undefined && pointerId !== state.pointerId))
+    return
+
+  const wasDragging = isDragging.value
+  dragState = undefined
+  isDragging.value = false
+  detachDragSafetyListeners()
+
+  if (shouldSuppressClick && wasDragging)
+    suppressClick.value = true
+
+  if (state.element.hasPointerCapture(state.pointerId))
+    state.element.releasePointerCapture(state.pointerId)
+}
+
 function onCarouselPointerDown(event: PointerEvent) {
   if (!isCarousel.value || event.pointerType !== 'mouse' || event.button !== 0)
     return
+
+  resetCarouselDrag()
+  suppressClick.value = false
 
   const element = event.currentTarget as HTMLElement
   dragState = {
@@ -51,11 +112,17 @@ function onCarouselPointerDown(event: PointerEvent) {
     startY: event.clientY,
     startScrollLeft: element.scrollLeft,
   }
+  attachDragSafetyListeners()
 }
 
 function onCarouselPointerMove(event: PointerEvent) {
   if (!dragState || event.pointerId !== dragState.pointerId)
     return
+
+  if ((event.buttons & 1) !== 1) {
+    resetCarouselDrag(event.pointerId, true)
+    return
+  }
 
   const deltaX = event.clientX - dragState.startX
   const deltaY = event.clientY - dragState.startY
@@ -65,7 +132,7 @@ function onCarouselPointerMove(event: PointerEvent) {
       return
 
     if (Math.abs(deltaY) > Math.abs(deltaX)) {
-      dragState = undefined
+      resetCarouselDrag(event.pointerId)
       return
     }
 
@@ -78,29 +145,15 @@ function onCarouselPointerMove(event: PointerEvent) {
 }
 
 function onCarouselPointerUp(event: PointerEvent) {
-  if (!dragState || event.pointerId !== dragState.pointerId)
-    return
-
-  const element = dragState.element
-  if (element.hasPointerCapture(event.pointerId))
-    element.releasePointerCapture(event.pointerId)
-
-  if (isDragging.value)
-    suppressClick.value = true
-
-  dragState = undefined
-  isDragging.value = false
+  resetCarouselDrag(event.pointerId, true)
 }
 
 function onCarouselPointerCancel(event: PointerEvent) {
-  if (!dragState || event.pointerId !== dragState.pointerId)
-    return
+  resetCarouselDrag(event.pointerId)
+}
 
-  if (dragState.element.hasPointerCapture(event.pointerId))
-    dragState.element.releasePointerCapture(event.pointerId)
-
-  dragState = undefined
-  isDragging.value = false
+function onCarouselLostPointerCapture(event: PointerEvent) {
+  resetCarouselDrag(event.pointerId, true)
 }
 
 function onCarouselClick(event: MouseEvent) {
@@ -111,6 +164,8 @@ function onCarouselClick(event: MouseEvent) {
   event.stopPropagation()
   suppressClick.value = false
 }
+
+onBeforeUnmount(() => resetCarouselDrag())
 </script>
 
 <template>
@@ -125,6 +180,7 @@ function onCarouselClick(event: MouseEvent) {
     @pointermove="onCarouselPointerMove"
     @pointerup="onCarouselPointerUp"
     @pointercancel="onCarouselPointerCancel"
+    @lostpointercapture="onCarouselLostPointerCapture"
     @dragstart.prevent
     @click.capture="onCarouselClick"
   >
