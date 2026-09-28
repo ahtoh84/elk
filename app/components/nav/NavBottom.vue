@@ -20,6 +20,7 @@ import {
   NavButtonSearch,
 } from '#components'
 
+import { getActiveNavButtonName } from '~/composables/nav'
 import { STORAGE_KEY_BOTTOM_NAV_BUTTONS } from '~/constants'
 
 interface NavButton {
@@ -52,15 +53,75 @@ const selectedNavButtons = computed(() => selectedNavButtonNames.value.map(name 
 
 // only one icon can be lit up at the same time
 const moreMenuVisible = ref(false)
+const route = useRoute()
+
+const activeNavButtonIndex = computed(() => {
+  const activeName = moreMenuVisible.value ? 'moreMenu' : getActiveNavButtonName(route.path)
+  return activeName ? selectedNavButtonNames.value.indexOf(activeName) : -1
+})
+
+const navIndicatorStyle = computed(() => ({
+  '--nav-button-width': `${100 / Math.max(selectedNavButtons.value.length, 1)}%`,
+  '--nav-button-translate': `${activeNavButtonIndex.value * 100}%`,
+}))
 </script>
 
 <template>
   <!-- This weird styles above are used for scroll locking, don't change it unless you know exactly what you're doing. -->
   <nav
-    h-14 border="t base" flex flex-row text-xl
+    relative h-14 border="t base" flex flex-row text-xl
     of-y-scroll scrollbar-hide overscroll-none
-    class="after-content-empty after:(h-[calc(100%+0.5px)] w-0.1px pointer-events-none)"
+    class="nav-bottom after-content-empty after:(h-[calc(100%+0.5px)] w-0.1px pointer-events-none)"
   >
-    <Component :is="navButton!.component" v-for="navButton in selectedNavButtons" :key="navButton!.name" :active-class="moreMenuVisible ? '' : 'text-primary'" />
+    <span
+      v-if="activeNavButtonIndex >= 0"
+      class="nav-bottom-indicator"
+      :style="navIndicatorStyle"
+      aria-hidden="true"
+    >
+      <span class="nav-bottom-indicator-dot" />
+    </span>
+
+    <template v-for="navButton in selectedNavButtons" :key="navButton!.name">
+      <NavButtonMoreMenu
+        v-if="navButton!.name === 'moreMenu'"
+        v-model="moreMenuVisible"
+      />
+      <Component
+        :is="navButton!.component"
+        v-else
+        :active-class="moreMenuVisible ? '' : 'text-primary'"
+      />
+    </template>
   </nav>
 </template>
+
+<style scoped>
+.nav-bottom-indicator {
+  position: absolute;
+  inset-inline-start: 0;
+  bottom: 0.25rem;
+  display: flex;
+  width: var(--nav-button-width);
+  height: 0.25rem;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  transform: translate3d(var(--nav-button-translate), 0, 0);
+  transition: transform 340ms cubic-bezier(0.22, 1.28, 0.36, 1);
+}
+
+.nav-bottom-indicator-dot {
+  display: block;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 9999px;
+  background: var(--c-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-bottom-indicator {
+    transition-duration: 0ms;
+  }
+}
+</style>
