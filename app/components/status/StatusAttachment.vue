@@ -7,11 +7,13 @@ const {
   attachment,
   fullSize = false,
   isPreview = false,
+  preserveAspectRatio = false,
 } = defineProps<{
   attachment: mastodon.v1.MediaAttachment
   attachments?: mastodon.v1.MediaAttachment[]
   fullSize?: boolean
   isPreview?: boolean
+  preserveAspectRatio?: boolean
 }>()
 
 const src = computed(() => attachment.previewUrl || attachment.url || attachment.remoteUrl!)
@@ -50,7 +52,7 @@ const rawAspectRatio = computed(() => {
 })
 
 const aspectRatio = computed(() => {
-  if (fullSize || isVideoAttachment.value)
+  if (fullSize || preserveAspectRatio || isVideoAttachment.value)
     return rawAspectRatio.value
   if (rawAspectRatio.value)
     return clamp(rawAspectRatio.value, 0.8, 6)

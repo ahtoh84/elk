@@ -25,6 +25,11 @@ const isSingleVideo = computed(() => {
   return !isCarousel.value && !!attachment && (attachment.type === 'video' || attachment.type === 'gifv')
 })
 
+const isSingleImage = computed(() => {
+  const attachment = status.mediaAttachments[0]
+  return !isCarousel.value && !!attachment && !isSingleVideo.value && attachment.type !== 'audio'
+})
+
 const isSinglePortrait = computed(() => {
   const attachment = status.mediaAttachments[0]
   return !isCarousel.value && !isSingleVideo.value && !!attachment && getMediaAspectRatio(attachment) < 1
@@ -191,6 +196,7 @@ onBeforeUnmount(() => resetCarouselDrag())
       'status-media-container--breakout': isCarousel && breakout,
       'status-media-container--dragging': isDragging,
       'status-media-container--single-video': isSingleVideo,
+      'status-media-container--single-image': isSingleImage,
       'status-media-container--single-portrait': isSinglePortrait,
     }"
     @pointerdown="onCarouselPointerDown"
@@ -227,7 +233,8 @@ onBeforeUnmount(() => resetCarouselDrag())
         :attachment="attachment"
         :attachments="status.mediaAttachments"
         :full-size="fullSize"
-        :style="isSinglePortrait ? { aspectRatio: getRawMediaAspectRatio(attachment) } : undefined"
+        :style="isSingleImage ? { aspectRatio: getRawMediaAspectRatio(attachment) } : undefined"
+        :preserve-aspect-ratio="isSingleImage"
         w-full
         h-full
         :is-preview="isPreview"
@@ -295,6 +302,36 @@ onBeforeUnmount(() => resetCarouselDrag())
 .status-media-container--single-portrait img,
 .status-media-container--single-portrait video {
   object-fit: contain;
+}
+
+@media (max-width: 639px) {
+  .status-media-container:not(.status-media-container--carousel).status-media-container--single-image {
+    height: auto;
+  }
+
+  .status-media-container:not(.status-media-container--carousel).status-media-container--single-image > .status-media-attachment {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    justify-self: stretch;
+  }
+
+  .status-media-container--single-image > .status-media-attachment > button {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    overflow: hidden;
+  }
+
+  .status-media-container--single-image .status-attachment-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    object-fit: contain;
+  }
 }
 
 .status-media-container--carousel {
