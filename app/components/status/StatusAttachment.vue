@@ -70,6 +70,7 @@ const objectPosition = computed(() => {
 
 const video = ref<HTMLVideoElement | undefined>()
 const videoReady = ref(false)
+let videoFrameToken = 0
 const prefersReducedMotion = usePreferredReducedMotion()
 const isAudio = computed(() => attachment.type === 'audio')
 const isVideo = computed(() => type.value === 'video')
@@ -120,7 +121,22 @@ const videoThumbnail = ref(shouldLoadAttachment.value
   : blurHashSrc.value)
 
 function onVideoReady() {
-  videoReady.value = true
+  const element = video.value
+  if (!element || videoReady.value)
+    return
+
+  const token = ++videoFrameToken
+  const markVideoReady = () => {
+    if (token === videoFrameToken)
+      videoReady.value = true
+  }
+
+  if ('requestVideoFrameCallback' in element) {
+    element.requestVideoFrameCallback(markVideoReady)
+  }
+  else {
+    requestAnimationFrame(() => requestAnimationFrame(markVideoReady))
+  }
 }
 
 watch(shouldLoadAttachment, () => {
@@ -130,7 +146,12 @@ watch(shouldLoadAttachment, () => {
 })
 
 watch(() => attachment.url, () => {
+  videoFrameToken++
   videoReady.value = false
+})
+
+onBeforeUnmount(() => {
+  videoFrameToken++
 })
 </script>
 
@@ -160,7 +181,6 @@ watch(() => attachment.url, () => {
         <video
           ref="video"
           preload="none"
-          :poster="videoThumbnail"
           :muted="!unmuteVideos"
           loop
           playsinline
@@ -220,7 +240,6 @@ watch(() => attachment.url, () => {
         <video
           ref="video"
           preload="none"
-          :poster="videoThumbnail"
           :muted="!unmuteVideos"
           loop
           playsinline
