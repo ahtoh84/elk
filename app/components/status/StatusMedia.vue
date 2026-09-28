@@ -304,6 +304,12 @@ onBeforeUnmount(() => resetCarouselDrag())
   object-fit: contain;
 }
 
+@media (min-width: 640px) {
+  .status-media-container:not(.status-media-container--carousel).status-media-container--single-portrait {
+    height: min(430px, 70vh);
+  }
+}
+
 @media (max-width: 639px) {
   .status-media-container:not(.status-media-container--carousel).status-media-container--single-image {
     height: auto;
