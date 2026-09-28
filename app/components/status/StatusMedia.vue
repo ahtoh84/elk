@@ -258,7 +258,7 @@ onBeforeUnmount(() => resetCarouselDrag())
 .status-media-item {
   flex: 0 0 auto;
   width: auto;
-  height: clamp(12rem, 62vw, 32rem);
+  height: clamp(10rem, 52vw, 26rem);
   transform-origin: center;
   transition: transform 420ms cubic-bezier(0.22, 1.2, 0.36, 1);
   will-change: transform;
