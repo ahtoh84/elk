@@ -214,6 +214,7 @@ onBeforeUnmount(() => resetCarouselDrag())
 
 <style lang="postcss">
 .status-media-container {
+  --status-media-height: clamp(10rem, 52vw, 26rem);
   --grid-cols: v-bind(gridColumnNumber);
   display: grid;
   grid-template-columns: repeat(var(--grid-cols, 1), 1fr);
@@ -221,6 +222,10 @@ onBeforeUnmount(() => resetCarouselDrag())
   position: relative;
   width: 100%;
   overflow: hidden;
+}
+
+.status-media-container:not(.status-media-container--carousel) {
+  height: var(--status-media-height);
 }
 
 .status-media-container--carousel {
@@ -258,7 +263,7 @@ onBeforeUnmount(() => resetCarouselDrag())
 .status-media-item {
   flex: 0 0 auto;
   width: auto;
-  height: clamp(10rem, 52vw, 26rem);
+  height: var(--status-media-height);
   transform-origin: center;
   transition: transform 420ms cubic-bezier(0.22, 1.2, 0.36, 1);
   will-change: transform;
