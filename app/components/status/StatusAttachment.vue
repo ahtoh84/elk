@@ -69,6 +69,7 @@ const objectPosition = computed(() => {
 })
 
 const video = ref<HTMLVideoElement | undefined>()
+const videoReady = ref(false)
 const prefersReducedMotion = usePreferredReducedMotion()
 const isAudio = computed(() => attachment.type === 'audio')
 const isVideo = computed(() => type.value === 'video')
@@ -118,10 +119,18 @@ const videoThumbnail = ref(shouldLoadAttachment.value
   ? attachment.previewUrl
   : blurHashSrc.value)
 
+function onVideoReady() {
+  videoReady.value = true
+}
+
 watch(shouldLoadAttachment, () => {
   videoThumbnail.value = shouldLoadAttachment.value
     ? attachment.previewUrl
     : blurHashSrc.value
+})
+
+watch(() => attachment.url, () => {
+  videoReady.value = false
 })
 </script>
 
@@ -133,6 +142,21 @@ watch(shouldLoadAttachment, () => {
         relative
         @click="!shouldLoadAttachment ? loadAttachment() : null"
       >
+        <img
+          v-if="videoThumbnail"
+          :src="videoThumbnail"
+          class="status-video-poster"
+          :class="{ 'status-video-poster--hidden': videoReady }"
+          aria-hidden="true"
+          :width="attachment.meta?.original?.width"
+          :height="attachment.meta?.original?.height"
+          :style="{
+            aspectRatio,
+            objectPosition,
+          }"
+          rounded-lg
+          object-cover
+        >
         <video
           ref="video"
           preload="none"
@@ -150,7 +174,12 @@ watch(shouldLoadAttachment, () => {
             aspectRatio,
             objectPosition,
           }"
-          :class="!shouldLoadAttachment ? 'brightness-60 hover:brightness-70 transition-filter' : ''"
+          class="status-video"
+          :class="[
+            !shouldLoadAttachment ? 'brightness-60 hover:brightness-70 transition-filter' : '',
+            { 'status-video--ready': videoReady },
+          ]"
+          @loadeddata="onVideoReady"
         >
           <source :src="attachment.url || attachment.previewUrl" type="video/mp4">
         </video>
@@ -173,6 +202,21 @@ watch(shouldLoadAttachment, () => {
         relative
         @click="!shouldLoadAttachment ? loadAttachment() : openMediaPreview(attachments ? attachments : [attachment], attachments?.indexOf(attachment) || 0)"
       >
+        <img
+          v-if="videoThumbnail"
+          :src="videoThumbnail"
+          class="status-video-poster"
+          :class="{ 'status-video-poster--hidden': videoReady }"
+          aria-hidden="true"
+          :width="attachment.meta?.original?.width"
+          :height="attachment.meta?.original?.height"
+          :style="{
+            aspectRatio,
+            objectPosition,
+          }"
+          rounded-lg
+          object-cover
+        >
         <video
           ref="video"
           preload="none"
@@ -188,6 +232,9 @@ watch(shouldLoadAttachment, () => {
             aspectRatio,
             objectPosition,
           }"
+          class="status-video"
+          :class="{ 'status-video--ready': videoReady }"
+          @loadeddata="onVideoReady"
         >
           <source :src="attachment.url || attachment.previewUrl" type="video/mp4">
         </video>
@@ -302,6 +349,37 @@ watch(shouldLoadAttachment, () => {
 </template>
 
 <style lang="postcss">
+.status-video-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+.status-video-poster--hidden {
+  opacity: 0;
+}
+
+.status-video {
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.status-video--ready {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-video-poster,
+  .status-video {
+    transition: none;
+  }
+}
+
 .status-attachment-load {
   left: 50%;
   top: 50%;
