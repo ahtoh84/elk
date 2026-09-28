@@ -20,7 +20,6 @@ const gridColumnNumber = computed(() => {
 
 const isCarousel = computed(() => status.mediaAttachments.length > 1)
 
-const carousel = ref<HTMLElement>()
 const isDragging = ref(false)
 const suppressClick = ref(false)
 
@@ -45,7 +44,6 @@ function onCarouselPointerDown(event: PointerEvent) {
     return
 
   const element = event.currentTarget as HTMLElement
-  carousel.value = element
   dragState = {
     element,
     pointerId: event.pointerId,
@@ -118,7 +116,6 @@ function onCarouselClick(event: MouseEvent) {
 
 <template>
   <div
-    ref="carousel"
     class="status-media-container"
     :class="{
       'status-media-container--carousel': isCarousel,
@@ -129,6 +126,7 @@ function onCarouselClick(event: MouseEvent) {
     @pointermove="onCarouselPointerMove"
     @pointerup="onCarouselPointerUp"
     @pointercancel="onCarouselPointerCancel"
+    @dragstart.prevent
     @click.capture="onCarouselClick"
   >
     <template v-for="attachment of status.mediaAttachments" :key="attachment.id">
@@ -195,6 +193,11 @@ function onCarouselClick(event: MouseEvent) {
 .status-media-container--dragging {
   cursor: grabbing;
   user-select: none;
+}
+
+.status-media-container--carousel img {
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .status-media-item {
