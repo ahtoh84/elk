@@ -69,6 +69,8 @@ const objectPosition = computed(() => {
 })
 
 const video = ref<HTMLVideoElement | undefined>()
+const videoReady = ref(false)
+let videoFrameToken = 0
 const prefersReducedMotion = usePreferredReducedMotion()
 const isAudio = computed(() => attachment.type === 'audio')
 const isVideo = computed(() => type.value === 'video')
@@ -118,10 +120,38 @@ const videoThumbnail = ref(shouldLoadAttachment.value
   ? attachment.previewUrl
   : blurHashSrc.value)
 
+function onVideoFrameReady() {
+  const element = video.value
+  if (!element || videoReady.value)
+    return
+
+  const token = ++videoFrameToken
+  const markVideoReady = () => {
+    if (token === videoFrameToken)
+      videoReady.value = true
+  }
+
+  if ('requestVideoFrameCallback' in element)
+    element.requestVideoFrameCallback(markVideoReady)
+  else
+    requestAnimationFrame(() => requestAnimationFrame(markVideoReady))
+}
+
 watch(shouldLoadAttachment, () => {
+  videoFrameToken++
+  videoReady.value = false
   videoThumbnail.value = shouldLoadAttachment.value
     ? attachment.previewUrl
     : blurHashSrc.value
+})
+
+watch(() => attachment.url, () => {
+  videoFrameToken++
+  videoReady.value = false
+})
+
+onBeforeUnmount(() => {
+  videoFrameToken++
 })
 </script>
 
@@ -149,7 +179,7 @@ watch(shouldLoadAttachment, () => {
         >
         <video
           ref="video"
-          preload="none"
+          :preload="shouldLoadAttachment ? 'auto' : 'none'"
           :muted="!unmuteVideos"
           loop
           playsinline
@@ -164,7 +194,12 @@ watch(shouldLoadAttachment, () => {
             objectPosition,
           }"
           class="status-video"
-          :class="!shouldLoadAttachment ? 'brightness-60 hover:brightness-70 transition-filter' : ''"
+          :class="[
+            !shouldLoadAttachment ? 'brightness-60 hover:brightness-70 transition-filter' : '',
+            { 'status-video--pending': videoThumbnail && !videoReady },
+          ]"
+          @loadeddata="onVideoFrameReady"
+          @playing="onVideoFrameReady"
         >
           <source :src="attachment.url || attachment.previewUrl" type="video/mp4">
         </video>
@@ -203,7 +238,7 @@ watch(shouldLoadAttachment, () => {
         >
         <video
           ref="video"
-          preload="none"
+          :preload="shouldLoadAttachment ? 'auto' : 'none'"
           :muted="!unmuteVideos"
           loop
           playsinline
@@ -216,6 +251,9 @@ watch(shouldLoadAttachment, () => {
             objectPosition,
           }"
           class="status-video"
+          :class="{ 'status-video--pending': videoThumbnail && !videoReady }"
+          @loadeddata="onVideoFrameReady"
+          @playing="onVideoFrameReady"
         >
           <source :src="attachment.url || attachment.previewUrl" type="video/mp4">
         </video>
@@ -341,6 +379,10 @@ watch(shouldLoadAttachment, () => {
 .status-video {
   position: relative;
   z-index: 1;
+}
+
+.status-video--pending {
+  visibility: hidden;
 }
 
 .status-attachment-load {
