@@ -60,7 +60,8 @@ const hasStatusText = computed(() => !!status.content?.trim() || !!status.spoile
         v-if="status.mediaAttachments?.length"
         :status="status"
         :is-preview="isPreview"
-        :breakout="!isNested && hasStatusText"
+        :breakout="!isNested"
+        :style="!hasStatusText && status.mediaAttachments.length > 1 ? { marginTop: '2.5rem' } : undefined"
       />
       <StatusPreviewCard
         v-if="status.card && !allowEmbeddedMedia && !isNested"
