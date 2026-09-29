@@ -396,15 +396,23 @@ onBeforeUnmount(() => {
 .status-video {
   position: relative;
   z-index: 1;
+  opacity: 1;
+  transition: opacity 180ms ease-out;
 }
 
 .status-video--pending {
-  visibility: hidden;
+  opacity: 0;
 }
 
 .status-attachment-load {
   left: 50%;
   top: 50%;
   translate: -50% -50%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-video {
+    transition-duration: 0ms;
+  }
 }
 </style>
