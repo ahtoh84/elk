@@ -8,12 +8,14 @@ const {
   fullSize = false,
   isPreview = false,
   preserveAspectRatio = false,
+  isSensitive = false,
 } = defineProps<{
   attachment: mastodon.v1.MediaAttachment
   attachments?: mastodon.v1.MediaAttachment[]
   fullSize?: boolean
   isPreview?: boolean
   preserveAspectRatio?: boolean
+  isSensitive?: boolean
 }>()
 
 const src = computed(() => attachment.previewUrl || attachment.url || attachment.remoteUrl!)
@@ -336,7 +338,7 @@ onBeforeUnmount(() => {
           :class="[
             !shouldLoadAttachment ? 'brightness-60 hover:brightness-70 transition-filter' : '',
             {
-              'status-attachment-image--blurhash-loading': attachment.blurhash
+              'status-attachment-image--blurhash-loading': isSensitive && attachment.blurhash
                 && shouldLoadAttachment
                 && !imageLoaded,
             },
@@ -430,10 +432,11 @@ onBeforeUnmount(() => {
 }
 
 .status-attachment-image {
-  transition: opacity 180ms ease-out;
+  transition: filter 180ms ease-out, opacity 180ms ease-out;
 }
 
 .status-attachment-image--blurhash-loading {
+  filter: blur(8px);
   opacity: 0.92;
 }
 
@@ -444,6 +447,7 @@ onBeforeUnmount(() => {
   }
 
   .status-attachment-image--blurhash-loading {
+    filter: none;
     opacity: 1;
   }
 }

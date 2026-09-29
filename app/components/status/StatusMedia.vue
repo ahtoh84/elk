@@ -225,6 +225,7 @@ onBeforeUnmount(() => resetCarouselDrag())
           w-full
           h-full
           :is-preview="isPreview"
+          :is-sensitive="status.sensitive"
         />
       </div>
       <StatusAttachment
@@ -238,6 +239,7 @@ onBeforeUnmount(() => resetCarouselDrag())
         w-full
         h-full
         :is-preview="isPreview"
+        :is-sensitive="status.sensitive"
       />
     </template>
   </div>
