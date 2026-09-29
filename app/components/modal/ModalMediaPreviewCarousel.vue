@@ -16,6 +16,7 @@ const modelValue = defineModel<number>({ required: true })
 
 const slideGap = 20
 const doubleTapThreshold = 250
+const settleTransition = 'transform 420ms cubic-bezier(0.22, 1.2, 0.36, 1)'
 
 const view = ref()
 const slider = ref()
@@ -259,12 +260,13 @@ function restrictShiftToInsideSlide() {
 const sliderStyle = computed(() => {
   const style = {
     transform: `scale(${scale.value}) translate(${-x.value}px, ${-y.value}px)`,
-    transition: 'none',
+    transition: settleTransition,
     gap: `${slideGap}px`,
+    willChange: 'transform',
   }
 
-  if (canAnimate.value && !isDragging.value && !isPinching.value)
-    style.transition = 'all 0.3s ease'
+  if (!canAnimate.value || isDragging.value || isPinching.value)
+    style.transition = 'none'
 
   return style
 })
