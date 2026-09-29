@@ -133,7 +133,7 @@ const { dragging, dragDistance } = invoke(() => {
     >
       <div
         v-show="modelValue"
-        absolute inset-x-0 top-auto bottom-full z-20 h-100vh
+        class="nav-bottom-drawer" z-20 h-100vh
         flex items-end of-y-scroll of-x-hidden scrollbar-hide overscroll-none
         bg="black/50"
       >
@@ -196,3 +196,11 @@ const { dragging, dragDistance } = invoke(() => {
     </Transition>
   </div>
 </template>
+
+<style scoped>
+.nav-bottom-drawer {
+  position: fixed;
+  inset-inline: 0;
+  bottom: calc(3.5rem + env(safe-area-inset-bottom));
+}
+</style>
