@@ -384,7 +384,6 @@ onBeforeUnmount(() => resetCarouselDrag())
   padding-inline-end: 0.375rem;
   transform-origin: center;
   transition: transform 420ms cubic-bezier(0.22, 1.2, 0.36, 1);
-  will-change: transform;
 }
 
 .status-media-item:active {

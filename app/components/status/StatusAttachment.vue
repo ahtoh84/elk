@@ -430,13 +430,11 @@ onBeforeUnmount(() => {
 }
 
 .status-attachment-image {
-  transition: filter 260ms ease-out, opacity 260ms ease-out, transform 320ms cubic-bezier(0.22, 1.2, 0.36, 1);
+  transition: opacity 180ms ease-out;
 }
 
 .status-attachment-image--blurhash-loading {
-  filter: blur(8px);
-  opacity: 0.9;
-  transform: scale(1.015);
+  opacity: 0.92;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -446,9 +444,7 @@ onBeforeUnmount(() => {
   }
 
   .status-attachment-image--blurhash-loading {
-    filter: none;
     opacity: 1;
-    transform: none;
   }
 }
 </style>
