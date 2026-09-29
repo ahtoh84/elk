@@ -122,6 +122,15 @@ const blurHashSrc = computed(() => {
 const videoThumbnail = ref(shouldLoadAttachment.value
   ? attachment.previewUrl
   : blurHashSrc.value)
+const imageLoaded = ref(!attachment.blurhash || !shouldLoadAttachment.value)
+
+function resetImageLoadState() {
+  imageLoaded.value = !attachment.blurhash || !shouldLoadAttachment.value
+}
+
+function onImageLoaded() {
+  imageLoaded.value = true
+}
 
 function onVideoFrameReady() {
   const element = video.value
@@ -147,12 +156,14 @@ watch(shouldLoadAttachment, () => {
   videoThumbnail.value = shouldLoadAttachment.value
     ? attachment.previewUrl
     : blurHashSrc.value
+  resetImageLoadState()
 })
 
 watch(() => attachment.url, () => {
   videoFrameToken++
   videoReady.value = false
   videoPlayFailed.value = false
+  resetImageLoadState()
 })
 
 onBeforeUnmount(() => {
@@ -322,7 +333,15 @@ onBeforeUnmount(() => {
           w-full
           object-cover
           :draggable="shouldLoadAttachment"
-          :class="!shouldLoadAttachment ? 'brightness-60 hover:brightness-70 transition-filter' : ''"
+          :class="[
+            !shouldLoadAttachment ? 'brightness-60 hover:brightness-70 transition-filter' : '',
+            {
+              'status-attachment-image--blurhash-loading': attachment.blurhash
+                && shouldLoadAttachment
+                && !imageLoaded,
+            },
+          ]"
+          @loaded="onImageLoaded"
         />
         <span
           v-if="!shouldLoadAttachment"
@@ -410,9 +429,26 @@ onBeforeUnmount(() => {
   translate: -50% -50%;
 }
 
+.status-attachment-image {
+  transition: filter 260ms ease-out, opacity 260ms ease-out, transform 320ms cubic-bezier(0.22, 1.2, 0.36, 1);
+}
+
+.status-attachment-image--blurhash-loading {
+  filter: blur(8px);
+  opacity: 0.9;
+  transform: scale(1.015);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .status-video {
+  .status-video,
+  .status-attachment-image {
     transition-duration: 0ms;
+  }
+
+  .status-attachment-image--blurhash-loading {
+    filter: none;
+    opacity: 1;
+    transform: none;
   }
 }
 </style>
