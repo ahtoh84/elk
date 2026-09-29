@@ -121,13 +121,15 @@ const blurHashSrc = computed(() => {
   return getDataUrlFromArr(pixels, 32, 32)
 })
 
+const sensitiveBlurhash = computed(() => isSensitive ? attachment.blurhash || '' : '')
+
 const videoThumbnail = ref(shouldLoadAttachment.value
   ? attachment.previewUrl
   : blurHashSrc.value)
-const imageLoaded = ref(!attachment.blurhash || !shouldLoadAttachment.value)
+const imageLoaded = ref(!sensitiveBlurhash.value || !shouldLoadAttachment.value)
 
 function resetImageLoadState() {
-  imageLoaded.value = !attachment.blurhash || !shouldLoadAttachment.value
+  imageLoaded.value = !sensitiveBlurhash.value || !shouldLoadAttachment.value
 }
 
 function onImageLoaded() {
@@ -318,7 +320,7 @@ onBeforeUnmount(() => {
         @click="!shouldLoadAttachment ? loadAttachment() : openMediaPreview(attachments ? attachments : [attachment], attachments?.indexOf(attachment) || 0)"
       >
         <CommonBlurhash
-          :blurhash="attachment.blurhash || ''"
+          :blurhash="sensitiveBlurhash"
           class="status-attachment-image"
           :src="src"
           :srcset="srcset"
@@ -338,7 +340,7 @@ onBeforeUnmount(() => {
           :class="[
             !shouldLoadAttachment ? 'brightness-60 hover:brightness-70 transition-filter' : '',
             {
-              'status-attachment-image--blurhash-loading': isSensitive && attachment.blurhash
+              'status-attachment-image--blurhash-loading': sensitiveBlurhash
                 && shouldLoadAttachment
                 && !imageLoaded,
             },
