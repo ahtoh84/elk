@@ -73,7 +73,7 @@ const navIndicatorStyle = computed(() => ({
 <template>
   <!-- This weird styles above are used for scroll locking, don't change it unless you know exactly what you're doing. -->
   <nav
-    h-14 border="t base" flex flex-row text-xl
+    relative h-14 border="t base" flex flex-row text-xl
     of-y-scroll scrollbar-hide overscroll-none
     class="nav-bottom after-content-empty after:(h-[calc(100%+0.5px)] w-0.1px pointer-events-none)"
   >
