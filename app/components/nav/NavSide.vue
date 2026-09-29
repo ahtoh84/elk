@@ -90,6 +90,7 @@ const exploreLink = computed(() => {
       placement="bottom-start"
       :distance="4"
       auto-boundary-max-size
+      popper-class="nav-side-more-popper"
     >
       <CommonTooltip class="w-fit" :disabled="!isMediumOrLargeScreen" :content="$t('nav.more_menu')" placement="right">
         <button
