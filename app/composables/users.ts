@@ -76,6 +76,9 @@ export async function loginTo(
   masto: ElkMasto,
   user: Overwrite<UserLogin, { account?: mastodon.v1.AccountCredentials }>,
 ) {
+  if (import.meta.test)
+    return
+
   const { client } = masto
   const instance = mastoLogin(masto, user)
 
