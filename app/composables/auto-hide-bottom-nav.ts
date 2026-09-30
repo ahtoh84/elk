@@ -1,5 +1,4 @@
 export const BOTTOM_NAV_SCROLL_THRESHOLD = 4
-export const BOTTOM_NAV_IDLE_DELAY = 180
 
 export type BottomNavScrollAction = 'hide' | 'show' | 'none'
 
@@ -24,7 +23,6 @@ export function useAutoHideBottomNav(enabled: ComputedRef<boolean>) {
 
   let lastScrollTop = 0
   let animationFrame: number | undefined
-  let idleTimer: number | undefined
 
   function getScrollTop() {
     if (!import.meta.client)
@@ -34,27 +32,11 @@ export function useAutoHideBottomNav(enabled: ComputedRef<boolean>) {
     return Math.max(window.scrollY, scrollingElement?.scrollTop ?? 0, document.body.scrollTop)
   }
 
-  function clearIdleTimer() {
-    if (idleTimer !== undefined) {
-      window.clearTimeout(idleTimer)
-      idleTimer = undefined
-    }
-  }
-
-  function revealAfterScrollStops() {
-    clearIdleTimer()
-    idleTimer = window.setTimeout(() => {
-      isHidden.value = false
-      idleTimer = undefined
-    }, BOTTOM_NAV_IDLE_DELAY)
-  }
-
   function reset() {
     if (animationFrame !== undefined) {
       window.cancelAnimationFrame(animationFrame)
       animationFrame = undefined
     }
-    clearIdleTimer()
     isHidden.value = false
     lastScrollTop = getScrollTop()
   }
@@ -79,8 +61,6 @@ export function useAutoHideBottomNav(enabled: ComputedRef<boolean>) {
       isHidden.value = true
     else if (action === 'show')
       isHidden.value = false
-
-    revealAfterScrollStops()
   }
 
   function onScroll() {
