@@ -7,7 +7,7 @@ const info = useBuildInfo()
 const wideLayout = computed(() => route.meta.wideLayout ?? false)
 const autoHideBottomNavEnabled = computed(() =>
   isHydrated.value
-  && isSmallOrMediumScreen.value
+  && isSmallScreen.value
   && route.meta.hideBottomNavOnScroll === true,
 )
 const { isHidden: isBottomNavHidden } = useAutoHideBottomNav(autoHideBottomNavEnabled)
@@ -58,13 +58,18 @@ const isGrayscale = usePreferences('grayscaleMode')
           <slot />
         </div>
         <div
-          class="bottom-nav-shell"
-          :class="{ 'bottom-nav-shell--hidden': isBottomNavHidden }"
-          :inert="isBottomNavHidden"
+          class="bottom-nav-container"
+          :class="{ 'bottom-nav-container--hidden': isBottomNavHidden }"
           sticky left-0 right-0 bottom-0 z-10 bg-base pb="[env(safe-area-inset-bottom)]" transition="padding 20"
         >
-          <CommonOfflineChecker v-if="isHydrated" />
-          <NavBottom v-if="isHydrated" sm:hidden />
+          <CommonOfflineChecker v-if="isHydrated" class="offline-checker" />
+          <div
+            class="bottom-nav-shell"
+            :class="{ 'bottom-nav-shell--hidden': isBottomNavHidden }"
+            :inert="isBottomNavHidden"
+          >
+            <NavBottom v-if="isHydrated" sm:hidden />
+          </div>
         </div>
       </div>
       <aside v-if="isHydrated && !wideLayout" class="hidden lg:w-1/5 xl:w-1/4 sm:none xl:block zen-hide">
@@ -86,6 +91,19 @@ const isGrayscale = usePreferences('grayscaleMode')
 </template>
 
 <style scoped>
+.bottom-nav-container--hidden {
+  background: transparent;
+  pointer-events: none;
+}
+
+.offline-checker {
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bottom-nav-container--hidden .offline-checker {
+  transform: translateY(3.5rem);
+}
+
 .bottom-nav-shell {
   transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -96,7 +114,8 @@ const isGrayscale = usePreferences('grayscaleMode')
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bottom-nav-shell {
+  .bottom-nav-shell,
+  .offline-checker {
     transition-duration: 0ms;
   }
 }
