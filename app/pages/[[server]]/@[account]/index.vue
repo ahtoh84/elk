@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   key: route => `${route.params.server ?? currentServer.value}:${route.params.account}`,
+  hideBottomNavOnScroll: true,
 })
 
 const params = useRoute().params

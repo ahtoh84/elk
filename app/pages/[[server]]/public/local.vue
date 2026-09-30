@@ -2,6 +2,7 @@
 definePageMeta({
   middleware: 'auth',
   pullToRefresh: true,
+  hideBottomNavOnScroll: true,
 })
 
 const { t } = useI18n()
