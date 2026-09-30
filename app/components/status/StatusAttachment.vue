@@ -178,11 +178,7 @@ onBeforeUnmount(() => {
 <template>
   <div relative ma flex :gap="isAudio ? '2' : ''">
     <template v-if="type === 'video'">
-      <button
-        type="button"
-        relative
-        @click="!shouldLoadAttachment ? loadAttachment() : null"
-      >
+      <div relative>
         <img
           v-if="videoThumbnail"
           :src="videoThumbnail"
@@ -229,18 +225,21 @@ onBeforeUnmount(() => {
         >
           <source :src="attachment.url || attachment.previewUrl" type="video/mp4">
         </video>
-        <span
+        <button
           v-if="!shouldLoadAttachment"
-          class="status-attachment-load"
-          absolute
+          type="button"
+          absolute inset-0 z-2 w-full h-full bg-transparent cursor-pointer
           text-sm
           text-white
           flex flex-col justify-center items-center
-          gap-3 w-6 h-6
-          pointer-events-none
-          i-ri:video-download-line
-        />
-      </button>
+          focus:outline-none
+          focus:ring="2 primary inset"
+          :aria-label="$t('action.load_video')"
+          @click="loadAttachment"
+        >
+          <span aria-hidden="true" class="i-ri:video-download-line" w-6 h-6 />
+        </button>
+      </div>
     </template>
     <template v-else-if="type === 'gifv'">
       <button

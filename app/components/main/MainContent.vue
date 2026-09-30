@@ -56,9 +56,10 @@ const showBackButton = computed(() => {
       }"
       role="status"
       aria-live="polite"
-      aria-label="Refreshing timeline"
+      :aria-hidden="!isRefreshing"
     >
       <div class="i-ri:refresh-line" :class="{ 'animate-spin': isRefreshing }" />
+      <span v-if="isRefreshing" sr-only>{{ $t('timeline.refreshing') }}</span>
     </div>
     <div
       sticky top-0 z-20

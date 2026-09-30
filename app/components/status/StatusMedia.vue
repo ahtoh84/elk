@@ -278,7 +278,7 @@ onBeforeUnmount(() => resetCarouselDrag())
   justify-self: start;
 }
 
-.status-media-container--single-video > .status-media-attachment > button {
+.status-media-container--single-video > .status-media-attachment > div {
   display: block;
   width: fit-content;
   max-width: 100%;
