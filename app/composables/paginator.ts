@@ -35,14 +35,34 @@ export function usePaginator<T, P, U = T>(
     if (state.value === 'loading')
       return
 
-    state.value = 'idle'
-    error.value = undefined
-    canLoadMore.value = true
-    items.value = []
-    nextItems.value = []
-    prevItems.value = []
-    paginatorValues = paginator.values()
-    await loadNext(true)
+    const refreshedValues = paginator.values()
+    state.value = 'loading'
+
+    try {
+      const result = await refreshedValues.next()
+      const refreshedItems = !result.done && result.value.length
+        ? preprocess(result.value as (T | U)[])
+        : []
+      const itemsToShowCount = refreshedItems.length <= buffer
+        ? refreshedItems.length
+        : refreshedItems.length - buffer
+
+      paginatorValues = refreshedValues
+      items.value = refreshedItems.slice(0, itemsToShowCount)
+      nextItems.value = refreshedItems.slice(itemsToShowCount)
+      prevItems.value = []
+      error.value = undefined
+      canLoadMore.value = !getPreferences(useUserSettings().value, 'disableTimelineAutoloading')
+      state.value = result.done || !result.value.length ? 'done' : 'idle'
+    }
+    catch (e) {
+      console.error(e)
+      error.value = e
+      state.value = 'error'
+    }
+
+    await nextTick()
+    bound.update()
   }
 
   watch(stream, async (stream) => {
@@ -84,8 +104,8 @@ export function usePaginator<T, P, U = T>(
     }
   }, { immediate: true })
 
-  async function loadNext(force = false) {
-    if ((!force && state.value !== 'idle') || !canLoadMore.value)
+  async function loadNext() {
+    if (state.value !== 'idle' || !canLoadMore.value)
       return
 
     state.value = 'loading'
