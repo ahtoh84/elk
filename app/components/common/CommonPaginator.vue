@@ -50,7 +50,10 @@ const {
   endAnchor,
   error,
   canLoadMore,
+  refresh,
 } = usePaginator(paginator, toRef(() => stream), eventType, preprocess)
+
+usePullToRefreshRegistration(refresh)
 
 nuxtApp.hook('elk-logo:click', () => {
   update()

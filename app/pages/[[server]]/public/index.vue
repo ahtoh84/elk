@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   middleware: 'auth',
+  pullToRefresh: true,
 })
 
 const { t } = useI18n()

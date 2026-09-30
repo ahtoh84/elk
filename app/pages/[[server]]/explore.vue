@@ -3,6 +3,10 @@ import type { CommonRouteTabOption } from '#shared/types'
 
 const { t } = useI18n()
 
+definePageMeta({
+  pullToRefresh: true,
+})
+
 const search = ref<{ input?: HTMLInputElement }>()
 const route = useRoute()
 watchEffect(() => {

@@ -13,7 +13,7 @@ export function usePaginator<T, P, U = T>(
   // and we need its initial state after HMR
   // so clone it
 
-  const paginatorValues = paginator.values()
+  let paginatorValues = paginator.values()
   const state = ref<PaginatorState>(isHydrated.value ? 'idle' : 'loading')
   const items = ref<U[]>([])
   const nextItems = ref<U[]>([])
@@ -29,6 +29,20 @@ export function usePaginator<T, P, U = T>(
   async function update() {
     (items.value as U[]).unshift(...preprocess(prevItems.value as T[]))
     prevItems.value = []
+  }
+
+  async function refresh() {
+    if (state.value === 'loading')
+      return
+
+    state.value = 'idle'
+    error.value = undefined
+    canLoadMore.value = true
+    items.value = []
+    nextItems.value = []
+    prevItems.value = []
+    paginatorValues = paginator.values()
+    await loadNext(true)
   }
 
   watch(stream, async (stream) => {
@@ -70,8 +84,8 @@ export function usePaginator<T, P, U = T>(
     }
   }, { immediate: true })
 
-  async function loadNext() {
-    if (state.value !== 'idle' || !canLoadMore.value)
+  async function loadNext(force = false) {
+    if ((!force && state.value !== 'idle') || !canLoadMore.value)
       return
 
     state.value = 'loading'
@@ -138,6 +152,7 @@ export function usePaginator<T, P, U = T>(
     items,
     prevItems,
     update,
+    refresh,
     state,
     error,
     endAnchor,
