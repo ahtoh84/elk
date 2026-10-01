@@ -76,6 +76,7 @@ function handleReactedByClose() {
     </ModalDialog>
     <ModalDialog
       :model-value="isMediaPreviewOpen"
+      :mask-opacity="0.95"
       w-full max-w-full h-full max-h-full
       bg-transparent border-0 shadow-none
       @update:model-value="closeMediaPreview"

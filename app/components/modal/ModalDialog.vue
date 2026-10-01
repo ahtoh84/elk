@@ -7,6 +7,7 @@ defineOptions({
 
 const {
   zIndex = 100,
+  maskOpacity = 0.48,
   closeByMask = true,
   useVIf = true,
   keepAlive = false,
@@ -14,6 +15,8 @@ const {
 } = defineProps<{
   // level of depth
   zIndex?: number
+  // Opacity of the dimming mask behind the dialog.
+  maskOpacity?: number
   // whether to allow close dialog by clicking mask layer
   closeByMask?: boolean
   // use v-if, destroy all the internal elements after closed
@@ -130,6 +133,7 @@ useEventListener('keydown', (e: KeyboardEvent) => {
         :aria-labelledby="dialogLabelledBy"
         :style="{
           'z-index': zIndex,
+          '--dialog-mask-opacity': maskOpacity,
         }"
         fixed inset-0 of-y-auto scrollbar-hide overscroll-none
       >
@@ -145,7 +149,7 @@ useEventListener('keydown', (e: KeyboardEvent) => {
           absolute inset-0 z-0 bg-transparent opacity-100 backdrop-filter touch-none
         />
         <!-- Mask layer: dimming -->
-        <div class="dialog-mask" absolute inset-0 z-0 bg-black opacity-48 touch-none h="[calc(100%+0.5px)]" @click="clickMask" />
+        <div class="dialog-mask dialog-mask-dimming" absolute inset-0 z-0 bg-black touch-none h="[calc(100%+0.5px)]" @click="clickMask" />
         <!-- Dialog container -->
         <div class="p-safe-area" absolute inset-0 z-1 pointer-events-none opacity-100 flex>
           <div flex-1 flex items-center justify-center p-4>
@@ -195,5 +199,9 @@ useEventListener('keydown', (e: KeyboardEvent) => {
   padding-right: env(safe-area-inset-right);
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
+}
+
+.dialog-mask-dimming {
+  opacity: var(--dialog-mask-opacity, 0.48);
 }
 </style>
