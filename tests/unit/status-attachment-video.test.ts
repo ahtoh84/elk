@@ -42,7 +42,9 @@ describe('video attachment', () => {
 
     expect(wrapper.find('video[controls]').exists()).toBe(true)
     expect(wrapper.find('video source').exists()).toBe(true)
+    expect(wrapper.get('video').attributes('poster')).toBe(attachment.previewUrl)
     expect(wrapper.find('.status-attachment-spoiler__reveal').exists()).toBe(false)
+    expect(wrapper.find('.status-video-poster--spoiler').exists()).toBe(false)
   })
 
   it('keeps sensitive GIFV files from loading until revealed', async () => {
@@ -66,6 +68,7 @@ describe('video attachment', () => {
     await wrapper.find('button').trigger('click')
 
     expect(wrapper.find('video source').exists()).toBe(true)
+    expect(wrapper.get('video').attributes('poster')).toBe(attachment.previewUrl)
     expect(wrapper.find('.status-video-poster--spoiler').exists()).toBe(false)
   })
 

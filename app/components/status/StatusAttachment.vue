@@ -238,6 +238,7 @@ onBeforeUnmount(() => {
         >
         <video
           ref="video"
+          :poster="videoThumbnail || undefined"
           :preload="shouldLoadAttachment ? 'auto' : 'none'"
           :muted="!unmuteVideos"
           loop
@@ -317,6 +318,7 @@ onBeforeUnmount(() => {
         >
         <video
           ref="video"
+          :poster="videoThumbnail || undefined"
           :preload="shouldLoadAttachment ? 'auto' : 'none'"
           :muted="!unmuteVideos"
           loop
