@@ -8,12 +8,14 @@ const {
   fullSize = false,
   isPreview = false,
   preserveAspectRatio = false,
+  isSensitive = false,
 } = defineProps<{
   attachment: mastodon.v1.MediaAttachment
   attachments?: mastodon.v1.MediaAttachment[]
   fullSize?: boolean
   isPreview?: boolean
   preserveAspectRatio?: boolean
+  isSensitive?: boolean
 }>()
 
 const src = computed(() => attachment.previewUrl || attachment.url || attachment.remoteUrl!)
@@ -119,9 +121,20 @@ const blurHashSrc = computed(() => {
   return getDataUrlFromArr(pixels, 32, 32)
 })
 
+const sensitiveBlurhash = computed(() => isSensitive ? attachment.blurhash || '' : '')
+
 const videoThumbnail = ref(shouldLoadAttachment.value
   ? attachment.previewUrl
   : blurHashSrc.value)
+const imageLoaded = ref(!sensitiveBlurhash.value || !shouldLoadAttachment.value)
+
+function resetImageLoadState() {
+  imageLoaded.value = !sensitiveBlurhash.value || !shouldLoadAttachment.value
+}
+
+function onImageLoaded() {
+  imageLoaded.value = true
+}
 
 function onVideoFrameReady() {
   const element = video.value
@@ -147,12 +160,14 @@ watch(shouldLoadAttachment, () => {
   videoThumbnail.value = shouldLoadAttachment.value
     ? attachment.previewUrl
     : blurHashSrc.value
+  resetImageLoadState()
 })
 
 watch(() => attachment.url, () => {
   videoFrameToken++
   videoReady.value = false
   videoPlayFailed.value = false
+  resetImageLoadState()
 })
 
 onBeforeUnmount(() => {
@@ -163,11 +178,7 @@ onBeforeUnmount(() => {
 <template>
   <div relative ma flex :gap="isAudio ? '2' : ''">
     <template v-if="type === 'video'">
-      <button
-        type="button"
-        relative
-        @click="!shouldLoadAttachment ? loadAttachment() : null"
-      >
+      <div relative>
         <img
           v-if="videoThumbnail"
           :src="videoThumbnail"
@@ -214,18 +225,21 @@ onBeforeUnmount(() => {
         >
           <source :src="attachment.url || attachment.previewUrl" type="video/mp4">
         </video>
-        <span
+        <button
           v-if="!shouldLoadAttachment"
-          class="status-attachment-load"
-          absolute
+          type="button"
+          absolute inset-0 z-2 w-full h-full bg-transparent cursor-pointer
           text-sm
           text-white
           flex flex-col justify-center items-center
-          gap-3 w-6 h-6
-          pointer-events-none
-          i-ri:video-download-line
-        />
-      </button>
+          focus:outline-none
+          focus:ring="2 primary inset"
+          :aria-label="$t('action.load_video')"
+          @click="loadAttachment"
+        >
+          <span aria-hidden="true" class="i-ri:video-download-line" w-6 h-6 />
+        </button>
+      </div>
     </template>
     <template v-else-if="type === 'gifv'">
       <button
@@ -305,7 +319,7 @@ onBeforeUnmount(() => {
         @click="!shouldLoadAttachment ? loadAttachment() : openMediaPreview(attachments ? attachments : [attachment], attachments?.indexOf(attachment) || 0)"
       >
         <CommonBlurhash
-          :blurhash="attachment.blurhash || ''"
+          :blurhash="sensitiveBlurhash"
           class="status-attachment-image"
           :src="src"
           :srcset="srcset"
@@ -322,7 +336,15 @@ onBeforeUnmount(() => {
           w-full
           object-cover
           :draggable="shouldLoadAttachment"
-          :class="!shouldLoadAttachment ? 'brightness-60 hover:brightness-70 transition-filter' : ''"
+          :class="[
+            !shouldLoadAttachment ? 'brightness-60 hover:brightness-70 transition-filter' : '',
+            {
+              'status-attachment-image--blurhash-loading': sensitiveBlurhash
+                && shouldLoadAttachment
+                && !imageLoaded,
+            },
+          ]"
+          @loaded="onImageLoaded"
         />
         <span
           v-if="!shouldLoadAttachment"
@@ -396,15 +418,38 @@ onBeforeUnmount(() => {
 .status-video {
   position: relative;
   z-index: 1;
+  opacity: 1;
+  transition: opacity 180ms ease-out;
 }
 
 .status-video--pending {
-  visibility: hidden;
+  opacity: 0;
 }
 
 .status-attachment-load {
   left: 50%;
   top: 50%;
   translate: -50% -50%;
+}
+
+.status-attachment-image {
+  transition: filter 180ms ease-out, opacity 180ms ease-out;
+}
+
+.status-attachment-image--blurhash-loading {
+  filter: blur(8px);
+  opacity: 0.92;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-video,
+  .status-attachment-image {
+    transition-duration: 0ms;
+  }
+
+  .status-attachment-image--blurhash-loading {
+    filter: none;
+    opacity: 1;
+  }
 }
 </style>

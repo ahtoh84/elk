@@ -90,6 +90,7 @@ const exploreLink = computed(() => {
       placement="bottom-start"
       :distance="4"
       auto-boundary-max-size
+      popper-class="nav-side-more-popper"
     >
       <CommonTooltip class="w-fit" :disabled="!isMediumOrLargeScreen" :content="$t('nav.more_menu')" placement="right">
         <button
@@ -159,17 +160,21 @@ const exploreLink = computed(() => {
         </button>
       </CommonTooltip>
 
-      <div v-if="showMoreItems" :id="`${moreItemsId}-inline`" flex="~ col gap2">
-        <NavSideItem :text="$t('nav.conversations')" to="/conversations" icon="i-ri:at-line" user-only :command="command" />
-        <NavSideItem :text="$t('nav.federated')" :to="isHydrated ? `/${currentServer}/public` : '/public'" icon="i-ri:earth-line" :command="command" />
-        <NavSideItem :text="$t('nav.favourites')" to="/favourites" :icon="useStarFavoriteIcon ? 'i-ri:star-line' : 'i-ri:heart-3-line'" user-only :command="command" />
-        <NavSideItem :text="$t('nav.bookmarks')" to="/bookmarks" icon="i-ri:bookmark-line" user-only :command="command" />
-        <NavSideItem :text="$t('nav.lists')" :to="isHydrated ? `/${currentServer}/lists` : '/lists'" icon="i-ri:list-check" user-only :command="command" />
-        <NavSideItem :text="$t('nav.hashtags')" to="/hashtags" icon="i-ri:hashtag" user-only :command="command" />
-        <NavSideItem :text="$t('nav.scheduled_posts')" to="/scheduled-posts" icon="i-ri:calendar-schedule-line" user-only :command="command" />
-        <NavSideItem :text="$t('nav.collections')" :to="isHydrated ? `/${currentServer}/collections` : '/collections'" icon="i-ri:shapes-line" user-only :command="command" />
-        <NavSideItem :text="$t('nav.settings')" to="/settings" icon="i-ri:settings-3-line" :command="command" />
-      </div>
+      <Transition name="nav-more-items">
+        <div v-if="showMoreItems" :id="`${moreItemsId}-inline`" class="nav-more-items">
+          <div class="nav-more-items-content" flex="~ col gap2">
+            <NavSideItem :text="$t('nav.conversations')" to="/conversations" icon="i-ri:at-line" user-only :command="command" />
+            <NavSideItem :text="$t('nav.federated')" :to="isHydrated ? `/${currentServer}/public` : '/public'" icon="i-ri:earth-line" :command="command" />
+            <NavSideItem :text="$t('nav.favourites')" to="/favourites" :icon="useStarFavoriteIcon ? 'i-ri:star-line' : 'i-ri:heart-3-line'" user-only :command="command" />
+            <NavSideItem :text="$t('nav.bookmarks')" to="/bookmarks" icon="i-ri:bookmark-line" user-only :command="command" />
+            <NavSideItem :text="$t('nav.lists')" :to="isHydrated ? `/${currentServer}/lists` : '/lists'" icon="i-ri:list-check" user-only :command="command" />
+            <NavSideItem :text="$t('nav.hashtags')" to="/hashtags" icon="i-ri:hashtag" user-only :command="command" />
+            <NavSideItem :text="$t('nav.scheduled_posts')" to="/scheduled-posts" icon="i-ri:calendar-schedule-line" user-only :command="command" />
+            <NavSideItem :text="$t('nav.collections')" :to="isHydrated ? `/${currentServer}/collections` : '/collections'" icon="i-ri:shapes-line" user-only :command="command" />
+            <NavSideItem :text="$t('nav.settings')" to="/settings" icon="i-ri:settings-3-line" :command="command" />
+          </div>
+        </div>
+      </Transition>
     </div>
   </nav>
 </template>
@@ -178,6 +183,36 @@ const exploreLink = computed(() => {
   .spacer {
     margin-top: 0.5em;
   }
+
+  .nav-more-items {
+    display: grid;
+    grid-template-rows: 1fr;
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      grid-template-rows 220ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 160ms ease-out,
+      transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .nav-more-items-content {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .nav-more-items-enter-from,
+  .nav-more-items-leave-to {
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transform: translateY(-0.35rem);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-more-items {
+      transition-duration: 0ms;
+    }
+  }
+
   @media screen and ( max-height: 920px ) and ( min-width: 640px ) {
     .spacer {
       margin-top: 0;

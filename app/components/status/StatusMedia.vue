@@ -225,6 +225,7 @@ onBeforeUnmount(() => resetCarouselDrag())
           w-full
           h-full
           :is-preview="isPreview"
+          :is-sensitive="status.sensitive"
         />
       </div>
       <StatusAttachment
@@ -238,6 +239,7 @@ onBeforeUnmount(() => resetCarouselDrag())
         w-full
         h-full
         :is-preview="isPreview"
+        :is-sensitive="status.sensitive"
       />
     </template>
   </div>
@@ -276,7 +278,7 @@ onBeforeUnmount(() => resetCarouselDrag())
   justify-self: start;
 }
 
-.status-media-container--single-video > .status-media-attachment > button {
+.status-media-container--single-video > .status-media-attachment > :is(div, button) {
   display: block;
   width: fit-content;
   max-width: 100%;
@@ -384,7 +386,6 @@ onBeforeUnmount(() => resetCarouselDrag())
   padding-inline-end: 0.375rem;
   transform-origin: center;
   transition: transform 420ms cubic-bezier(0.22, 1.2, 0.36, 1);
-  will-change: transform;
 }
 
 .status-media-item:active {

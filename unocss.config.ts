@@ -56,7 +56,7 @@ export default defineConfig({
       'select-settings': 'p3 border border-base rounded w-full block bg-base',
 
       // link
-      'text-link-rounded': 'focus:outline-none focus:ring-(2 primary inset) hover:bg-active rounded md:rounded-full px2 mx--2',
+      'text-link-rounded': 'focus:outline-none focus-visible:ring-(2 primary inset) hover:bg-active rounded md:rounded-full px2 mx--2',
 
       // utils
       'flex-center': 'items-center justify-center',

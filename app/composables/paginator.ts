@@ -13,7 +13,7 @@ export function usePaginator<T, P, U = T>(
   // and we need its initial state after HMR
   // so clone it
 
-  const paginatorValues = paginator.values()
+  let paginatorValues = paginator.values()
   const state = ref<PaginatorState>(isHydrated.value ? 'idle' : 'loading')
   const items = ref<U[]>([])
   const nextItems = ref<U[]>([])
@@ -29,6 +29,40 @@ export function usePaginator<T, P, U = T>(
   async function update() {
     (items.value as U[]).unshift(...preprocess(prevItems.value as T[]))
     prevItems.value = []
+  }
+
+  async function refresh() {
+    if (state.value === 'loading')
+      return
+
+    const refreshedValues = paginator.values()
+    state.value = 'loading'
+
+    try {
+      const result = await refreshedValues.next()
+      const refreshedItems = !result.done && result.value.length
+        ? preprocess(result.value as (T | U)[])
+        : []
+      const itemsToShowCount = refreshedItems.length <= buffer
+        ? refreshedItems.length
+        : refreshedItems.length - buffer
+
+      paginatorValues = refreshedValues
+      items.value = refreshedItems.slice(0, itemsToShowCount)
+      nextItems.value = refreshedItems.slice(itemsToShowCount)
+      prevItems.value = []
+      error.value = undefined
+      canLoadMore.value = !getPreferences(useUserSettings().value, 'disableTimelineAutoloading')
+      state.value = result.done || !result.value.length ? 'done' : 'idle'
+    }
+    catch (e) {
+      console.error(e)
+      error.value = e
+      state.value = 'error'
+    }
+
+    await nextTick()
+    bound.update()
   }
 
   watch(stream, async (stream) => {
@@ -138,6 +172,7 @@ export function usePaginator<T, P, U = T>(
     items,
     prevItems,
     update,
+    refresh,
     state,
     error,
     endAnchor,

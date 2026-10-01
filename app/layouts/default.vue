@@ -5,6 +5,12 @@ const route = useRoute()
 const info = useBuildInfo()
 
 const wideLayout = computed(() => route.meta.wideLayout ?? false)
+const autoHideBottomNavEnabled = computed(() =>
+  isHydrated.value
+  && isSmallScreen.value
+  && route.meta.hideBottomNavOnScroll === true,
+)
+const { isHidden: isBottomNavHidden } = useAutoHideBottomNav(autoHideBottomNavEnabled)
 
 const showUserPicker = logicAnd(
   usePreferences('experimentalUserPicker'),
@@ -51,9 +57,19 @@ const isGrayscale = usePreferences('grayscaleMode')
         <div min-h="[calc(100vh-3.5rem)]" sm:min-h-screen>
           <slot />
         </div>
-        <div sticky left-0 right-0 bottom-0 z-10 bg-base pb="[env(safe-area-inset-bottom)]" transition="padding 20">
-          <CommonOfflineChecker v-if="isHydrated" />
-          <NavBottom v-if="isHydrated" sm:hidden />
+        <div
+          class="bottom-nav-container"
+          :class="{ 'bottom-nav-container--hidden': isBottomNavHidden }"
+          sticky left-0 right-0 bottom-0 z-10 bg-base pb="[env(safe-area-inset-bottom)]" transition="padding 20"
+        >
+          <CommonOfflineChecker v-if="isHydrated" class="offline-checker" />
+          <div
+            class="bottom-nav-shell"
+            :class="{ 'bottom-nav-shell--hidden': isBottomNavHidden }"
+            :inert="isBottomNavHidden"
+          >
+            <NavBottom v-if="isHydrated" sm:hidden />
+          </div>
         </div>
       </div>
       <aside v-if="isHydrated && !wideLayout" class="hidden lg:w-1/5 xl:w-1/4 sm:none xl:block zen-hide">
@@ -73,3 +89,34 @@ const isGrayscale = usePreferences('grayscaleMode')
     <ModalContainer />
   </div>
 </template>
+
+<style scoped>
+.bottom-nav-container--hidden {
+  background: transparent;
+  pointer-events: none;
+}
+
+.offline-checker {
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bottom-nav-container--hidden .offline-checker {
+  transform: translateY(3.5rem);
+}
+
+.bottom-nav-shell {
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bottom-nav-shell--hidden {
+  pointer-events: none;
+  transform: translate3d(0, calc(100% + env(safe-area-inset-bottom, 0px)), 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bottom-nav-shell,
+  .offline-checker {
+    transition-duration: 0ms;
+  }
+}
+</style>

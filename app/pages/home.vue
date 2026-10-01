@@ -2,6 +2,8 @@
 definePageMeta({
   middleware: 'auth',
   alias: ['/signin/callback'],
+  pullToRefresh: true,
+  hideBottomNavOnScroll: true,
 })
 
 const route = useRoute()

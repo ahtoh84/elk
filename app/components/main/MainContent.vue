@@ -14,10 +14,14 @@ const { back = false, flushTop = false, noOverflowHidden = false } = defineProps
 }>()
 
 const container = ref()
+const body = ref<HTMLElement>()
 const route = useRoute()
 const userSettings = useUserSettings()
 const { height: windowHeight } = useWindowSize()
 const { height: containerHeight } = useElementBounding(container)
+const pullToRefreshContext = providePullToRefresh()
+const isPullToRefreshEnabled = computed(() => route.meta.pullToRefresh === true && isHydrated.value && pullToRefreshContext.hasHandlers.value)
+const { pullDistance, isDragging, isRefreshing } = usePullToRefresh(body, pullToRefreshContext.refresh, isPullToRefreshEnabled)
 const wideLayout = computed(() => route.meta.wideLayout ?? false)
 const sticky = computed(() => route.path?.startsWith('/settings/'))
 const containerClass = computed(() => {
@@ -42,6 +46,21 @@ const showBackButton = computed(() => {
 
 <template>
   <div ref="container" :class="containerClass">
+    <div
+      v-if="isPullToRefreshEnabled"
+      class="pull-to-refresh-indicator"
+      :class="{ 'pull-to-refresh-indicator--dragging': isDragging }"
+      :style="{
+        opacity: isRefreshing ? 1 : Math.min(pullDistance / 36, 1),
+        transform: `translate3d(-50%, ${Math.max(-44, pullDistance - 44)}px, 0)`,
+      }"
+      role="status"
+      aria-live="polite"
+      :aria-hidden="!isRefreshing"
+    >
+      <div class="i-ri:refresh-line" :class="{ 'animate-spin': isRefreshing }" />
+      <span v-if="isRefreshing" sr-only>{{ $t('timeline.refreshing') }}</span>
+    </div>
     <div
       sticky top-0 z-20
       pt="[env(safe-area-inset-top,0)]"
@@ -78,6 +97,7 @@ const showBackButton = computed(() => {
     </div>
     <PwaInstallPrompt xl:hidden />
     <div
+      ref="body"
       class="main-content-body"
       :style="noOverflowHidden ? { overflow: 'visible' } : undefined"
       :class="isHydrated && wideLayout ? 'xl:w-full sm:max-w-600px' : 'sm:max-w-600px md:shrink-0'"
@@ -88,3 +108,34 @@ const showBackButton = computed(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.pull-to-refresh-indicator {
+  position: fixed;
+  z-index: 30;
+  top: env(safe-area-inset-top, 0px);
+  left: 50%;
+  display: flex;
+  width: 2.25rem;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--c-border) 70%, transparent);
+  border-radius: 9999px;
+  background: rgb(var(--rgb-bg-base));
+  color: var(--c-primary);
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+
+.pull-to-refresh-indicator--dragging {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pull-to-refresh-indicator {
+    transition-duration: 0ms;
+  }
+}
+</style>

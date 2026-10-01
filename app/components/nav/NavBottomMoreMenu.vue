@@ -125,11 +125,11 @@ const { dragging, dragDistance } = invoke(() => {
     <!-- Drawer -->
     <Transition
       enter-active-class="transition duration-250 ease-out"
-      enter-from-class="opacity-0 children:(translate-y-full)"
+      enter-from-class="opacity-0 children:(translate-y-2 scale-98)"
       enter-to-class="opacity-100 children:(translate-y-0)"
       leave-active-class="transition duration-250 ease-in"
       leave-from-class="opacity-100 children:(translate-y-0)"
-      leave-to-class="opacity-0 children:(translate-y-full)"
+      leave-to-class="opacity-0 children:(translate-y-2 scale-98)"
     >
       <div
         v-show="modelValue"

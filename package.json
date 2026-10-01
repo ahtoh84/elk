@@ -22,7 +22,7 @@
     "generate": "nuxt generate",
     "test:unit": "vitest",
     "test:unit:ci": "vitest run",
-    "test:typecheck": "vue-tsc -b --noEmit",
+    "test:typecheck": "nuxt typecheck",
     "test": "vitest",
     "test:ci": "vitest run",
     "update:team:avatars": "node scripts/avatars.ts",

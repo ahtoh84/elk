@@ -21,6 +21,8 @@ const paginator = mastoListAccounts.list()
 const accountsInList = ref((await useMastoClient().v1.lists.$select(listId.value).accounts.list({ limit: 1000 })))
 
 const paginatorRef = ref()
+const pendingAccountIds = ref(new Set<string>())
+const actionError = ref<string>()
 
 // search stuff
 const query = ref('')
@@ -44,20 +46,34 @@ const results = computed(() => {
 // Reset index when results change
 watch([results, focused], () => index.value = -1)
 
-function addAccount(account: mastodon.v1.Account) {
+async function addAccount(account: mastodon.v1.Account) {
+  if (pendingAccountIds.value.has(account.id) || isInCurrentList(account.id))
+    return
+
+  pendingAccountIds.value.add(account.id)
+  actionError.value = undefined
   try {
-    mastoListAccounts.create({ accountIds: [account.id] })
+    await mastoListAccounts.create({ accountIds: [account.id] })
     accountsInList.value.push(account)
     paginatorRef.value?.createEntry(account)
   }
   catch (err) {
     console.error(err)
+    actionError.value = (err as Error).message
+  }
+  finally {
+    pendingAccountIds.value.delete(account.id)
   }
 }
 
-function removeAccount(account: mastodon.v1.Account) {
+async function removeAccount(account: mastodon.v1.Account) {
+  if (pendingAccountIds.value.has(account.id) || !isInCurrentList(account.id))
+    return
+
+  pendingAccountIds.value.add(account.id)
+  actionError.value = undefined
   try {
-    mastoListAccounts.remove({ accountIds: [account.id] })
+    await mastoListAccounts.remove({ accountIds: [account.id] })
     const accountIdsInList = accountsInList.value.map(account => account.id)
     const index = accountIdsInList.indexOf(account.id)
     if (index > -1) {
@@ -67,6 +83,10 @@ function removeAccount(account: mastodon.v1.Account) {
   }
   catch (err) {
     console.error(err)
+    actionError.value = (err as Error).message
+  }
+  finally {
+    pendingAccountIds.value.delete(account.id)
   }
 }
 </script>
@@ -133,6 +153,9 @@ function removeAccount(account: mastodon.v1.Account) {
                   border-dark
                   btn-action-icon
                   bg-base
+                  :disabled="pendingAccountIds.has(result.id)"
+                  :aria-busy="pendingAccountIds.has(result.id)"
+                  :aria-label="isInCurrentList(result.id) ? $t('list.remove_account') : $t('list.add_account')"
                   :hover="isInCurrentList(result.id) ? 'text-red' : 'text-green'"
                   @click=" () => isInCurrentList(result.id) ? removeAccount(result.data) : addAccount(result.data) "
                 >
@@ -152,6 +175,10 @@ function removeAccount(account: mastodon.v1.Account) {
         </div>
       </div>
     </div>
+  </div>
+
+  <div v-if="actionError" role="alert" p-4 text-red>
+    {{ $t('common.error') }}: {{ actionError }}
   </div>
 
   <CommonPaginator ref="paginatorRef" :paginator="paginator">

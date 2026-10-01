@@ -72,6 +72,7 @@
     "favourite": "Favorite",
     "favourite_count": "{0}",
     "favourited": "Favorited",
+    "load_video": "Load video",
     "more": "More",
     "next": "Next",
     "open_image_preview_dialog": "Open image preview dialog",
@@ -772,6 +773,7 @@
   "timeline": {
     "load_more": "Load more posts",
     "no_posts": "No posts here!",
+    "refreshing": "Refreshing timeline...",
     "show_new_items": "Show {v} new items|Show {v} new item|Show {v} new items",
     "view_older_posts": "Older posts from other instances may not be displayed."
   },
