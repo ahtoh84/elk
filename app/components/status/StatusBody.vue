@@ -40,6 +40,13 @@ const vnode = computed(() => {
     :class="{ 'with-action': withAction, 'has-quote': hasQuote }"
     relative
   >
+    <div
+      v-if="status.spoilerText?.trim()"
+      class="status-spoiler-text content-rich line-compact"
+      dir="auto"
+    >
+      <ContentRich :content="status.spoilerText" :emojis="status.emojis" :markdown="false" />
+    </div>
     <span
       v-if="status.content"
       class="content-rich line-compact"

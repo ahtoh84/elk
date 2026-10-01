@@ -17,12 +17,7 @@ defineProps<{
 
     <div h1px bg="gray/20" my2 />
 
-    <StatusSpoiler :enabled="edit.sensitive">
-      <template #spoiler>
-        {{ edit.spoilerText }}
-      </template>
-      <StatusBody :status="edit" />
-      <StatusMedia v-if="edit.mediaAttachments.length" :status="edit" />
-    </StatusSpoiler>
+    <StatusBody :status="edit" />
+    <StatusMedia v-if="edit.mediaAttachments.length" :status="edit" :spoiler-hidden="edit.sensitive" />
   </div>
 </template>

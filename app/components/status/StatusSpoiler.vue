@@ -23,24 +23,23 @@ watchEffect(() => {
   showContent.value = expandSpoilers.value ? true : !hideContent
 })
 function getToggleText() {
-  if (sensitiveNonSpoiler)
-    return 'status.spoiler_media_hidden'
   return filter ? 'status.filter_show_anyway' : 'status.spoiler_show_more'
 }
 </script>
 
 <template>
   <div v-if="hideContent" flex flex-col items-start>
-    <div class="content-rich" p="x-4 b-2.5" text-center text-secondary w-full border="~ base" border-0 border-b-dotted border-b-3 mt-2>
+    <div v-if="$slots.spoiler" class="content-rich" p="x-4 b-2.5" text-center text-secondary w-full border="~ base" border-0 border-b-dotted border-b-3 mt-2>
       <slot name="spoiler" />
     </div>
-    <div flex="~ gap-1 center" w-full :mb="isDM && !showContent ? '4' : ''" mt="-4.5">
-      <button btn-text px-2 py-1 rounded-lg :bg="isDM ? 'transparent' : 'base'" flex="~ center gap-2" :class="showContent ? '' : 'filter-saturate-0 hover:filter-saturate-100'" :aria-expanded="showContent" @click="toggleContent()">
+    <div flex="~ gap-1 center" w-full :mb="isDM && !showContent ? '4' : ''" :mt="$slots.spoiler ? '-4.5' : '2'">
+      <button btn-text px-2 py-1 rounded-lg :bg="isDM ? 'transparent' : 'base'" flex="~ center gap-2" :class="showContent ? '' : 'filter-saturate-0 hover:filter-saturate-100'" :aria-expanded="showContent" :aria-label="$t(showContent ? 'status.spoiler_show_less' : getToggleText())" @click="toggleContent()">
         <div v-if="showContent" i-ri:eye-line />
         <div v-else i-ri:eye-close-line />
         {{ showContent ? $t('status.spoiler_show_less') : $t(getToggleText()) }}
       </button>
     </div>
+    <slot v-if="!showContent" name="hidden-media" />
   </div>
   <slot v-if="!hideContent || showContent" />
 </template>

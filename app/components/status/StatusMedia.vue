@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
 
-const { status, isPreview = false, breakout = false } = defineProps<{
+const { status, isPreview = false, breakout = false, spoilerHidden = false } = defineProps<{
   status: mastodon.v1.Status | mastodon.v1.StatusEdit
   fullSize?: boolean
   isPreview?: boolean
   breakout?: boolean
+  spoilerHidden?: boolean
 }>()
 
 const gridColumnNumber = computed(() => {
@@ -226,6 +227,7 @@ onBeforeUnmount(() => resetCarouselDrag())
           h-full
           :is-preview="isPreview"
           :is-sensitive="status.sensitive"
+          :spoiler-hidden="spoilerHidden"
         />
       </div>
       <StatusAttachment
@@ -240,6 +242,7 @@ onBeforeUnmount(() => resetCarouselDrag())
         h-full
         :is-preview="isPreview"
         :is-sensitive="status.sensitive"
+        :spoiler-hidden="spoilerHidden"
       />
     </template>
   </div>

@@ -9,6 +9,7 @@ const {
   isPreview = false,
   preserveAspectRatio = false,
   isSensitive = false,
+  spoilerHidden = false,
 } = defineProps<{
   attachment: mastodon.v1.MediaAttachment
   attachments?: mastodon.v1.MediaAttachment[]
@@ -16,6 +17,7 @@ const {
   isPreview?: boolean
   preserveAspectRatio?: boolean
   isSensitive?: boolean
+  spoilerHidden?: boolean
 }>()
 
 const src = computed(() => attachment.previewUrl || attachment.url || attachment.remoteUrl!)
@@ -78,12 +80,23 @@ const prefersReducedMotion = usePreferredReducedMotion()
 const isAudio = computed(() => attachment.type === 'audio')
 const isVideo = computed(() => type.value === 'video')
 const isGif = computed(() => type.value === 'gifv')
+const sensitiveMediaRevealed = ref(false)
+const isSpoilerHidden = computed(() => isSensitive && spoilerHidden && !sensitiveMediaRevealed.value)
+const imageSrc = computed(() => isSpoilerHidden.value ? attachment.previewUrl || src.value : src.value)
+const imageSrcset = computed(() => isSpoilerHidden.value ? undefined : srcset.value)
 
 const enableAutoplay = usePreferences('enableAutoplay')
 const unmuteVideos = usePreferences('unmuteVideos')
 
 useIntersectionObserver(video, (entries) => {
   const ready = video.value?.dataset.ready === 'true'
+  if (isSpoilerHidden.value) {
+    if (ready && !video.value?.paused)
+      video.value?.pause()
+
+    return
+  }
+
   if (prefersReducedMotion.value === 'reduce' || !enableAutoplay.value) {
     if (ready && !video.value?.paused)
       video.value?.pause()
@@ -114,6 +127,11 @@ function loadAttachment() {
   shouldLoadAttachment.value = true
 }
 
+function revealSensitiveMedia() {
+  sensitiveMediaRevealed.value = true
+  loadAttachment()
+}
+
 const blurHashSrc = computed(() => {
   if (!attachment.blurhash)
     return ''
@@ -122,14 +140,15 @@ const blurHashSrc = computed(() => {
 })
 
 const sensitiveBlurhash = computed(() => isSensitive ? attachment.blurhash || '' : '')
+const shouldLoadImage = computed(() => shouldLoadAttachment.value || isSpoilerHidden.value)
 
-const videoThumbnail = ref(shouldLoadAttachment.value
-  ? attachment.previewUrl
+const videoThumbnail = computed(() => (isSpoilerHidden.value || shouldLoadAttachment.value)
+  ? attachment.previewUrl || blurHashSrc.value
   : blurHashSrc.value)
-const imageLoaded = ref(!sensitiveBlurhash.value || !shouldLoadAttachment.value)
+const imageLoaded = ref(!sensitiveBlurhash.value || !shouldLoadImage.value)
 
 function resetImageLoadState() {
-  imageLoaded.value = !sensitiveBlurhash.value || !shouldLoadAttachment.value
+  imageLoaded.value = !sensitiveBlurhash.value || !shouldLoadImage.value
 }
 
 function onImageLoaded() {
@@ -157,17 +176,40 @@ watch(shouldLoadAttachment, () => {
   videoFrameToken++
   videoReady.value = false
   videoPlayFailed.value = false
-  videoThumbnail.value = shouldLoadAttachment.value
-    ? attachment.previewUrl
-    : blurHashSrc.value
   resetImageLoadState()
 })
+
+watch(shouldLoadImage, resetImageLoadState)
 
 watch(() => attachment.url, () => {
   videoFrameToken++
   videoReady.value = false
   videoPlayFailed.value = false
   resetImageLoadState()
+})
+
+watch([() => isSensitive, () => spoilerHidden], ([sensitive, hidden]) => {
+  if (sensitive && hidden)
+    sensitiveMediaRevealed.value = false
+})
+
+watch(isSpoilerHidden, async (hidden) => {
+  if (hidden) {
+    video.value?.pause()
+    videoReady.value = false
+    videoPlayFailed.value = false
+    return
+  }
+
+  await nextTick()
+  if (!video.value || !shouldLoadAttachment.value || !enableAutoplay.value || prefersReducedMotion.value === 'reduce')
+    return
+
+  video.value.play().then(() => {
+    video.value!.dataset.ready = 'true'
+  }).catch(() => {
+    videoPlayFailed.value = true
+  })
 })
 
 onBeforeUnmount(() => {
@@ -178,11 +220,12 @@ onBeforeUnmount(() => {
 <template>
   <div relative ma flex :gap="isAudio ? '2' : ''">
     <template v-if="type === 'video'">
-      <div relative>
+      <div relative class="status-attachment-spoiler-frame" :class="{ 'status-attachment-spoiler-frame--hidden': isSpoilerHidden }">
         <img
           v-if="videoThumbnail"
           :src="videoThumbnail"
           class="status-video-poster"
+          :class="{ 'status-video-poster--spoiler': isSpoilerHidden }"
           aria-hidden="true"
           :width="attachment.meta?.original?.width"
           :height="attachment.meta?.original?.height"
@@ -199,7 +242,7 @@ onBeforeUnmount(() => {
           :muted="!unmuteVideos"
           loop
           playsinline
-          :controls="shouldLoadAttachment"
+          :controls="shouldLoadAttachment && !isSpoilerHidden"
           rounded-lg
           object-cover
           fullscreen:object-contain
@@ -211,6 +254,7 @@ onBeforeUnmount(() => {
           }"
           class="status-video"
           :class="[
+            isSpoilerHidden ? 'status-video--spoiler-hidden' : '',
             !shouldLoadAttachment ? 'brightness-60 hover:brightness-70 transition-filter' : '',
             {
               'status-video--pending': videoThumbnail
@@ -223,10 +267,18 @@ onBeforeUnmount(() => {
           @loadeddata="onVideoFrameReady"
           @playing="onVideoFrameReady"
         >
-          <source :src="attachment.url || attachment.previewUrl" type="video/mp4">
+          <source v-if="!isSpoilerHidden" :src="attachment.url || attachment.previewUrl" type="video/mp4">
         </video>
         <button
-          v-if="!shouldLoadAttachment"
+          v-if="isSpoilerHidden"
+          type="button"
+          class="status-attachment-spoiler__reveal"
+          absolute inset-0 z-2
+          :aria-label="$t('status.spoiler_show_more')"
+          @click="revealSensitiveMedia"
+        />
+        <button
+          v-else-if="!shouldLoadAttachment"
           type="button"
           absolute inset-0 z-2 w-full h-full bg-transparent cursor-pointer
           text-sm
@@ -244,13 +296,15 @@ onBeforeUnmount(() => {
     <template v-else-if="type === 'gifv'">
       <button
         type="button"
-        relative
-        @click="!shouldLoadAttachment ? loadAttachment() : openMediaPreview(attachments ? attachments : [attachment], attachments?.indexOf(attachment) || 0)"
+        relative overflow-hidden rounded-lg
+        :aria-label="isSpoilerHidden ? $t('status.spoiler_show_more') : $t('action.open_image_preview_dialog')"
+        @click="isSpoilerHidden ? revealSensitiveMedia() : !shouldLoadAttachment ? loadAttachment() : openMediaPreview(attachments ? attachments : [attachment], attachments?.indexOf(attachment) || 0)"
       >
         <img
           v-if="videoThumbnail"
           :src="videoThumbnail"
           class="status-video-poster"
+          :class="{ 'status-video-poster--spoiler': isSpoilerHidden }"
           aria-hidden="true"
           :width="attachment.meta?.original?.width"
           :height="attachment.meta?.original?.height"
@@ -277,19 +331,20 @@ onBeforeUnmount(() => {
           }"
           class="status-video"
           :class="{
-            'status-video--pending': videoThumbnail
+            'status-video--spoiler-hidden': isSpoilerHidden,
+            'status-video--pending': isSpoilerHidden || (videoThumbnail
               && enableAutoplay
               && prefersReducedMotion !== 'reduce'
               && !videoReady
-              && !videoPlayFailed,
+              && !videoPlayFailed),
           }"
           @loadeddata="onVideoFrameReady"
           @playing="onVideoFrameReady"
         >
-          <source :src="attachment.url || attachment.previewUrl" type="video/mp4">
+          <source v-if="!isSpoilerHidden" :src="attachment.url || attachment.previewUrl" type="video/mp4">
         </video>
         <span
-          v-if="!shouldLoadAttachment"
+          v-if="!isSpoilerHidden && !shouldLoadAttachment"
           class="status-attachment-load"
           absolute
           text-sm
@@ -314,15 +369,16 @@ onBeforeUnmount(() => {
         rounded-lg
         h-full
         w-full
-        :aria-label="$t('action.open_image_preview_dialog')"
+        :aria-label="isSpoilerHidden ? $t('status.spoiler_show_more') : $t('action.open_image_preview_dialog')"
         relative
-        @click="!shouldLoadAttachment ? loadAttachment() : openMediaPreview(attachments ? attachments : [attachment], attachments?.indexOf(attachment) || 0)"
+        overflow-hidden
+        @click="isSpoilerHidden ? revealSensitiveMedia() : !shouldLoadAttachment ? loadAttachment() : openMediaPreview(attachments ? attachments : [attachment], attachments?.indexOf(attachment) || 0)"
       >
         <CommonBlurhash
           :blurhash="sensitiveBlurhash"
           class="status-attachment-image"
-          :src="src"
-          :srcset="srcset"
+          :src="imageSrc"
+          :srcset="imageSrcset"
           :width="attachment.meta?.original?.width"
           :height="attachment.meta?.original?.height"
           :alt="attachment.description ?? 'Image'"
@@ -330,24 +386,25 @@ onBeforeUnmount(() => {
             aspectRatio,
             objectPosition,
           }"
-          :should-load-image="shouldLoadAttachment"
+          :should-load-image="shouldLoadImage"
           rounded-lg
           h-full
           w-full
           object-cover
           :draggable="shouldLoadAttachment"
           :class="[
-            !shouldLoadAttachment ? 'brightness-60 hover:brightness-70 transition-filter' : '',
+            !shouldLoadImage ? 'brightness-60 hover:brightness-70 transition-filter' : '',
             {
+              'status-attachment-image--spoiler': isSpoilerHidden,
               'status-attachment-image--blurhash-loading': sensitiveBlurhash
-                && shouldLoadAttachment
+                && shouldLoadImage
                 && !imageLoaded,
             },
           ]"
           @loaded="onImageLoaded"
         />
         <span
-          v-if="!shouldLoadAttachment"
+          v-if="!isSpoilerHidden && !shouldLoadAttachment"
           class="status-attachment-load"
           absolute
           text-sm
@@ -366,7 +423,7 @@ onBeforeUnmount(() => {
       ]"
       flex gap-col-2
     >
-      <VDropdown v-if="attachment.description && !getPreferences(userSettings, 'hideAltIndicatorOnPosts')" :distance="6" placement="bottom-start">
+      <VDropdown v-if="!isSpoilerHidden && attachment.description && !getPreferences(userSettings, 'hideAltIndicatorOnPosts')" :distance="6" placement="bottom-start">
         <button
           font-bold text-sm
           :class="isAudio
@@ -394,7 +451,7 @@ onBeforeUnmount(() => {
           </div>
         </template>
       </VDropdown>
-      <div v-if="isGif && !getPreferences(userSettings, 'hideGifIndicatorOnPosts')">
+      <div v-if="!isSpoilerHidden && isGif && !getPreferences(userSettings, 'hideGifIndicatorOnPosts')">
         <button
           aria-hidden font-bold text-sm
           rounded-1 bg-black:65 text-white px1.2 py0.2 pointer-events-none
@@ -441,13 +498,58 @@ onBeforeUnmount(() => {
   opacity: 0.92;
 }
 
+.status-attachment-spoiler-frame--hidden {
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: #151515;
+}
+
+.status-video--spoiler-hidden {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.status-video-poster--spoiler,
+.status-attachment-image--spoiler {
+  filter: blur(14px) brightness(0.72);
+  transform: scale(1.08);
+  transition: none !important;
+}
+
+.status-media-container--single-video .status-video-poster--spoiler {
+  position: relative;
+  inset: auto;
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: min(430px, 70vh);
+}
+
+.status-attachment-spoiler__reveal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.status-attachment-spoiler__reveal:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -4px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .status-video,
   .status-attachment-image {
     transition-duration: 0ms;
   }
 
-  .status-attachment-image--blurhash-loading {
+  .status-attachment-image--blurhash-loading:not(.status-attachment-image--spoiler) {
     filter: none;
     opacity: 1;
   }
