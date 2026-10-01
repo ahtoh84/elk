@@ -273,13 +273,6 @@ export default defineNuxtConfig({
       bodyAttrs: {
         class: 'overflow-x-hidden',
       },
-      script: [
-        {
-          'defer': true,
-          'src': 'https://u.nanse.us/script.js',
-          'data-website-id': 'e9cc5533-ee49-4ace-9143-1fe2b266bfcd',
-        },
-      ],
       link: [
         { rel: 'icon', href: '/favicon.ico?v=rainbow', sizes: 'any' },
         { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
@@ -318,7 +311,7 @@ export default defineNuxtConfig({
         'manifest-src': ['\'self\''],
         'media-src': ['\'self\'', 'https:', 'http:'],
         'object-src': ['\'none\''],
-        'script-src': ['\'self\'', 'https://u.nanse.us', '\'unsafe-inline\'', '\'wasm-unsafe-eval\''],
+        'script-src': ['\'self\'', '\'unsafe-inline\'', '\'wasm-unsafe-eval\''],
         'script-src-attr': ['\'none\''],
         'style-src': ['\'self\'', '\'unsafe-inline\''],
         'upgrade-insecure-requests': true,
