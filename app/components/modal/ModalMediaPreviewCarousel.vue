@@ -16,7 +16,7 @@ const modelValue = defineModel<number>({ required: true })
 
 const slideGap = 20
 const doubleTapThreshold = 250
-const settleTransition = 'transform 420ms cubic-bezier(0.22, 1.2, 0.36, 1)'
+const settleTransition = 'transform 420ms cubic-bezier(0.22, 1, 0.36, 1)'
 
 const view = ref()
 const slider = ref()
