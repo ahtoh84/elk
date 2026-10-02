@@ -27,6 +27,7 @@ const availableNavButtons: NavButton[] = [
 ] as const
 
 const defaultSelectedNavButtonNames: NavButtonName[] = ['home', 'local', 'compose', 'notification', 'moreMenu']
+const maxButtonNumber = 5
 const navButtonNamesSetting = useLocalStorage<NavButtonName[]>(STORAGE_KEY_BOTTOM_NAV_BUTTONS, defaultSelectedNavButtonNames)
 const selectedNavButtonNames = ref<NavButtonName[]>(navButtonNamesSetting.value)
 
@@ -47,7 +48,6 @@ function isAdded(name: NavButtonName) {
 }
 
 function append(navButtonName: NavButtonName) {
-  const maxButtonNumber = 5
   if (selectedNavButtonNames.value.length < maxButtonNumber)
     selectedNavButtonNames.value = [...selectedNavButtonNames.value, navButtonName]
 }
@@ -74,7 +74,11 @@ function save() {
     <h2 id="interface-bn" font-medium>
       {{ $t('settings.interface.bottom_nav') }}
     </h2>
-    <form aria-labelledby="interface-bn" aria-describedby="interface-bn-desc" @submit.prevent="save">
+    <form
+      aria-labelledby="interface-bn"
+      :aria-describedby="selectedNavButtonNames.includes('moreMenu') ? 'interface-bn-desc' : 'interface-bn-desc interface-bn-more-required'"
+      @submit.prevent="save"
+    >
       <p id="interface-bn-desc" pb-2>
         {{ $t('settings.interface.bottom_nav_instructions') }}
       </p>
@@ -89,22 +93,40 @@ function save() {
         </nav>
       </div>
 
-      <!-- button selection -->
-      <div flex="~ gap4 wrap" py4>
-        <button
-          v-for="{ name, label, icon } in availableNavButtons"
-          :key="name"
-          btn-text flex="~ gap-2" items-center p2 border="~ base rounded" bg-base ws-nowrap
-          :class="isAdded(name) ? 'text-secondary hover:text-second bg-auto' : ''"
-          type="button"
-          role="switch"
-          :aria-checked="isAdded(name)"
-          @click="isAdded(name) ? remove(name) : append(name)"
+      <details border="t base">
+        <summary
+          flex="~ items-center justify-between gap-3 wrap" py3 cursor-pointer
+          focus-visible:ring="2 current"
+          aria-controls="interface-bn-choices"
         >
-          <span :class="icon" />
-          {{ label ? $t(label) : 'More menu' }}
-        </button>
-      </div>
+          <span flex-1 min-w-0>{{ $t('settings.interface.bottom_nav_options') }}</span>
+          <span role="status" aria-live="polite" flex-shrink-0 text-sm text-secondary tabular-nums>
+            {{ $t('settings.interface.bottom_nav_selected_count', [selectedNavButtonNames.length, maxButtonNumber]) }}
+          </span>
+        </summary>
+
+        <!-- button selection -->
+        <div id="interface-bn-choices" flex="~ gap4 wrap" py4>
+          <button
+            v-for="{ name, label, icon } in availableNavButtons"
+            :key="name"
+            btn-text flex="~ gap-2" items-center p2 border="~ base rounded" bg-base ws-nowrap
+            :class="isAdded(name) ? 'text-secondary hover:text-second bg-auto' : ''"
+            :disabled="!isAdded(name) && selectedNavButtonNames.length >= maxButtonNumber"
+            type="button"
+            role="switch"
+            :aria-checked="isAdded(name)"
+            @click="isAdded(name) ? remove(name) : append(name)"
+          >
+            <span :class="icon" />
+            {{ label ? $t(label) : 'More menu' }}
+          </button>
+        </div>
+      </details>
+
+      <p v-if="!selectedNavButtonNames.includes('moreMenu')" id="interface-bn-more-required" role="alert" mt2 text-sm text-danger>
+        {{ $t('settings.interface.bottom_nav_more_menu_required') }}
+      </p>
 
       <div flex="~ col" gap-y-4 gap-x-2 py-1 sm="~ justify-end flex-row">
         <button
@@ -127,6 +149,7 @@ function save() {
         </button>
         <button
           btn-solid font-bold py2 full-w sm-wa flex="~ gap2 center"
+          type="submit"
           :disabled="!canSave"
         >
           <span aria-hidden="true" i-ri:save-2-fill />

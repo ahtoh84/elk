@@ -456,6 +456,9 @@
     "interface": {
       "bottom_nav": "底部导航",
       "bottom_nav_instructions": "选择您最喜欢的导航按钮（最多五个）作为底部导航。\n必须包含“更多菜单”按钮。",
+      "bottom_nav_more_menu_required": "底部导航必须包含“更多菜单”按钮，才能保存。",
+      "bottom_nav_options": "编辑导航按钮",
+      "bottom_nav_selected_count": "已选 {0}/{1}",
       "color_mode": "颜色",
       "dark_mode": "深色",
       "default": "（默认）",

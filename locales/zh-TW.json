@@ -320,6 +320,11 @@
       "label": "帳號設定"
     },
     "interface": {
+      "bottom_nav": "底部導覽列",
+      "bottom_nav_instructions": "選擇最多五個喜愛的導覽按鈕作為底部導覽列，且必須包含「更多選單」按鈕。",
+      "bottom_nav_more_menu_required": "底部導覽列必須包含「更多選單」按鈕才能儲存。",
+      "bottom_nav_options": "編輯導覽按鈕",
+      "bottom_nav_selected_count": "已選 {0}/{1}",
       "color_mode": "色彩模式",
       "dark_mode": "深色",
       "default": "（預設）",

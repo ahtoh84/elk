@@ -496,6 +496,9 @@
     "interface": {
       "bottom_nav": "Bottom Navigation",
       "bottom_nav_instructions": "Choose your favorite navigation buttons up to five for the bottom navigation. Must include the \"More menu\" button.",
+      "bottom_nav_more_menu_required": "Include the More menu to save your bottom navigation.",
+      "bottom_nav_options": "Edit navigation buttons",
+      "bottom_nav_selected_count": "{0} of {1} selected",
       "color_mode": "Color Mode",
       "dark_mode": "Dark",
       "default": " (default)",
