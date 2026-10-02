@@ -7,10 +7,10 @@ export default defineNuxtRouteMiddleware((to) => {
   if (to.path === '/signin/callback')
     return
 
-  if (isHydrated.value)
+  if (isAuthReady.value)
     return handleAuth(to)
 
-  onHydrated(() => handleAuth(to))
+  watchOnce(isAuthReady, () => handleAuth(to))
 })
 
 function handleAuth(to: RouteLocationNormalized) {

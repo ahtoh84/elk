@@ -39,6 +39,7 @@ export default defineNuxtPlugin({
       callback = () => (initialLoad.value = false)
 
       const { readIDB } = await useAsyncIDBKeyval<UserLogin[]>(STORAGE_KEY_USERS, defaultUsers, users)
+      isAuthReady.value = true
 
       function reload() {
         setTimeout(() => {

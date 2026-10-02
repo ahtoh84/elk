@@ -18,6 +18,7 @@ import {
 const mock = process.mock
 
 const users: Ref<UserLogin[]> | RemovableRef<UserLogin[]> = import.meta.server ? ref<UserLogin[]>([]) : ref<UserLogin[]>([]) as RemovableRef<UserLogin[]>
+export const isAuthReady = ref(false)
 const nodes = useLocalStorage<Record<string, any>>(STORAGE_KEY_NODES, {}, { deep: true })
 export const currentUserHandle = useLocalStorage<string>(STORAGE_KEY_CURRENT_USER_HANDLE, mock ? mock.user.account.id : '')
 export const instanceStorage = useLocalStorage<Record<string, mastodon.v2.Instance>>(STORAGE_KEY_SERVERS, mock ? mock.server : {}, { deep: true })
