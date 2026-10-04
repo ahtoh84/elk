@@ -86,7 +86,7 @@ function handleReactedByClose() {
     <ModalDialog v-model="isEditHistoryDialogOpen" :focus-first-element="false" max-w-125>
       <StatusEditPreview v-if="statusEdit" :edit="statusEdit" />
     </ModalDialog>
-    <ModalDialog v-model="isCommandPanelOpen" max-w-fit flex>
+    <ModalDialog v-model="isCommandPanelOpen" motion="instant" max-w-fit flex>
       <CommandPanel @close="closeCommandPanel()" />
     </ModalDialog>
     <ModalDialog v-model="isConfirmDialogOpen" py-4 px-8 max-w-125>

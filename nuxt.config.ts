@@ -269,7 +269,7 @@ export default defineNuxtConfig({
   app: {
     keepalive: true,
     head: {
-      viewport: 'width=device-width,initial-scale=1,viewport-fit=cover',
+      viewport: 'width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content',
       bodyAttrs: {
         class: 'overflow-x-hidden',
       },

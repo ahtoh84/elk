@@ -124,16 +124,16 @@ const { dragging, dragDistance } = invoke(() => {
 
     <!-- Drawer -->
     <Transition
-      enter-active-class="transition duration-250 ease-out"
-      enter-from-class="opacity-0 children:(translate-y-2 scale-98)"
+      enter-active-class="nav-bottom-drawer-transition"
+      enter-from-class="nav-bottom-drawer-enter-from opacity-0 children:(translate-y-2 scale-98)"
       enter-to-class="opacity-100 children:(translate-y-0)"
-      leave-active-class="transition duration-250 ease-in"
+      leave-active-class="nav-bottom-drawer-transition"
       leave-from-class="opacity-100 children:(translate-y-0)"
-      leave-to-class="opacity-0 children:(translate-y-2 scale-98)"
+      leave-to-class="nav-bottom-drawer-leave-to opacity-0 children:(translate-y-2 scale-98)"
     >
       <div
         v-show="modelValue"
-        class="nav-bottom-drawer" z-20 h-100vh
+        class="nav-bottom-drawer" z-20 h-100dvh
         flex items-end of-y-scroll of-x-hidden scrollbar-hide overscroll-none
         bg="black/50"
       >
@@ -142,17 +142,16 @@ const { dragging, dragDistance } = invoke(() => {
         <div absolute inset-0 opacity-0 h="[calc(100vh+0.5px)]" />
         <div
           ref="drawerEl"
+          class="nav-bottom-drawer-panel"
           :style="{
             transform: dragging ? `translateY(${dragDistance}px)` : '',
           }"
           :class="{
-            'duration-0': dragging,
-            'duration-250': !dragging,
+            'nav-bottom-drawer-panel-dragging': dragging,
             'backdrop-blur-md': !getPreferences(userSettings, 'optimizeForLowPerformanceDevice'),
           }"
-          transition="transform ease-in"
           flex-1 min-w-48 py-6 mb="-1px"
-          of-y-auto scrollbar-hide overscroll-none max-h="[calc(100vh-200px)]"
+          of-y-auto scrollbar-hide overscroll-none
           rounded-t-lg bg="white/85 dark:neutral-900/85" backdrop-filter
           border-t-1 border-base
         >
@@ -198,9 +197,39 @@ const { dragging, dragDistance } = invoke(() => {
 </template>
 
 <style scoped>
+.nav-bottom-drawer-transition {
+  transition: opacity 220ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.nav-bottom-drawer-panel {
+  transform-origin: center bottom;
+  max-height: calc(100vh - 200px);
+  max-height: calc(100dvh - 200px);
+  transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.nav-bottom-drawer-panel-dragging {
+  transition-duration: 0ms;
+}
+
 .nav-bottom-drawer {
   position: fixed;
   inset-inline: 0;
   bottom: calc(3.5rem + env(safe-area-inset-bottom));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-bottom-drawer-transition {
+    transition: opacity 120ms ease-out;
+  }
+
+  .nav-bottom-drawer-panel {
+    transition-duration: 0ms;
+  }
+
+  .nav-bottom-drawer-enter-from .nav-bottom-drawer-panel,
+  .nav-bottom-drawer-leave-to .nav-bottom-drawer-panel {
+    transform: none;
+  }
 }
 </style>

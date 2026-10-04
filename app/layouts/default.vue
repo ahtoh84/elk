@@ -53,8 +53,8 @@ const isGrayscale = usePreferences('grayscaleMode')
           </slot>
         </div>
       </aside>
-      <div w-full min-h-screen :class="isHydrated && wideLayout ? 'xl:w-full sm:w-600px' : 'sm:w-600px md:shrink-0'" border-base>
-        <div min-h="[calc(100vh-3.5rem)]" sm:min-h-screen>
+      <div class="mobile-viewport-shell" w-full :class="isHydrated && wideLayout ? 'xl:w-full sm:w-600px' : 'sm:w-600px md:shrink-0'" border-base>
+        <div class="mobile-viewport-page">
           <slot />
         </div>
         <div
@@ -91,6 +91,23 @@ const isGrayscale = usePreferences('grayscaleMode')
 </template>
 
 <style scoped>
+.mobile-viewport-shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.mobile-viewport-page {
+  min-height: calc(100vh - 3.5rem);
+  min-height: calc(100dvh - 3.5rem);
+}
+
+@media (min-width: 640px) {
+  .mobile-viewport-page {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+}
+
 .bottom-nav-container--hidden {
   background: transparent;
   pointer-events: none;

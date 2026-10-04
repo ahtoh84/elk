@@ -12,6 +12,7 @@ const {
   useVIf = true,
   keepAlive = false,
   focusFirstElement = true,
+  motion = 'standard',
 } = defineProps<{
   // level of depth
   zIndex?: number
@@ -27,6 +28,8 @@ const {
   dialogLabelledBy?: string
   // Whether to focus on the first element when the modal opens.
   focusFirstElement?: boolean
+  // Whether to use the standard entrance/exit transition.
+  motion?: 'standard' | 'instant'
 }>()
 
 const emit = defineEmits<{
@@ -124,7 +127,11 @@ useEventListener('keydown', (e: KeyboardEvent) => {
 <template>
   <Teleport to="body">
     <!-- Dialog component -->
-    <Transition name="dialog-visible" @transitionend="trapFocusDialog">
+    <Transition
+      name="dialog-visible"
+      :css="motion !== 'instant'"
+      @after-enter="trapFocusDialog"
+    >
       <div
         v-if="isVIf"
         v-show="isVShow"
@@ -171,14 +178,14 @@ useEventListener('keydown', (e: KeyboardEvent) => {
 <style lang="postcss" scoped>
 .dialog-visible-enter-active,
 .dialog-visible-leave-active {
-  transition-duration: 0.25s;
+  transition-duration: 250ms;
 
   .dialog-mask {
-    transition: opacity 0.25s ease;
+    transition: opacity 250ms cubic-bezier(0.23, 1, 0.32, 1);
   }
 
   .dialog-main {
-    transition: opacity 0.25s ease, transform 0.25s ease;
+    transition: opacity 250ms cubic-bezier(0.23, 1, 0.32, 1), transform 250ms cubic-bezier(0.23, 1, 0.32, 1);
   }
 }
 
@@ -191,6 +198,26 @@ useEventListener('keydown', (e: KeyboardEvent) => {
   .dialog-main {
     transform: translateY(50px);
     opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog-visible-enter-active,
+  .dialog-visible-leave-active {
+    transition-duration: 200ms;
+
+    .dialog-mask {
+      transition: opacity 200ms ease-out;
+    }
+
+    .dialog-main {
+      transition: opacity 200ms ease-out;
+    }
+  }
+
+  .dialog-visible-enter-from .dialog-main,
+  .dialog-visible-leave-to .dialog-main {
+    transform: none;
   }
 }
 

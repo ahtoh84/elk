@@ -6,7 +6,6 @@ export function setupPageHeader() {
   const { locale, locales, t } = useI18n()
   const colorMode = useColorMode()
   const buildInfo = useBuildInfo()
-  const enablePinchToZoom = usePreferences('enablePinchToZoom')
 
   const localeMap = (locales.value as LocaleObject[]).reduce((acc, l) => {
     acc[l.code!] = l.dir ?? 'ltr'
@@ -17,12 +16,7 @@ export function setupPageHeader() {
     htmlAttrs: {
       lang: () => locale.value,
       dir: () => localeMap[locale.value] ?? 'ltr',
-      class: () => enablePinchToZoom.value ? ['enable-pinch-to-zoom'] : [],
     },
-    meta: [{
-      name: 'viewport',
-      content: () => `width=device-width,initial-scale=1${enablePinchToZoom.value ? '' : ',maximum-scale=1,user-scalable=0'},viewport-fit=cover`,
-    }],
     titleTemplate: (title?: string) => {
       let titleTemplate = title ?? ''
 

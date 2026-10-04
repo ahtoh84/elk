@@ -67,6 +67,20 @@ export default defineConfig({
     [/^elk-group-hover[:-]([a-z0-9/-]+)$/, ([,r]) => `media-mouse-group-hover-${r} group-active-${r}`],
   ],
   presets: [
+    {
+      name: 'hover-capability',
+      variants: [
+        (matcher) => {
+          if (!matcher.startsWith('hover:'))
+            return
+          return {
+            matcher: matcher.slice(6),
+            selector: (input: string) => `${input}:hover`,
+            parent: '@media (hover: hover) and (pointer: fine)',
+          }
+        },
+      ],
+    },
     presetUno({
       attributifyPseudo: true,
     }),
