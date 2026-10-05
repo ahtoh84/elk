@@ -30,6 +30,7 @@ export interface PreferencesSettings {
   unmuteVideos: boolean
   optimizeForLowPerformanceDevice: boolean
   enableDataSaving: boolean
+  enablePinchToZoom: boolean
   useStarFavoriteIcon: boolean
   zenMode: boolean
   experimentalVirtualScroller: boolean
@@ -81,6 +82,7 @@ export const DEFAULT__PREFERENCES_SETTINGS: PreferencesSettings = {
   unmuteVideos: false,
   optimizeForLowPerformanceDevice: false,
   enableDataSaving: false,
+  enablePinchToZoom: false,
   useStarFavoriteIcon: false,
   zenMode: false,
   experimentalVirtualScroller: true,

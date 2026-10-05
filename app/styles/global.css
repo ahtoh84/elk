@@ -552,6 +552,10 @@ html.dark {
   color-scheme: dark;
 }
 
+html:not(.enable-pinch-to-zoom) body {
+  touch-action: pan-x pan-y;
+}
+
 html {
   --at-apply: bg-base text-base;
 }

@@ -73,6 +73,12 @@ const userSettings = useUserSettings()
         </template>
       </SettingsToggleItem>
       <SettingsToggleItem
+        :checked="getPreferences(userSettings, 'enablePinchToZoom')"
+        @click="togglePreferences('enablePinchToZoom')"
+      >
+        {{ $t('settings.preferences.enable_pinch_to_zoom') }}
+      </SettingsToggleItem>
+      <SettingsToggleItem
         :checked="getPreferences(userSettings, 'useStarFavoriteIcon')"
         @click="togglePreferences('useStarFavoriteIcon')"
       >

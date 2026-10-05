@@ -1,16 +1,40 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
 import SettingsBottomNav from '~/components/settings/SettingsBottomNav.vue'
+import { DEFAULT__PREFERENCES_SETTINGS } from '~/composables/settings/definition'
 import PreferencesPage from '~/pages/settings/preferences/index.vue'
 
 const mockedSettings = vi.hoisted(() => ({ preferences: {} }))
+const mockedTogglePreferences = vi.hoisted(() => vi.fn())
 
 mockNuxtImport('useUserSettings', () => () => ({ value: mockedSettings }))
 mockNuxtImport('getPreferences', () => () => false)
-mockNuxtImport('togglePreferences', () => vi.fn())
+mockNuxtImport('togglePreferences', () => mockedTogglePreferences)
 mockNuxtImport('useI18n', () => () => ({ t: (key: string) => key }))
 
 describe('settings density', () => {
+  it('keeps pinch-to-zoom disabled by default and offers a setting to enable it', async () => {
+    expect(Reflect.get(DEFAULT__PREFERENCES_SETTINGS, 'enablePinchToZoom')).toBe(false)
+
+    const wrapper = await mountSuspended(PreferencesPage, {
+      global: {
+        stubs: {
+          MainContent: { template: '<main><slot name="title" /><slot /></main>' },
+          MainTitle: { template: '<h1><slot /></h1>' },
+        },
+      },
+    })
+    const pinchToZoomToggle = wrapper.findAll('[role="checkbox"]')
+      .find(toggle => toggle.text().toLowerCase().includes('pinch to zoom'))
+
+    expect(pinchToZoomToggle).toBeDefined()
+    expect(pinchToZoomToggle?.attributes('aria-checked')).toBe('false')
+
+    mockedTogglePreferences.mockClear()
+    await pinchToZoomToggle!.trigger('click')
+    expect(mockedTogglePreferences).toHaveBeenCalledWith('enablePinchToZoom')
+  })
+
   it('keeps less-frequently used preference groups collapsed until requested', async () => {
     const wrapper = await mountSuspended(PreferencesPage, {
       global: {
