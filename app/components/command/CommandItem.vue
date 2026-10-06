@@ -14,7 +14,7 @@ const emit = defineEmits<{
 
 <template>
   <div
-    class="flex px-3 py-2 my-1 items-center rounded-lg hover:bg-active transition-all duration-65 ease-in-out cursor-pointer scroll-m-10"
+    class="flex px-3 py-2 my-1 items-center rounded-lg hover:bg-active cursor-pointer scroll-m-10"
     :class="{ 'bg-active': active }"
     :data-index="index"
     @click="emit('activate')"
@@ -32,7 +32,7 @@ const emit = defineEmits<{
 
     <div
       v-if="cmd.onComplete"
-      class="flex items-center gap-1 transition-all duration-65 ease-in-out"
+      class="flex items-center gap-1"
       :class="active ? 'opacity-100' : 'opacity-0'"
     >
       <div class="text-xs text-secondary">
@@ -42,7 +42,7 @@ const emit = defineEmits<{
     </div>
     <div
       v-if="cmd.onActivate"
-      class="flex items-center gap-1 transition-all duration-65 ease-in-out"
+      class="flex items-center gap-1"
       :class="active ? 'opacity-100' : 'opacity-0'"
     >
       <div class="text-xs text-secondary">
