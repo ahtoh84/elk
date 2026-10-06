@@ -492,7 +492,7 @@ onBeforeUnmount(() => {
 }
 
 .status-attachment-image {
-  transition: filter 180ms ease-out, opacity 180ms ease-out;
+  transition: opacity 180ms ease-out;
 }
 
 .status-attachment-image--blurhash-loading {

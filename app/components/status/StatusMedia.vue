@@ -388,13 +388,13 @@ onBeforeUnmount(() => resetCarouselDrag())
   box-sizing: content-box;
   padding-inline-end: 0.375rem;
   transform-origin: center;
-  transition: transform 420ms cubic-bezier(0.22, 1.2, 0.36, 1);
+  transition: transform 180ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .status-media-item:active {
   transform: scale(0.97);
   transition-duration: 120ms;
-  transition-timing-function: ease-out;
+  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .status-media-container--dragging .status-media-item:active {
@@ -404,6 +404,10 @@ onBeforeUnmount(() => resetCarouselDrag())
 @media (prefers-reduced-motion: reduce) {
   .status-media-item {
     transition: none;
+  }
+
+  .status-media-item:active {
+    transform: none;
   }
 }
 </style>

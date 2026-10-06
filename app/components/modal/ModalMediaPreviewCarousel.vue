@@ -16,7 +16,7 @@ const modelValue = defineModel<number>({ required: true })
 
 const slideGap = 20
 const doubleTapThreshold = 250
-const settleTransition = 'transform 420ms cubic-bezier(0.22, 1, 0.36, 1)'
+const settleTransition = 'transform 250ms cubic-bezier(0.23, 1, 0.32, 1)'
 
 const view = ref()
 const slider = ref()
@@ -24,8 +24,8 @@ const slide = ref()
 const image = ref()
 
 const reduceMotion = import.meta.server ? ref(false) : useReducedMotion()
-const isInitialScrollDone = useTimeout(350)
-const canAnimate = computed(() => isInitialScrollDone.value && !reduceMotion.value)
+const initialLayoutReady = ref(false)
+const canAnimate = computed(() => initialLayoutReady.value && !reduceMotion.value)
 
 const scale = ref(1)
 const x = ref(0)
@@ -51,6 +51,9 @@ onMounted(() => {
   maxZoomOut.value = 1 - slideGapAsScale
 
   goToFocusedSlide()
+  requestAnimationFrame(() => {
+    initialLayoutReady.value = true
+  })
 })
 watch(modelValue, goToFocusedSlide)
 
@@ -262,7 +265,6 @@ const sliderStyle = computed(() => {
     transform: `scale(${scale.value}) translate(${-x.value}px, ${-y.value}px)`,
     transition: settleTransition,
     gap: `${slideGap}px`,
-    willChange: 'transform',
   }
 
   if (!canAnimate.value || isDragging.value || isPinching.value)
