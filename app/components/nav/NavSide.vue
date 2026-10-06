@@ -185,31 +185,27 @@ const exploreLink = computed(() => {
   }
 
   .nav-more-items {
-    display: grid;
-    grid-template-rows: 1fr;
     opacity: 1;
     transform: translateY(0);
     transition:
-      grid-template-rows 220ms cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 160ms ease-out,
-      transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .nav-more-items-content {
-    min-height: 0;
-    overflow: hidden;
+      opacity 160ms cubic-bezier(0.23, 1, 0.32, 1),
+      transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
   }
 
   .nav-more-items-enter-from,
   .nav-more-items-leave-to {
-    grid-template-rows: 0fr;
     opacity: 0;
     transform: translateY(-0.35rem);
   }
 
   @media (prefers-reduced-motion: reduce) {
     .nav-more-items {
-      transition-duration: 0ms;
+      transition: opacity 120ms ease-out;
+    }
+
+    .nav-more-items-enter-from,
+    .nav-more-items-leave-to {
+      transform: none;
     }
   }
 

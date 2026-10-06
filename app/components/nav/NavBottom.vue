@@ -112,7 +112,7 @@ const navIndicatorStyle = computed(() => ({
   justify-content: center;
   pointer-events: none;
   transform: translate3d(var(--nav-button-translate), 0, 0);
-  transition: transform 340ms cubic-bezier(0.22, 1.28, 0.36, 1);
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .nav-bottom-indicator-bar {
