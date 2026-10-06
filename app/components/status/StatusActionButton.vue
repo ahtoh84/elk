@@ -50,7 +50,7 @@ useCommand({
   <component
     :is="as"
     v-bind="$attrs" ref="el"
-    w-fit flex gap-1 items-center transition-all select-none
+    w-fit flex gap-1 items-center select-none status-action-button
     rounded group
     motion-pressable
     :hover=" !disabled ? hover : undefined"
@@ -86,3 +86,17 @@ useCommand({
     </CommonAnimateNumber>
   </component>
 </template>
+
+<style scoped>
+.status-action-button {
+  transition:
+    color 120ms ease-out,
+    transform 150ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-action-button {
+    transition: color 120ms ease-out;
+  }
+}
+</style>

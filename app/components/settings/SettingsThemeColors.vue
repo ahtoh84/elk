@@ -35,10 +35,25 @@ function updateTheme(theme: ThemeColors) {
         :aria-pressed="currentTheme === theme['--theme-color-name'] ? 'true' : 'false'"
         :aria-label="theme['--theme-color-label']"
         :title="theme['--theme-color-label']"
-        w-8 h-8 rounded-full transition-all
+        w-8 h-8 rounded-full settings-theme-swatch
         ring="$local-ring-color offset-3 offset-$c-bg-base"
         @click="updateTheme(theme)"
       />
     </div>
   </section>
 </template>
+
+<style scoped>
+.settings-theme-swatch {
+  transition:
+    transform 150ms cubic-bezier(0.23, 1, 0.32, 1),
+    box-shadow 150ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settings-theme-swatch {
+    transform: none;
+    transition: box-shadow 120ms ease-out;
+  }
+}
+</style>

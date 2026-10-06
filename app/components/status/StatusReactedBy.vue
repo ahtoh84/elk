@@ -65,7 +65,7 @@ const tabs = [
       :key="option.name"
     >
       <div
-        relative flex flex-auto cursor-pointer sm:px6 px2 rounded transition-all
+        relative flex flex-auto cursor-pointer sm:px6 px2 rounded transition-colors
         tabindex="0"
         hover:bg-active transition-100
         @click="option.onClick"

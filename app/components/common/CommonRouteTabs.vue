@@ -32,7 +32,7 @@ useCommands(() => command
         v-if="!option.disabled"
         :to="option.to"
         :replace="replace"
-        relative flex flex-auto cursor-pointer sm:px6 px2 rounded transition-all
+        relative flex flex-auto cursor-pointer sm:px6 px2 rounded transition-colors
         tabindex="0"
         hover:bg-active transition-100
         exact-active-class="children:(text-secondary !border-primary !op100 !text-base)"

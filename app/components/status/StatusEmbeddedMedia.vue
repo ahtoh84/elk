@@ -60,12 +60,8 @@ const card = ref(status.card)
         >
           <button
             absolute
-            bg-primary
-            opacity-85
             rounded-full
-            hover:bg-primary-active
-            hover:opacity-95
-            transition-all
+            status-embedded-media-toggle
             box-shadow-outline
             @click.stop.prevent="() => overlayToggle = !overlayToggle"
           >
@@ -101,5 +97,28 @@ const card = ref(status.card)
 iframe {
     width: 100%;
     height: 100%;
+}
+</style>
+
+<style scoped>
+.status-embedded-media-toggle {
+  background-color: var(--c-primary);
+  opacity: 0.85;
+  transition:
+    background-color 150ms ease-out,
+    opacity 150ms ease-out;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .status-embedded-media-toggle:hover {
+    background-color: var(--c-primary-active);
+    opacity: 0.95;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-embedded-media-toggle {
+    transition: opacity 120ms ease-out;
+  }
 }
 </style>

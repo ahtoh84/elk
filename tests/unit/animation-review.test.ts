@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import CommandItem from '~/components/command/CommandItem.vue'
@@ -27,7 +29,37 @@ describe('animation review refinements', () => {
       slots: { default: () => '2', next: () => '3' },
     })
 
-    expect(wrapper.html()).toContain('duration-150')
+    expect(wrapper.html()).toContain('animate-number-roll')
     expect(wrapper.html()).not.toContain('duration-300')
+
+    const source = readFileSync(resolve(process.cwd(), 'app/components/common/AnimateNumber.vue'), 'utf8')
+    expect(source).toContain('transform 150ms')
+    expect(source).toContain('@media (prefers-reduced-motion: reduce)')
+  })
+
+  it('limits reviewed interactive transitions to the properties they change', () => {
+    const reviewedFiles = [
+      'app/components/status/StatusActionButton.vue',
+      'app/components/status/StatusEmbeddedMedia.vue',
+      'app/components/settings/SettingsThemeColors.vue',
+      'app/components/common/CommonRouteTabs.vue',
+      'app/components/status/StatusReactedBy.vue',
+      'app/pages/[[server]]/collections/index.vue',
+    ]
+    const broadTransitions = reviewedFiles.filter((file) => {
+      const source = readFileSync(resolve(process.cwd(), file), 'utf8')
+      return source.includes('transition-all')
+    })
+
+    expect(broadTransitions).toEqual([])
+  })
+
+  it('removes press and continuous animation movement for reduced-motion users', () => {
+    const source = readFileSync(resolve(process.cwd(), 'app/styles/global.css'), 'utf8')
+
+    expect(source).toContain('.motion-pressable:active:not(:disabled)')
+    expect(source).toContain('.animate-spin,')
+    expect(source).toContain('.animate-pulse,')
+    expect(source).toContain('.animate-shake-x')
   })
 })

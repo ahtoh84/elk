@@ -27,7 +27,6 @@ html {
 }
 
 .motion-pressable {
-  transform: translateZ(0);
   transition: transform 150ms ease-out;
 }
 
@@ -54,19 +53,38 @@ html {
 
 @media (prefers-reduced-motion: reduce) {
   .page-enter-active,
-  .page-leave-active,
-  .motion-pressable,
+  .page-leave-active {
+    transition: opacity 120ms ease-out;
+  }
+
+  .motion-pressable {
+    transition: none;
+  }
+
+  .motion-pressable:active:not(:disabled),
   .nav-bottom > a,
   .nav-bottom > div > button {
-    transition-duration: 0ms;
+    transition: color 120ms ease-out;
   }
 
   .page-enter-from,
   .page-leave-to,
   .nav-bottom > a.text-primary,
   .nav-bottom > div > button.text-primary,
-  .nav-bottom > div > button[class*="text-primary"] {
+  .nav-bottom > div > button[class*="text-primary"],
+  .nav-bottom > a:active,
+  .nav-bottom > div > button:active {
     transform: none;
+  }
+
+  .animate-spin,
+  .animate-pulse,
+  .animate-shake-x {
+    animation: none !important;
+  }
+
+  .zen .zen-hide {
+    transition: opacity 120ms ease-out;
   }
 }
 
@@ -383,7 +401,19 @@ button,
 }
 
 .zen .zen-hide {
-  --at-apply: 'op0 hover:op100 transition duration-600';
+  opacity: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .zen .zen-hide {
+    opacity: 0;
+    transition: opacity 160ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .zen .zen-hide:hover,
+  .zen .zen-hide:focus-within {
+    opacity: 1;
+  }
 }
 
 .zen .zen-none {

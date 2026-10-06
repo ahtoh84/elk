@@ -45,7 +45,7 @@ const activeCollections = computed(() =>
       <button
         v-for="option in tabOptions"
         :key="option.name"
-        flex flex-auto cursor-pointer px3 m1 rounded transition-all
+        flex flex-auto cursor-pointer px3 m1 rounded transition-colors
         hover:bg-active transition-100
         @click="tab = option.name"
       >

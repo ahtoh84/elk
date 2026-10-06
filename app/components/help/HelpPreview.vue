@@ -35,14 +35,14 @@ const vAutoFocus = (el: HTMLElement) => el.focus()
     </NuxtLink>
     <p flex="~ gap-2 wrap justify-center" mxa>
       <template v-for="team of elkTeamMembers" :key="team.github">
-        <NuxtLink :href="team.link" target="_blank" external rounded-full transition duration-300 border="~ transparent" hover="scale-105 border-primary">
+        <NuxtLink :href="team.link" target="_blank" external class="help-team-member">
           <img :src="`/avatars/${team.github}-100x100.png`" :alt="team.display" rounded-full w-15 h-15 height="60" width="60">
         </NuxtLink>
       </template>
     </p>
     <p italic flex justify-center w-full>
       <NuxtLink href="https://github.com/sponsors/elk-zone" target="_blank">
-        <span text-xl font-script hover:text-primary transition duration-300>{{ $t('help.footer_team') }}</span>
+        <span text-xl font-script hover:text-primary transition-colors duration-150>{{ $t('help.footer_team') }}</span>
       </NuxtLink>
     </p>
 
@@ -51,3 +51,36 @@ const vAutoFocus = (el: HTMLElement) => el.focus()
     </button>
   </div>
 </template>
+
+<style scoped>
+.help-team-member {
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  transition:
+    border-color 150ms ease-out,
+    transform 150ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.help-team-member:focus-visible {
+  border-color: var(--c-primary);
+  outline: 2px solid var(--c-primary);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .help-team-member:hover {
+    border-color: var(--c-primary);
+    transform: scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .help-team-member {
+    transition: border-color 120ms ease-out;
+  }
+
+  .help-team-member:hover {
+    transform: none;
+  }
+}
+</style>
