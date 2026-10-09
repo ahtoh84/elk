@@ -67,6 +67,7 @@ export default defineNuxtConfig({
   },
   css: [
     '@unocss/reset/tailwind.css',
+    '@fontsource-variable/inter/opsz.css',
     'floating-vue/dist/style.css',
     '~/styles/default-theme.css',
     '~/styles/vars.css',
