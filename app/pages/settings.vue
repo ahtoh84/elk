@@ -12,60 +12,6 @@ useHydratedHead({
 const route = useRoute()
 
 const isRootPath = computed(() => route.name === 'settings')
-
-const navListEl = ref<HTMLElement>()
-const activePillStyle = ref<{ top: number, height: number, ready: boolean }>({
-  top: 0,
-  height: 0,
-  ready: false,
-})
-
-function updateSettingsPill(target?: HTMLElement) {
-  if (!navListEl.value)
-    return
-  const activeLink = target || navListEl.value.querySelector('.settings-nav-link-active') as HTMLElement | null
-  if (activeLink) {
-    const navRect = navListEl.value.getBoundingClientRect()
-    const activeRect = activeLink.getBoundingClientRect()
-    const top = activeRect.top - navRect.top + navListEl.value.scrollTop
-    const height = activeRect.height
-    if (height > 0) {
-      activePillStyle.value = {
-        top,
-        height,
-        ready: true,
-      }
-    }
-  }
-  else {
-    activePillStyle.value.ready = false
-  }
-}
-
-function handleNavClick(event: MouseEvent) {
-  const target = (event.target as HTMLElement).closest('.settings-nav-link') as HTMLElement | null
-  if (target)
-    updateSettingsPill(target)
-}
-
-onMounted(() => {
-  nextTick(() => {
-    updateSettingsPill()
-    setTimeout(updateSettingsPill, 100)
-    setTimeout(updateSettingsPill, 300)
-  })
-})
-
-watch(() => route.fullPath, () => {
-  nextTick(() => {
-    updateSettingsPill()
-    setTimeout(updateSettingsPill, 60)
-  })
-})
-
-useResizeObserver(navListEl, () => {
-  updateSettingsPill()
-})
 </script>
 
 <template>
@@ -78,24 +24,7 @@ useResizeObserver(navListEl, () => {
               {{ $t('nav.settings') }}
             </MainTitle>
           </template>
-          <nav
-            ref="navListEl"
-            class="settings-navigation-list relative"
-            :aria-label="$t('nav.settings')"
-            @click="handleNavClick"
-          >
-            <!-- Physical Gliding Active Indicator Pill -->
-            <div
-              class="settings-nav-gliding-pill"
-              :style="{
-                transform: `translate3d(0, ${activePillStyle.top}px, 0)`,
-                height: `${activePillStyle.height}px`,
-                opacity: activePillStyle.ready ? 1 : 0,
-              }"
-              aria-hidden="true"
-            >
-              <div class="settings-nav-gliding-bar" />
-            </div>
+          <nav class="settings-navigation-list" :aria-label="$t('nav.settings')">
             <SettingsItem
               v-if="currentUser"
               navigation
@@ -165,34 +94,3 @@ useResizeObserver(navListEl, () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.settings-nav-gliding-pill {
-  position: absolute;
-  inset-inline: 0.5rem;
-  top: 0;
-  border-radius: 0.75rem;
-  background: var(--c-primary-fade);
-  pointer-events: none;
-  z-index: 0;
-  transition:
-    transform var(--motion-moderate, 160ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1)),
-    height var(--motion-moderate, 160ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1)),
-    opacity var(--motion-fast, 80ms) ease;
-}
-
-.settings-nav-gliding-bar {
-  position: absolute;
-  inset-block: 0.65rem;
-  inset-inline-start: 0;
-  width: 3px;
-  border-radius: 999px;
-  background: var(--c-primary);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .settings-nav-gliding-pill {
-    transition: opacity 120ms ease-out;
-  }
-}
-</style>
