@@ -51,7 +51,7 @@ const activeCollections = computed(() =>
       >
         <span
           mxa px4 py3 text-center border-b-3
-          :class="tab === option.name ? 'font-bold border-primary' : 'op50 border-transparent'"
+          :class="tab === option.name ? 'font-semibold border-primary' : 'op50 border-transparent'"
         >{{ option.display }}</span>
       </button>
     </div>
@@ -69,7 +69,7 @@ const activeCollections = computed(() =>
         <div flex items-center gap-3>
           <div i-ri:shapes-line text-xl shrink-0 text-secondary />
           <div flex="~ col" min-w-0>
-            <div font-bold truncate>
+            <div font-semibold truncate>
               {{ collection.name }}
             </div>
             <div v-if="collection.description" text-sm text-secondary truncate>

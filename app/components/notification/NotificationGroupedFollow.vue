@@ -31,7 +31,7 @@ const timeAgo = useTimeAgo(() => timeAgoCreatedAt.value, timeAgoOptions)
           <NuxtLink :to="getAccountRoute(follows[0].account)">
             <AccountDisplayName
               :account="follows[0].account"
-              text-primary font-bold line-clamp-1 ws-pre-wrap break-all hover:underline
+              text-primary font-semibold line-clamp-1 ws-pre-wrap break-all hover:underline
             />
           </NuxtLink>
         </AccountHoverWrapper>
@@ -39,7 +39,7 @@ const timeAgo = useTimeAgo(() => timeAgoCreatedAt.value, timeAgoOptions)
         <CommonLocalizedNumber
           keypath="notification.others"
           :count="count - 1"
-          text-primary font-bold line-clamp-1 ws-pre-wrap break-all
+          text-primary font-semibold line-clamp-1 ws-pre-wrap break-all
         />
         &nbsp;{{ $t('notification.followed_you') }}
         <time text-secondary :datetime="timeAgoCreatedAt">
@@ -50,7 +50,7 @@ const timeAgo = useTimeAgo(() => timeAgoCreatedAt.value, timeAgoOptions)
         <NuxtLink :to="getAccountRoute(follows[0].account)">
           <AccountDisplayName
             :account="follows[0].account"
-            text-primary me-1 font-bold line-clamp-1 ws-pre-wrap break-all hover:underline
+            text-primary me-1 font-semibold line-clamp-1 ws-pre-wrap break-all hover:underline
           />
         </NuxtLink>
         <span me-1 ws-nowrap>

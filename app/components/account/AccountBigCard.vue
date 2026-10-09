@@ -33,7 +33,7 @@ cacheAccount(account)
           </NuxtLink>
         </div>
         <div sm:mt-2>
-          <AccountDisplayName :account="account" font-bold text-lg line-clamp-1 ws-pre-wrap break-all />
+          <AccountDisplayName :account="account" font-semibold text-lg line-clamp-1 ws-pre-wrap break-all />
           <AccountHandle text-sm :account="account" />
         </div>
       </div>

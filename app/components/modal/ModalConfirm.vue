@@ -46,7 +46,7 @@ function handleChoice(choice: ConfirmDialogChoice['choice']) {
 
 <template>
   <div flex="~ col" gap-6>
-    <div font-bold text-lg>
+    <div font-semibold text-lg>
       {{ title }}
     </div>
     <div v-if="description">

@@ -111,7 +111,7 @@ function resetModal() {
 
       <div>
         <input id="dontlike" v-model="reportReason" type="radio" value="dontlike">
-        <label pl-2 for="dontlike" font-bold>{{ $t('report.dontlike') }}</label>
+        <label pl-2 for="dontlike" font-semibold>{{ $t('report.dontlike') }}</label>
         <p pl-6>
           {{ $t('report.dontlike_desc') }}
         </p>
@@ -119,7 +119,7 @@ function resetModal() {
 
       <div>
         <input id="spam" v-model="reportReason" type="radio" value="spam">
-        <label pl-2 for="spam" font-bold>{{ $t('report.spam') }}</label>
+        <label pl-2 for="spam" font-semibold>{{ $t('report.spam') }}</label>
         <p pl-6>
           {{ $t('report.spam_desc') }}
         </p>
@@ -127,8 +127,8 @@ function resetModal() {
 
       <div v-if="serverRules.length > 0">
         <input id="violation" v-model="reportReason" type="radio" value="violation">
-        <label pl-2 for="violation" font-bold>{{ $t('report.violation') }}</label>
-        <p v-if="reportReason === 'violation'" pl-6 pt-2 text-primary font-bold>
+        <label pl-2 for="violation" font-semibold>{{ $t('report.violation') }}</label>
+        <p v-if="reportReason === 'violation'" pl-6 pt-2 text-primary font-semibold>
           {{ $t('report.select_many') }}
         </p>
         <ul pl-6>
@@ -147,19 +147,19 @@ function resetModal() {
 
       <div>
         <input id="other" v-model="reportReason" type="radio" value="other">
-        <label pl-2 for="other" font-bold>{{ $t('report.other') }}</label>
+        <label pl-2 for="other" font-semibold>{{ $t('report.other') }}</label>
         <p pl-6>
           {{ $t('report.other_desc') }}
         </p>
       </div>
 
       <div v-if="reportReason && reportReason !== 'dontlike'">
-        <h3 mt-8 mb-4 font-bold>
+        <h3 mt-8 mb-4 font-semibold>
           {{ $t('report.anything_else') }}
         </h3>
         <textarea v-model="additionalComments" w-full h-20 p-3 border :placeholder="$t('report.additional_comments')" />
         <div v-if="getServerName(account) && getServerName(account) !== currentServer">
-          <h3 mt-8 mb-2 font-bold>
+          <h3 mt-8 mb-2 font-semibold>
             {{ $t('report.another_server') }}
           </h3>
           <p pb-1>
@@ -183,7 +183,7 @@ function resetModal() {
       <h1 mxa text-4xl mb4>
         {{ status ? $t('report.select_posts_other') : $t('report.select_posts') }}
       </h1>
-      <p text-primary font-bold>
+      <p text-primary font-semibold>
         {{ $t('report.select_many') }}
       </p>
       <table>

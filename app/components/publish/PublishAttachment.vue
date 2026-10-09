@@ -52,7 +52,7 @@ function toggleApply() {
     >
       <div flex flex-col-reverse gap-5 md:flex-row>
         <div flex flex-col gap-2 justify-between>
-          <h1 id="edit-attachment" font-bold>
+          <h1 id="edit-attachment" font-semibold>
             {{ $t('attachment.edit_title') }}
           </h1>
           <div flex flex-col gap-2>

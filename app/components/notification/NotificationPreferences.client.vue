@@ -115,7 +115,7 @@ onActivated(() => (busy.value = false))
   <section v-if="pwaEnabled && (showWarning || show)" aria-labelledby="pn-s">
     <Transition name="slide-down">
       <div v-if="show" flex="~ col" border="b base">
-        <h3 id="pn-settings" px6 py4 mt2 font-bold text-xl flex="~ gap-1" items-center>
+        <h3 id="pn-settings" px6 py4 mt2 font-semibold text-xl flex="~ gap-1" items-center>
           {{ $t('settings.notifications.push_notifications.label') }}
         </h3>
         <template v-if="isSupported">
@@ -141,7 +141,7 @@ onActivated(() => (busy.value = false))
               </fieldset>
               <div flex="~ col" gap-y-4 gap-x-2 py-1 sm="~ justify-between flex-row">
                 <button
-                  btn-solid font-bold py2 full-w sm-wa flex="~ gap2 center"
+                  btn-solid font-semibold py2 full-w sm-wa flex="~ gap2 center"
                   :class="busy || !saveEnabled ? 'border-transparent' : null"
                   :disabled="busy || !saveEnabled"
                 >
@@ -152,7 +152,7 @@ onActivated(() => (busy.value = false))
                   {{ $t('settings.notifications.push_notifications.save_settings') }}
                 </button>
                 <button
-                  btn-outline font-bold py2 full-w sm-wa flex="~ gap2 center"
+                  btn-outline font-semibold py2 full-w sm-wa flex="~ gap2 center"
                   type="button"
                   :class="busy || !saveEnabled ? 'border-transparent' : null"
                   :disabled="busy || !saveEnabled"
@@ -166,7 +166,7 @@ onActivated(() => (busy.value = false))
             <form flex="~ col" mt-4 @submit.prevent="removeSubscription">
               <span border="b base 2px" class="bg-$c-text-secondary" />
               <button
-                btn-outline rounded-full font-bold py-4 flex="~ gap2 center" m5
+                btn-outline rounded-full font-semibold py-4 flex="~ gap2 center" m5
                 :class="busy ? 'border-transparent' : null"
                 :disabled="busy"
               >

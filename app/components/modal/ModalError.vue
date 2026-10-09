@@ -6,7 +6,7 @@ defineProps<ErrorDialogData>()
 
 <template>
   <div flex="~ col" gap-6>
-    <div font-bold text-lg text-center>
+    <div font-semibold text-lg text-center>
       {{ title }}
     </div>
     <div

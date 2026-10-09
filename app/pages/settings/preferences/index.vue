@@ -16,7 +16,7 @@ const userSettings = useUserSettings()
       </MainTitle>
     </template>
     <section>
-      <h2 px6 py4 mt2 font-bold text-xl flex="~ gap-1" items-center sr-only>
+      <h2 px6 py4 mt2 font-semibold text-xl flex="~ gap-1" items-center sr-only>
         <span aria-hidden="true" block i-ri-equalizer-line />
         {{ $t('settings.preferences.label') }}
       </h2>
@@ -88,7 +88,7 @@ const userSettings = useUserSettings()
     <section>
       <details>
         <summary
-          px6 py4 mt2 font-bold text-xl flex="~ gap-2 wrap" items-center cursor-pointer
+          px6 py4 mt2 font-semibold text-xl flex="~ gap-2 wrap" items-center cursor-pointer
           focus-visible:ring="2 current"
           aria-controls="settings-wellbeing-options"
         >
@@ -191,7 +191,7 @@ const userSettings = useUserSettings()
     <section>
       <details>
         <summary
-          px6 py4 mt2 font-bold text-xl flex="~ gap-2 wrap" items-center cursor-pointer
+          px6 py4 mt2 font-semibold text-xl flex="~ gap-2 wrap" items-center cursor-pointer
           focus-visible:ring="2 current"
           aria-controls="settings-experimental-options"
         >

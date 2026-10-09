@@ -17,7 +17,7 @@ const formatted = useFormattedDateTime(editedAt)
       <time
         :title="editedAt"
         :datetime="editedAt"
-        font-bold underline decoration-dashed
+        font-semibold underline decoration-dashed
         text-secondary
       >&#160;*&#160;</time>
     </CommonTooltip>

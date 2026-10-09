@@ -147,7 +147,7 @@ onClickOutside(input, () => {
             :key="name"
             :value="name"
             px-2 py1 font-mono w-full text-left
-            :class="autocompleteIndex === idx ? 'text-primary font-bold' : null"
+            :class="autocompleteIndex === idx ? 'text-primary font-semibold' : null"
             @click="select(idx)"
           >
             {{ name }}

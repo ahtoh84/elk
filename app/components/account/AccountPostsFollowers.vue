@@ -21,7 +21,7 @@ const userSettings = useUserSettings()
         <CommonLocalizedNumber
           keypath="account.posts_count"
           :count="account.statusesCount"
-          font-bold
+          font-semibold
           :class="isExactActive ? 'text-primary' : 'text-base'"
         />
       </template>
@@ -40,11 +40,11 @@ const userSettings = useUserSettings()
             v-if="account.followingCount >= 0"
             keypath="account.following_count"
             :count="account.followingCount"
-            font-bold
+            font-semibold
             :class="isExactActive ? 'text-primary' : 'text-base'"
           />
           <div v-else flex gap-x-1>
-            <span font-bold text-base>Hidden</span>
+            <span font-semibold text-base>Hidden</span>
             <span>{{ $t('account.following') }}</span>
           </div>
         </template>
@@ -63,11 +63,11 @@ const userSettings = useUserSettings()
             v-if="account.followersCount >= 0"
             keypath="account.followers_count"
             :count="account.followersCount"
-            font-bold
+            font-semibold
             :class="isExactActive ? 'text-primary' : 'text-base'"
           />
           <div v-else flex gap-x-1>
-            <span font-bold text-base>Hidden</span>
+            <span font-semibold text-base>Hidden</span>
             <span>{{ $t('account.followers') }}</span>
           </div>
         </template>

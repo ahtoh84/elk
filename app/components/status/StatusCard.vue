@@ -148,7 +148,7 @@ const forceShow = ref(false)
               </NuxtLink>
             </AccountHoverWrapper>
           </div>
-          <AccountInlineInfo font-bold :account="rebloggedBy" :avatar="false" text-sm />
+          <AccountInlineInfo font-semibold :account="rebloggedBy" :avatar="false" text-sm />
         </div>
       </div>
     </slot>

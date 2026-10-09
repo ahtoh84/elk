@@ -427,7 +427,7 @@ onBeforeUnmount(() => {
     >
       <VDropdown v-if="!isSpoilerHidden && attachment.description && !getPreferences(userSettings, 'hideAltIndicatorOnPosts')" :distance="6" placement="bottom-start">
         <button
-          font-bold text-sm
+          font-semibold text-sm
           :class="isAudio
             ? 'rounded-full h-15 w-15 btn-outline border-base text-secondary hover:bg-active hover:text-active'
             : 'rounded-1 bg-black/65 text-white hover:bg-black px1.2 py0.2'"
@@ -440,7 +440,7 @@ onBeforeUnmount(() => {
         <template #popper>
           <div p4 flex flex-col gap-2 max-w-130>
             <div flex justify-between>
-              <h2 font-bold text-xl text-secondary>
+              <h2 font-semibold text-xl text-secondary>
                 {{ $t('status.img_alt.desc') }}
               </h2>
               <button v-close-popper text-sm btn-outline py0 px2 text-secondary border-base>
@@ -455,7 +455,7 @@ onBeforeUnmount(() => {
       </VDropdown>
       <div v-if="!isSpoilerHidden && isGif && !getPreferences(userSettings, 'hideGifIndicatorOnPosts')">
         <button
-          aria-hidden font-bold text-sm
+          aria-hidden font-semibold text-sm
           rounded-1 bg-black:65 text-white px1.2 py0.2 pointer-events-none
         >
           {{ $t('status.gif') }}

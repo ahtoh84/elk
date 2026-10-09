@@ -180,7 +180,7 @@ const { formatNumber } = useHumanReadableNumber()
     :virtualScroller="virtualScroller"
   >
     <template #updater="{ number, update }">
-      <button id="elk_show_new_items" py-4 border="b base" flex="~ col" p-3 w-full text-primary font-bold @click="() => { update(); clearNotifications() }">
+      <button id="elk_show_new_items" py-4 border="b base" flex="~ col" p-3 w-full text-primary font-semibold @click="() => { update(); clearNotifications() }">
         {{ $t('timeline.show_new_items', number, { named: { v: formatNumber(number) } }) }}
       </button>
     </template>

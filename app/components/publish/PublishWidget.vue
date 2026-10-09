@@ -433,7 +433,7 @@ const detectLanguage = useDebounceFn(async () => {
 
             <CommonErrorMessage v-if="failedMessages.length > 0" described-by="publish-failed">
               <header id="publish-failed" flex justify-between>
-                <div flex items-center gap-x-2 font-bold>
+                <div flex items-center gap-x-2 font-semibold>
                   <div aria-hidden="true" i-ri:error-warning-fill />
                   <p>{{ $t('state.publish_failed') }}</p>
                 </div>
@@ -455,7 +455,7 @@ const detectLanguage = useDebounceFn(async () => {
             </CommonErrorMessage>
             <CommonErrorMessage v-if="failedMessages.length > 0" described-by="publish-failed">
               <header id="publish-failed" flex justify-between>
-                <div flex items-center gap-x-2 font-bold>
+                <div flex items-center gap-x-2 font-semibold>
                   <div aria-hidden="true" i-ri:error-warning-fill />
                   <p>{{ scheduledTime ? $t('state.schedule_failed') : $t('state.publish_failed') }}</p>
                 </div>
@@ -482,7 +482,7 @@ const detectLanguage = useDebounceFn(async () => {
 
             <CommonErrorMessage v-if="!isValidScheduledTime" described-by="scheduled-time-invalid" pt-2>
               <header id="scheduled-time-invalid" flex justify-between>
-                <div flex items-center gap-x-2 font-bold>
+                <div flex items-center gap-x-2 font-semibold>
                   <div aria-hidden="true" i-ri:error-warning-fill />
                   <p>{{ $t('state.schedule_time_invalid', [minimumScheduledTime.toLocaleString()]) }}</p>
                 </div>
@@ -513,7 +513,7 @@ const detectLanguage = useDebounceFn(async () => {
               :described-by="isExceedingAttachmentLimit ? 'upload-failed uploads-per-post' : 'upload-failed'"
             >
               <header id="upload-failed" flex justify-between>
-                <div flex items-center gap-x-2 font-bold>
+                <div flex items-center gap-x-2 font-semibold>
                   <div aria-hidden="true" i-ri:error-warning-fill />
                   <p>{{ $t('state.upload_failed') }}</p>
                 </div>

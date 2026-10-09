@@ -188,7 +188,7 @@ onDeactivated(cancelEdit)
     class="rounded-bs-is-0 rounded-bs-ie-0 border-t-dashed m-b-2"
   >
     <header :id="`action-list-failed-${list.id}`" flex justify-between>
-      <div flex items-center gap-x-2 font-bold>
+      <div flex items-center gap-x-2 font-semibold>
         <div aria-hidden="true" i-ri:error-warning-fill />
         <p>{{ $t(`list.${isEditing ? 'edit_error' : 'delete_error'}`) }}</p>
       </div>

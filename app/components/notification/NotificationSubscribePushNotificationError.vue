@@ -18,7 +18,7 @@ const modelValue = defineModel<boolean>({ required: true })
     border="~ base rounded red-600 dark:red-400"
   >
     <header id="notification-failed" flex justify-between>
-      <div flex items-center gap-x-2 font-bold>
+      <div flex items-center gap-x-2 font-semibold>
         <div aria-hidden="true" i-ri:error-warning-fill />
         <p>{{ title ?? $t('settings.notifications.push_notifications.subscription_error.title') }}</p>
       </div>
@@ -36,14 +36,14 @@ const modelValue = defineModel<boolean>({ required: true })
     <p>{{ message }}</p>
     <p py-2>
       <i18n-t keypath="settings.notifications.push_notifications.subscription_error.error_hint">
-        <NuxtLink font-bold href="https://docs.elk.zone/pwa#faq" target="_blank" inline-flex="~ row" items-center gap-x-2>
+        <NuxtLink font-semibold href="https://docs.elk.zone/pwa#faq" target="_blank" inline-flex="~ row" items-center gap-x-2>
           https://docs.elk.zone/pwa#faq
           <span inline-block aria-hidden="true" i-ri:external-link-line class="rtl-flip" />
         </NuxtLink>
       </i18n-t>
     </p>
     <p py-2>
-      <NuxtLink font-bold text-primary href="https://github.com/elk-zone/elk" target="_blank" flex="~ row" items-center gap-x-2>
+      <NuxtLink font-semibold text-primary href="https://github.com/elk-zone/elk" target="_blank" flex="~ row" items-center gap-x-2>
         {{ $t('settings.notifications.push_notifications.subscription_error.repo_link') }}
         <span inline-block aria-hidden="true" i-ri:external-link-line class="rtl-flip" />
       </NuxtLink>

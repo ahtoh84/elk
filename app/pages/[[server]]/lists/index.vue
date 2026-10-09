@@ -119,7 +119,7 @@ onDeactivated(() => clearError(false))
         class="rounded-bs-is-0 rounded-bs-ie-0 border-t-dashed m-b-2"
       >
         <header id="create-list-failed" flex justify-between>
-          <div flex items-center gap-x-2 font-bold>
+          <div flex items-center gap-x-2 font-semibold>
             <div aria-hidden="true" i-ri:error-warning-fill />
             <p>{{ $t('list.error') }}</p>
           </div>

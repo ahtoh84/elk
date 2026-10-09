@@ -27,7 +27,7 @@ const isLegacyAccount = computed(() => !currentUser.value?.vapidKey)
     :class="closeableHeader ? 'border-b border-base' : 'px6 px4'"
   >
     <header flex items-center pb-2>
-      <h2 id="notifications-warning" text-md font-bold w-full>
+      <h2 id="notifications-warning" text-md font-semibold w-full>
         {{ $t('settings.notifications.push_notifications.warning.enable_title') }}
       </h2>
       <button
@@ -60,7 +60,7 @@ const isLegacyAccount = computed(() => !currentUser.value?.vapidKey)
       {{ $t('settings.notifications.push_notifications.warning.re_auth') }}
     </p>
     <button
-      btn-outline rounded-full font-bold py4 flex="~ gap2 center" m5
+      btn-outline rounded-full font-semibold py4 flex="~ gap2 center" m5
       type="button"
       :class="busy || isLegacyAccount ? 'border-transparent' : null"
       :disabled="busy || isLegacyAccount"

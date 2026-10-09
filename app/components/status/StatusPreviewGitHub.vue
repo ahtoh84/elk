@@ -101,7 +101,7 @@ const meta = computed(() => {
         <div flex flex-col gap-2>
           <NuxtLink flex gap-1 text-xl sm:text-3xl flex-wrap leading-none :href="meta.titleUrl" target="_blank" external>
             <template v-if="meta.repo">
-              <span>{{ meta.user }}</span><span text-secondary-light>/</span><span text-primary font-bold>{{ meta.repo }}</span>
+              <span>{{ meta.user }}</span><span text-secondary-light>/</span><span text-primary font-semibold>{{ meta.repo }}</span>
             </template>
             <span v-else>{{ meta.user }}</span>
           </NuxtLink>

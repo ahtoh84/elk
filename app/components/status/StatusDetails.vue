@@ -44,7 +44,7 @@ useHydratedHead({
           :status="status"
           :inline="false"
         >
-          <span ms1 font-bold cursor-pointer>{{ $t('state.edited') }}</span>
+          <span ms1 font-semibold cursor-pointer>{{ $t('state.edited') }}</span>
         </StatusEditIndicator>
       </div>
       <div aria-hidden="true">

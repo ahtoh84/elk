@@ -8,7 +8,7 @@ const build = useBuildInfo()
     rounded-lg of-hidden
     flex="~ col gap-3"
   >
-    <h2 font-bold text-rose>
+    <h2 font-semibold text-rose>
       {{ $t('help.build_preview.title') }}
     </h2>
     <p>
@@ -19,7 +19,7 @@ const build = useBuildInfo()
       </i18n-t>
     </p>
     <p>{{ $t('help.build_preview.desc2') }}</p>
-    <p font-bold>
+    <p font-semibold>
       {{ $t('help.build_preview.desc3') }}
     </p>
     <div i-ri-git-pull-request-line absolute text-10em bottom--10 inset-ie--10 text-rose op10 class="-z-1" />

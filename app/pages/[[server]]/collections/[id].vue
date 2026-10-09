@@ -69,7 +69,7 @@ useHydratedHead({
         </div>
 
         <div v-if="collection.tag" flex items-center gap-2>
-          <NuxtLink :to="getTagRoute(collection.tag.name)" text-primary text-sm font-bold hover:underline>
+          <NuxtLink :to="getTagRoute(collection.tag.name)" text-primary text-sm font-semibold hover:underline>
             #{{ collection.tag.name }}
           </NuxtLink>
         </div>

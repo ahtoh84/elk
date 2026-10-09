@@ -19,7 +19,7 @@ const withAccounts = computed(() =>
       :in-notification="true"
     >
       <template #meta>
-        <div flex gap-2 text-sm text-secondary font-bold>
+        <div flex gap-2 text-sm text-secondary font-semibold>
           <p me-1>
             {{ $t('conversation.with') }}
           </p>

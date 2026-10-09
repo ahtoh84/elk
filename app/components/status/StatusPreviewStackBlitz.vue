@@ -84,7 +84,7 @@ const vnodeCode = computed(() => {
         <p flex gap-1>
           <span>{{ $t('custom_cards.stackblitz.snippet_from', [meta.file]) }}</span><span text-secondary>{{ `- ${$t('custom_cards.stackblitz.lines', [meta.lines])}` }}</span>
         </p>
-        <div flex font-bold gap-2>
+        <div flex font-semibold gap-2>
           <span text-primary>{{ meta.project }}</span><span flex text-secondary><span flex items-center><svg h-5 width="22.27" height="32" viewBox="0 0 256 368"><path fill="currentColor" d="M109.586 217.013H0L200.34 0l-53.926 150.233H256L55.645 367.246l53.927-150.233z" /></svg></span><span>StackBlitz</span></span>
         </div>
       </div>

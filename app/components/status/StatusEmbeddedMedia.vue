@@ -44,7 +44,7 @@ const card = ref(status.card)
               i-ri:arrow-right-up-line
             />
           </div>
-          <p font-bold line-clamp-1 text-size-base>
+          <p font-semibold line-clamp-1 text-size-base>
             {{ card?.title }}
           </p>
           <p line-clamp-1>

@@ -86,7 +86,7 @@ function handleShowCommit() {
 
     <div h-1px bg-border my2 />
 
-    <p px5 py3 font-bold text-lg>
+    <p px5 py3 font-semibold text-lg>
       {{ $t('settings.about.sponsors') }}
     </p>
 
@@ -117,7 +117,7 @@ function handleShowCommit() {
     <div h-1px bg-border my2 />
 
     <template v-if="isHydrated">
-      <p px5 py3 font-bold text-lg>
+      <p px5 py3 font-semibold text-lg>
         {{ $t('settings.about.meet_the_team') }}
       </p>
 

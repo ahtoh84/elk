@@ -52,7 +52,7 @@ const timeAgo = useTimeAgo(() => notification.createdAt, timeAgoOptions)
           py-3 bg-base top-0
         >
           <div i-ri-user-3-line text-xl me-3 color-blue />
-          <AccountDisplayName :account="notification.account" text-primary me-1 font-bold line-clamp-1 ws-pre-wrap break-all />
+          <AccountDisplayName :account="notification.account" text-primary me-1 font-semibold line-clamp-1 ws-pre-wrap break-all />
           <span ws-nowrap>
             {{ $t('notification.followed_you') }}
             <time text-secondary :datetime="notification.createdAt">
@@ -72,7 +72,7 @@ const timeAgo = useTimeAgo(() => notification.createdAt, timeAgoOptions)
           <div i-ri:user-add-line text-xl me-2 text-primary />
           <AccountDisplayName
             :account="notification.account"
-            text-primary me-1 font-bold line-clamp-1 ws-pre-wrap break-all
+            text-primary me-1 font-semibold line-clamp-1 ws-pre-wrap break-all
           />
           <span>{{ $t("notification.signed_up") }}
             <time text-secondary :datetime="notification.createdAt">
@@ -89,11 +89,11 @@ const timeAgo = useTimeAgo(() => notification.createdAt, timeAgoOptions)
           <i18n-t keypath="notification.reported">
             <AccountDisplayName
               :account="notification.account"
-              text-primary me-1 font-bold line-clamp-1 ws-pre-wrap break-all
+              text-primary me-1 font-semibold line-clamp-1 ws-pre-wrap break-all
             />
             <AccountDisplayName
               :account="notification.report?.targetAccount!"
-              text-primary ms-1 font-bold line-clamp-1 ws-pre-wrap break-all
+              text-primary ms-1 font-semibold line-clamp-1 ws-pre-wrap break-all
             />
           </i18n-t>
         </div>
@@ -104,7 +104,7 @@ const timeAgo = useTimeAgo(() => notification.createdAt, timeAgoOptions)
         <div i-ri-user-shared-line text-xl me-3 color-blue />
         <AccountDisplayName
           :account="notification.account"
-          text-primary me-1 font-bold line-clamp-1 ws-pre-wrap break-all
+          text-primary me-1 font-semibold line-clamp-1 ws-pre-wrap break-all
         />
         <span me-1 ws-nowrap>
           {{ $t('notification.request_to_follow') }}
@@ -168,7 +168,7 @@ const timeAgo = useTimeAgo(() => notification.createdAt, timeAgoOptions)
             <AccountHoverWrapper :account="notification.account">
               <NuxtLink :to="getAccountRoute(notification.account)">
                 <AccountDisplayName
-                  :account="notification.account" text-primary me-1 font-bold line-clamp-1 ws-pre-wrap break-all
+                  :account="notification.account" text-primary me-1 font-semibold line-clamp-1 ws-pre-wrap break-all
                 />
               </NuxtLink>
             </AccountHoverWrapper>
@@ -177,7 +177,7 @@ const timeAgo = useTimeAgo(() => notification.createdAt, timeAgoOptions)
           <div flex gap-3 ps-8>
             <div i-ri:shapes-line text-xl shrink-0 text-secondary />
             <div flex="~ col" min-w-0>
-              <div font-bold truncate>
+              <div font-semibold truncate>
                 {{ notification.collection.name }}
               </div>
               <div v-if="notification.collection.description" text-sm text-secondary truncate>
@@ -196,7 +196,7 @@ const timeAgo = useTimeAgo(() => notification.createdAt, timeAgoOptions)
             <AccountHoverWrapper :account="notification.account">
               <NuxtLink :to="getAccountRoute(notification.account)">
                 <AccountDisplayName
-                  :account="notification.account" text-primary me-1 font-bold line-clamp-1 ws-pre-wrap break-all
+                  :account="notification.account" text-primary me-1 font-semibold line-clamp-1 ws-pre-wrap break-all
                 />
               </NuxtLink>
             </AccountHoverWrapper>
@@ -205,7 +205,7 @@ const timeAgo = useTimeAgo(() => notification.createdAt, timeAgoOptions)
           <div flex gap-3 ps-8>
             <div i-ri:shapes-line text-xl shrink-0 text-secondary />
             <div flex="~ col" min-w-0>
-              <div font-bold truncate>
+              <div font-semibold truncate>
                 {{ notification.collection.name }}
               </div>
               <div v-if="notification.collection.description" text-sm text-secondary truncate>

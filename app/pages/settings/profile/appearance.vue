@@ -226,7 +226,7 @@ onReactivated(refreshInfo)
 
         <CommonErrorMessage v-if="failedMessages.length > 0" described-by="save-failed">
           <header id="save-failed" flex justify-between>
-            <div flex items-center gap-x-2 font-bold>
+            <div flex items-center gap-x-2 font-semibold>
               <div aria-hidden="true" i-ri:error-warning-fill />
               <p>{{ $t('state.save_failed') }}</p>
             </div>

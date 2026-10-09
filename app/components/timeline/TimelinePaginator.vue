@@ -31,7 +31,7 @@ function getFollowedTag(status: mastodon.v1.Status): string | null {
   <div :class="{ 'timeline-feed': feed }">
     <CommonPaginator v-bind="{ paginator, stream, preprocess, buffer, endMessage }" :virtual-scroller="virtualScroller">
       <template #updater="{ number, update }">
-        <button id="elk_show_new_items" py-4 border="b base" flex="~ col" p-3 w-full text-primary font-bold @click="update">
+        <button id="elk_show_new_items" py-4 border="b base" flex="~ col" p-3 w-full text-primary font-semibold @click="update">
           {{ $t('timeline.show_new_items', number, { named: { v: formatNumber(number) } }) }}
         </button>
       </template>

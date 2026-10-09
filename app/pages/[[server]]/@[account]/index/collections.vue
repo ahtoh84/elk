@@ -52,7 +52,7 @@ if (account) {
         <div flex items-center gap-3>
           <div i-ri:shapes-line text-xl shrink-0 text-secondary />
           <div flex="~ col" min-w-0>
-            <div font-bold truncate>
+            <div font-semibold truncate>
               {{ collection.name }}
             </div>
             <div v-if="collection.description" text-sm text-secondary truncate>
