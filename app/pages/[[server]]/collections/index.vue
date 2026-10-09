@@ -51,7 +51,7 @@ const activeCollections = computed(() =>
       >
         <span
           mxa px4 py3 text-center border-b-3
-          :class="tab === option.name ? 'font-semibold border-primary' : 'op50 border-transparent'"
+          :class="tab === option.name ? 'font-semibold border-primary text-base' : 'text-secondary hover:text-base border-transparent'"
         >{{ option.display }}</span>
       </button>
     </div>

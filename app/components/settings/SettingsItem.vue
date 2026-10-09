@@ -46,7 +46,7 @@ useCommand({
     exact-active-class="text-primary"
     :class="[
       navigation ? 'settings-nav-link' : 'settings-item-link',
-      disabled ? 'op25 pointer-events-none' : '',
+      disabled ? 'op50 pointer-events-none' : '',
       match ? 'text-primary' : '',
       navigation && match ? 'settings-nav-link-active' : '',
     ]"

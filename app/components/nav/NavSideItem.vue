@@ -45,7 +45,7 @@ const noUserVisual = computed(() => isHydrated.value && userOnly && !currentUser
   <NuxtLink
     :to="to"
     :disabled="noUserDisable"
-    :class="noUserVisual ? 'op25 pointer-events-none ' : ''"
+    :class="noUserVisual ? 'op50 pointer-events-none ' : ''"
     :active-class="activeClass"
     group focus:outline-none disabled:pointer-events-none
     :tabindex="noUserDisable ? -1 : undefined"

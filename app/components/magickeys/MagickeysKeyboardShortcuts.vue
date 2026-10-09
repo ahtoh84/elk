@@ -159,7 +159,7 @@ const shortcutItemGroups = computed<ShortcutItemGroup[]>(() => [
               v-for="(key, idx) in item.shortcut.keys"
               :key="idx"
             >
-              <span v-if="idx !== 0" mx1 text-sm op80>{{ item.shortcut.isSequence ? $t('magic_keys.sequence_then') : '+' }}</span>
+              <span v-if="idx !== 0" mx1 text-sm text-secondary>{{ item.shortcut.isSequence ? $t('magic_keys.sequence_then') : '+' }}</span>
               <code class="px2 md:px1.5 lg:px2 lg:px2 py0 lg:py-0.5" rounded bg-code border="px $c-border-code" shadow-sm my1 font-mono font-600>{{ key }}</code>
             </template>
           </div>

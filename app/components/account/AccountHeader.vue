@@ -250,10 +250,10 @@ async function copyAccountName() {
       </div>
       <div v-if="namedFields.length" flex="~ col wrap gap1">
         <div v-for="field in namedFields" :key="field.name" flex="~ gap-1" items-center>
-          <div mt="0.5" text-secondary uppercase text-xs font-bold>
+          <div mt="0.5" text-secondary text-xs font-semibold>
             <ContentRich :content="field.name" :emojis="account.emojis" />
           </div>
-          <span text-secondary text-xs font-bold>|</span>
+          <span text-secondary text-xs>|</span>
           <ContentRich :content="field.value" :emojis="account.emojis" />
         </div>
       </div>

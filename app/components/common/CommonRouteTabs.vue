@@ -120,7 +120,7 @@ useResizeObserver(containerEl, () => {
         </span>
       </NuxtLink>
       <div v-else flex flex-auto sm:px6 px2 xl:pb4 xl:pt5>
-        <span ws-nowrap mxa sm:px2 sm:py3 py2 text-center text-secondary-light op60>{{ option.display }}</span>
+        <span ws-nowrap mxa sm:px2 sm:py3 py2 text-center text-secondary>{{ option.display }}</span>
       </div>
     </template>
     <template v-if="isHydrated && moreOptions?.options?.length">
@@ -134,7 +134,6 @@ useResizeObserver(containerEl, () => {
             rounded
             hover:bg-active
             btn-action-icon
-            op75
             px4
             group
             :aria-label="t('action.more')"

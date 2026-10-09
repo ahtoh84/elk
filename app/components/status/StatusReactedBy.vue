@@ -72,7 +72,7 @@ const tabs = [
       >
         <span
           ws-nowrap mxa sm:px2 sm:py3 xl:pb4 xl:pt5 py2 text-center border-b-3
-          :class="option.name === type ? 'border-primary op100 text-base' : 'border-transparent text-secondary-light hover:text-secondary op50'"
+          :class="option.name === type ? 'border-primary text-base font-semibold' : 'border-transparent text-secondary hover:text-base'"
         >{{
           option.display
         }}</span>

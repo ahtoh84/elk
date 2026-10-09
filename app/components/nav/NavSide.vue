@@ -111,28 +111,28 @@ const exploreLink = computed(() => {
 
       <template #popper>
         <div :id="`${moreItemsId}-floating`" min-w-52 flex="~ col gap1" p-1>
-          <NuxtLink to="/conversations" :class="userOnlyDisabled ? 'op25 pointer-events-none' : undefined" :tabindex="userOnlyDisabled ? -1 : undefined">
+          <NuxtLink to="/conversations" :class="userOnlyDisabled ? 'op50 pointer-events-none' : undefined" :tabindex="userOnlyDisabled ? -1 : undefined">
             <CommonDropdownItem :text="$t('nav.conversations')" icon="i-ri:at-line" :command="command" />
           </NuxtLink>
           <NuxtLink :to="isHydrated ? `/${currentServer}/public` : '/public'">
             <CommonDropdownItem :text="$t('nav.federated')" icon="i-ri:earth-line" :command="command" />
           </NuxtLink>
-          <NuxtLink to="/favourites" :class="userOnlyDisabled ? 'op25 pointer-events-none' : undefined" :tabindex="userOnlyDisabled ? -1 : undefined">
+          <NuxtLink to="/favourites" :class="userOnlyDisabled ? 'op50 pointer-events-none' : undefined" :tabindex="userOnlyDisabled ? -1 : undefined">
             <CommonDropdownItem :text="$t('nav.favourites')" :icon="useStarFavoriteIcon ? 'i-ri:star-line' : 'i-ri:heart-3-line'" :command="command" />
           </NuxtLink>
-          <NuxtLink to="/bookmarks" :class="userOnlyDisabled ? 'op25 pointer-events-none' : undefined" :tabindex="userOnlyDisabled ? -1 : undefined">
+          <NuxtLink to="/bookmarks" :class="userOnlyDisabled ? 'op50 pointer-events-none' : undefined" :tabindex="userOnlyDisabled ? -1 : undefined">
             <CommonDropdownItem :text="$t('nav.bookmarks')" icon="i-ri:bookmark-line" :command="command" />
           </NuxtLink>
-          <NuxtLink :to="isHydrated ? `/${currentServer}/lists` : '/lists'" :class="userOnlyDisabled ? 'op25 pointer-events-none' : undefined" :tabindex="userOnlyDisabled ? -1 : undefined">
+          <NuxtLink :to="isHydrated ? `/${currentServer}/lists` : '/lists'" :class="userOnlyDisabled ? 'op50 pointer-events-none' : undefined" :tabindex="userOnlyDisabled ? -1 : undefined">
             <CommonDropdownItem :text="$t('nav.lists')" icon="i-ri:list-check" :command="command" />
           </NuxtLink>
-          <NuxtLink to="/hashtags" :class="userOnlyDisabled ? 'op25 pointer-events-none' : undefined" :tabindex="userOnlyDisabled ? -1 : undefined">
+          <NuxtLink to="/hashtags" :class="userOnlyDisabled ? 'op50 pointer-events-none' : undefined" :tabindex="userOnlyDisabled ? -1 : undefined">
             <CommonDropdownItem :text="$t('nav.hashtags')" icon="i-ri:hashtag" :command="command" />
           </NuxtLink>
-          <NuxtLink to="/scheduled-posts" :class="userOnlyDisabled ? 'op25 pointer-events-none' : undefined" :tabindex="userOnlyDisabled ? -1 : undefined">
+          <NuxtLink to="/scheduled-posts" :class="userOnlyDisabled ? 'op50 pointer-events-none' : undefined" :tabindex="userOnlyDisabled ? -1 : undefined">
             <CommonDropdownItem :text="$t('nav.scheduled_posts')" icon="i-ri:calendar-schedule-line" :command="command" />
           </NuxtLink>
-          <NuxtLink :to="isHydrated ? `/${currentServer}/collections` : '/collections'" :class="userOnlyDisabled ? 'op25 pointer-events-none' : undefined" :tabindex="userOnlyDisabled ? -1 : undefined">
+          <NuxtLink :to="isHydrated ? `/${currentServer}/collections` : '/collections'" :class="userOnlyDisabled ? 'op50 pointer-events-none' : undefined" :tabindex="userOnlyDisabled ? -1 : undefined">
             <CommonDropdownItem :text="$t('nav.collections')" icon="i-ri:shapes-line" :command="command" />
           </NuxtLink>
           <NuxtLink to="/settings">
