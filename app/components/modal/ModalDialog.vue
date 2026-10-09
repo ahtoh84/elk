@@ -176,16 +176,27 @@ useEventListener('keydown', (e: KeyboardEvent) => {
 </template>
 
 <style lang="postcss" scoped>
-.dialog-visible-enter-active,
-.dialog-visible-leave-active {
-  transition-duration: 250ms;
+.dialog-visible-enter-active {
+  transition-duration: var(--motion-slow, 240ms);
 
   .dialog-mask {
-    transition: opacity 250ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition: opacity var(--motion-slow, 240ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
   }
 
   .dialog-main {
-    transition: opacity 250ms cubic-bezier(0.23, 1, 0.32, 1), transform 250ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition: opacity var(--motion-slow, 240ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1)), transform var(--motion-slow, 240ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
+  }
+}
+
+.dialog-visible-leave-active {
+  transition-duration: var(--motion-slow-exit, 160ms);
+
+  .dialog-mask {
+    transition: opacity var(--motion-slow-exit, 160ms) var(--ease-fluid-exit, cubic-bezier(0.4, 0, 1, 1));
+  }
+
+  .dialog-main {
+    transition: opacity var(--motion-slow-exit, 160ms) var(--ease-fluid-exit, cubic-bezier(0.4, 0, 1, 1)), transform var(--motion-slow-exit, 160ms) var(--ease-fluid-exit, cubic-bezier(0.4, 0, 1, 1));
   }
 }
 
@@ -196,22 +207,27 @@ useEventListener('keydown', (e: KeyboardEvent) => {
   }
 
   .dialog-main {
-    transform: translateY(50px);
+    transform: translateY(28px);
     opacity: 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dialog-visible-enter-active,
-  .dialog-visible-leave-active {
-    transition-duration: 200ms;
+  .dialog-visible-enter-active {
+    transition-duration: var(--motion-moderate, 160ms);
 
-    .dialog-mask {
-      transition: opacity 200ms ease-out;
-    }
-
+    .dialog-mask,
     .dialog-main {
-      transition: opacity 200ms ease-out;
+      transition: opacity var(--motion-moderate, 160ms) ease-out;
+    }
+  }
+
+  .dialog-visible-leave-active {
+    transition-duration: var(--motion-moderate-exit, 120ms);
+
+    .dialog-mask,
+    .dialog-main {
+      transition: opacity var(--motion-moderate-exit, 120ms) ease-in;
     }
   }
 

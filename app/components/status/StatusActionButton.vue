@@ -56,7 +56,7 @@ useCommand({
     :hover=" !disabled ? hover : undefined"
     focus:outline-none
     :focus-visible="hover"
-    :class="active ? color : (disabled ? 'op25 cursor-not-allowed' : 'text-secondary')"
+    :class="active ? color : (disabled ? 'text-secondary/50 cursor-not-allowed' : 'text-secondary')"
     :aria-label="content"
     :disabled="disabled"
     :aria-disabled="disabled"
@@ -70,7 +70,23 @@ useCommand({
           'group-focus-visible:ring': '2 current',
         }"
       >
-        <div :class="active && activeIcon ? activeIcon : (disabled && inactiveIcon ? inactiveIcon : icon)" />
+        <div v-if="activeIcon" class="grid items-center justify-center">
+          <div
+            class="col-start-1 row-start-1 status-icon-swap"
+            :class="[
+              active ? 'status-icon-hidden' : 'status-icon-shown',
+              disabled && inactiveIcon ? inactiveIcon : icon,
+            ]"
+          />
+          <div
+            class="col-start-1 row-start-1 status-icon-swap"
+            :class="[
+              active ? 'status-icon-shown' : 'status-icon-hidden',
+              activeIcon,
+            ]"
+          />
+        </div>
+        <div v-else :class="disabled && inactiveIcon ? inactiveIcon : icon" />
       </div>
     </CommonTooltip>
 
@@ -90,13 +106,39 @@ useCommand({
 <style scoped>
 .status-action-button {
   transition:
-    color 120ms ease-out,
-    transform 150ms cubic-bezier(0.23, 1, 0.32, 1);
+    color var(--motion-fast, 80ms) ease-out,
+    transform var(--motion-fast, 80ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
+}
+
+.status-icon-swap {
+  transition:
+    opacity var(--motion-fast, 80ms) ease-out,
+    transform var(--motion-fast, 80ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
+}
+
+.status-icon-shown {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.status-icon-hidden {
+  opacity: 0;
+  transform: scale(0.65);
+  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .status-action-button {
-    transition: color 120ms ease-out;
+    transition: color var(--motion-fast, 80ms) ease-out;
+  }
+
+  .status-icon-swap {
+    transition: opacity var(--motion-fast, 80ms) ease-out;
+  }
+
+  .status-icon-shown,
+  .status-icon-hidden {
+    transform: none;
   }
 }
 </style>

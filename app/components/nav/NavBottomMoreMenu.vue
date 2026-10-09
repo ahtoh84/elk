@@ -124,10 +124,10 @@ const { dragging, dragDistance } = invoke(() => {
 
     <!-- Drawer -->
     <Transition
-      enter-active-class="nav-bottom-drawer-transition"
+      enter-active-class="nav-bottom-drawer-enter-active"
       enter-from-class="nav-bottom-drawer-enter-from opacity-0 children:(translate-y-2 scale-98)"
       enter-to-class="opacity-100 children:(translate-y-0)"
-      leave-active-class="nav-bottom-drawer-transition"
+      leave-active-class="nav-bottom-drawer-leave-active"
       leave-from-class="opacity-100 children:(translate-y-0)"
       leave-to-class="nav-bottom-drawer-leave-to opacity-0 children:(translate-y-2 scale-98)"
     >
@@ -197,19 +197,31 @@ const { dragging, dragDistance } = invoke(() => {
 </template>
 
 <style scoped>
-.nav-bottom-drawer-transition {
-  transition: opacity 220ms cubic-bezier(0.23, 1, 0.32, 1);
+.nav-bottom-drawer-enter-active {
+  transition: opacity var(--motion-moderate, 160ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
+
+  .nav-bottom-drawer-panel {
+    transition: transform var(--motion-moderate, 160ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
+  }
+}
+
+.nav-bottom-drawer-leave-active {
+  transition: opacity var(--motion-moderate-exit, 120ms) var(--ease-fluid-exit, cubic-bezier(0.4, 0, 1, 1));
+
+  .nav-bottom-drawer-panel {
+    transition: transform var(--motion-moderate-exit, 120ms) var(--ease-fluid-exit, cubic-bezier(0.4, 0, 1, 1));
+  }
 }
 
 .nav-bottom-drawer-panel {
   transform-origin: center bottom;
   max-height: calc(100vh - 200px);
   max-height: calc(100dvh - 200px);
-  transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform var(--motion-moderate, 160ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
 }
 
 .nav-bottom-drawer-panel-dragging {
-  transition-duration: 0ms;
+  transition-duration: 0ms !important;
 }
 
 .nav-bottom-drawer {
@@ -219,8 +231,12 @@ const { dragging, dragDistance } = invoke(() => {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nav-bottom-drawer-transition {
-    transition: opacity 120ms ease-out;
+  .nav-bottom-drawer-enter-active {
+    transition: opacity var(--motion-moderate, 160ms) ease-out;
+  }
+
+  .nav-bottom-drawer-leave-active {
+    transition: opacity var(--motion-moderate-exit, 120ms) ease-in;
   }
 
   .nav-bottom-drawer-panel {

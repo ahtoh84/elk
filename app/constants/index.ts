@@ -52,3 +52,5 @@ export const THEME_COLORS = {
   backgroundDark: '#fafafa',
   backgroundLight: '#111111',
 } as const
+
+export * from './motion'

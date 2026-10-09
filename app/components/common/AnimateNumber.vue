@@ -15,7 +15,7 @@ defineProps<{
 
 <style scoped>
 .animate-number-roll {
-  transition: transform 150ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform var(--motion-moderate, 160ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
 }
 
 @media (prefers-reduced-motion: reduce) {

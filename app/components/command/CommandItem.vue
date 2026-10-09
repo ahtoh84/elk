@@ -21,11 +21,22 @@ const emit = defineEmits<{
   >
     <div v-if="cmd.icon" me-2 :class="cmd.icon" />
 
-    <div class="flex-1 flex items-baseline gap-2">
-      <div :class="{ 'font-medium': active }">
-        {{ cmd.name }}
-      </div>
-      <div v-if="cmd.description" class="text-xs text-secondary">
+    <div class="flex-1 flex items-baseline gap-2 min-w-0">
+      <span class="inline-grid select-none">
+        <span
+          class="col-start-1 row-start-1 transition-colors duration-80"
+          :class="active ? 'font-medium text-base' : 'font-normal text-base'"
+        >
+          {{ cmd.name }}
+        </span>
+        <span
+          aria-hidden="true"
+          class="col-start-1 row-start-1 invisible font-medium pointer-events-none select-none"
+        >
+          {{ cmd.name }}
+        </span>
+      </span>
+      <div v-if="cmd.description" class="text-xs text-secondary truncate">
         {{ cmd.description }}
       </div>
     </div>

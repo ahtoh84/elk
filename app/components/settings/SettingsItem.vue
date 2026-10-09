@@ -77,7 +77,11 @@ useCommand({
         <div flex="~ col gap-0.5">
           <p>
             <slot>
-              <span>{{ text }}</span>
+              <span v-if="navigation" class="inline-grid select-none">
+                <span class="col-start-1 row-start-1 transition-colors duration-160" :class="match ? 'font-semibold' : 'font-normal'">{{ text }}</span>
+                <span aria-hidden="true" class="col-start-1 row-start-1 invisible font-semibold pointer-events-none select-none">{{ text }}</span>
+              </span>
+              <span v-else>{{ text }}</span>
             </slot>
           </p>
           <p v-if="$slots.description || description" text-sm text-secondary>
