@@ -40,6 +40,36 @@
 
   --ease-fluid: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-fluid-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  /* Fluid Functionalism Typography Tokens (Default Step) */
+  --fs-display: 28px;
+  --lh-display: 34px;
+  --fs-title: 16px;
+  --lh-title: 22px;
+  --fs-subtitle: 14px;
+  --lh-subtitle: 20px;
+  --fs-body: 13px;
+  --lh-body: 20px;
+  --fs-caption: 12px;
+  --lh-caption: 16px;
+  --fs-micro: 11px;
+  --lh-micro: 14px;
+}
+
+.compact, .typeset-compact {
+  /* Fluid Functionalism Typography Tokens (Compact Step) */
+  --fs-display: 24px;
+  --lh-display: 30px;
+  --fs-title: 15px;
+  --lh-title: 20px;
+  --fs-subtitle: 13px;
+  --lh-subtitle: 18px;
+  --fs-body: 12px;
+  --lh-body: 18px;
+  --fs-caption: 11px;
+  --lh-caption: 14px;
+  --fs-micro: 10px;
+  --lh-micro: 12px;
 }
 
 .dark {

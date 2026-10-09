@@ -25,18 +25,18 @@ const emit = defineEmits<{
       <span class="inline-grid select-none">
         <span
           class="col-start-1 row-start-1 transition-colors duration-80"
-          :class="active ? 'font-medium text-base' : 'font-normal text-base'"
+          :class="active ? 'font-medium type-body text-base' : 'font-normal type-body text-base'"
         >
           {{ cmd.name }}
         </span>
         <span
           aria-hidden="true"
-          class="col-start-1 row-start-1 invisible font-medium pointer-events-none select-none"
+          class="col-start-1 row-start-1 invisible font-medium type-body pointer-events-none select-none"
         >
           {{ cmd.name }}
         </span>
       </span>
-      <div v-if="cmd.description" class="text-xs text-secondary truncate">
+      <div v-if="cmd.description" class="type-caption text-secondary truncate">
         {{ cmd.description }}
       </div>
     </div>

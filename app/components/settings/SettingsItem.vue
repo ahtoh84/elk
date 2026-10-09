@@ -75,7 +75,7 @@ useCommand({
           </slot>
         </div>
         <div flex="~ col gap-0.5">
-          <p>
+          <p class="type-body">
             <slot>
               <span v-if="navigation" class="inline-grid select-none">
                 <span class="col-start-1 row-start-1 transition-colors duration-160" :class="match ? 'font-semibold' : 'font-normal'">{{ text }}</span>
@@ -84,7 +84,7 @@ useCommand({
               <span v-else>{{ text }}</span>
             </slot>
           </p>
-          <p v-if="$slots.description || description" text-sm text-secondary>
+          <p v-if="$slots.description || description" type-caption text-secondary>
             <slot name="description">
               {{ description }}
             </slot>

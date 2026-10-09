@@ -63,6 +63,14 @@ export default defineConfig({
       'flex-v-center': 'items-center',
       'flex-h-center': 'justify-center',
       'bg-hover-overflow': 'relative z-0 transition-colors duration-250 after-content-empty after:(absolute inset--4px bg-transparent rounded-full z--1 transition-colors duration-250) hover:after:(bg-active)',
+
+      // Fluid Functionalism Typography 6 Roles
+      'type-display': 'text-[var(--fs-display,28px)] leading-[var(--lh-display,34px)]',
+      'type-title': 'text-[var(--fs-title,16px)] leading-[var(--lh-title,22px)]',
+      'type-subtitle': 'text-[var(--fs-subtitle,14px)] leading-[var(--lh-subtitle,20px)]',
+      'type-body': 'text-[var(--fs-body,13px)] leading-[var(--lh-body,20px)]',
+      'type-caption': 'text-[var(--fs-caption,12px)] leading-[var(--lh-caption,16px)]',
+      'type-micro': 'text-[var(--fs-micro,11px)] leading-[var(--lh-micro,14px)]',
     },
     [/^elk-group-hover[:-]([a-z0-9/-]+)$/, ([,r]) => `media-mouse-group-hover-${r} group-active-${r}`],
   ],
