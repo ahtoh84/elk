@@ -36,7 +36,7 @@ if (currentUser.value !== undefined) {
 <template>
   <MainContent back>
     <template #title>
-      <bdi text-lg font-bold>#{{ tagName }}</bdi>
+      <bdi type-title font-bold>#{{ tagName }}</bdi>
     </template>
 
     <template #actions>

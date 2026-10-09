@@ -51,7 +51,7 @@ useHydratedHead({
     </template>
     <template v-else-if="collection">
       <div p-4 border="b base" space-y-3>
-        <div flex items-center gap-2 text-start text-lg font-bold>
+        <div flex items-center gap-2 text-start type-title font-bold>
           {{ collection.name }}
         </div>
 

@@ -88,7 +88,7 @@ const userSettings = useUserSettings()
     <section>
       <details>
         <summary
-          px6 py4 mt2 font-semibold text-xl flex="~ gap-2 wrap" items-center cursor-pointer
+          px6 py4 mt2 type-title font-semibold flex="~ gap-2 wrap" items-center cursor-pointer
           focus-visible:ring="2 current"
           aria-controls="settings-wellbeing-options"
         >
@@ -191,7 +191,7 @@ const userSettings = useUserSettings()
     <section>
       <details>
         <summary
-          px6 py4 mt2 font-semibold text-xl flex="~ gap-2 wrap" items-center cursor-pointer
+          px6 py4 mt2 type-title font-semibold flex="~ gap-2 wrap" items-center cursor-pointer
           focus-visible:ring="2 current"
           aria-controls="settings-experimental-options"
         >
