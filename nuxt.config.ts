@@ -275,8 +275,8 @@ export default defineNuxtConfig({
         class: 'overflow-x-hidden',
       },
       link: [
-        { rel: 'icon', href: '/favicon.ico?v=rainbow', sizes: 'any' },
-        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+        { rel: 'icon', href: '/favicon.ico?v=rainbow-v2', sizes: '16x16 32x32 48x48 64x64' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png?v=rainbow-v2' },
         { rel: 'me', href: 'https://m.webtoo.ls/@elk' },
       ],
       meta: [
