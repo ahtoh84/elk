@@ -39,7 +39,7 @@
   --motion-slow-exit: 160ms;
 
   --ease-fluid: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-fluid-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-fluid-exit: cubic-bezier(0.23, 1, 0.32, 1);
 
   /* Fluid Functionalism Typography Tokens (Default Step) */
   --fs-display: 28px;

@@ -105,15 +105,11 @@ useCommand({
 
 <style scoped>
 .status-action-button {
-  transition:
-    color var(--motion-fast, 80ms) ease-out,
-    transform var(--motion-fast, 80ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
+  transition: color var(--motion-fast, 80ms) ease-out;
 }
 
 .status-icon-swap {
-  transition:
-    opacity var(--motion-fast, 80ms) ease-out,
-    transform var(--motion-fast, 80ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
+  transition: opacity var(--motion-fast, 80ms) ease-out;
 }
 
 .status-icon-shown {
@@ -123,8 +119,22 @@ useCommand({
 
 .status-icon-hidden {
   opacity: 0;
-  transform: scale(0.65);
+  transform: scale(0.94);
   pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .status-action-button {
+    transition:
+      color var(--motion-fast, 80ms) ease-out,
+      transform var(--motion-fast, 80ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
+  }
+
+  .status-icon-swap {
+    transition:
+      opacity var(--motion-fast, 80ms) ease-out,
+      transform var(--motion-fast, 80ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

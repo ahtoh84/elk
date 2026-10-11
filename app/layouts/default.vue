@@ -114,7 +114,7 @@ const isGrayscale = usePreferences('grayscaleMode')
 }
 
 .offline-checker {
-  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity var(--motion-moderate-exit, 120ms) ease-out;
 }
 
 .bottom-nav-container--hidden .offline-checker {
@@ -122,7 +122,7 @@ const isGrayscale = usePreferences('grayscaleMode')
 }
 
 .bottom-nav-shell {
-  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity var(--motion-moderate-exit, 120ms) ease-out;
 }
 
 .bottom-nav-shell--hidden {
@@ -133,7 +133,20 @@ const isGrayscale = usePreferences('grayscaleMode')
 @media (prefers-reduced-motion: reduce) {
   .bottom-nav-shell,
   .offline-checker {
-    transition-duration: 0ms;
+    transition: opacity var(--motion-moderate-exit, 120ms) ease-out;
+  }
+
+  .bottom-nav-shell--hidden,
+  .bottom-nav-container--hidden .offline-checker {
+    transform: none;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bottom-nav-shell,
+  .offline-checker {
+    transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 }
 </style>

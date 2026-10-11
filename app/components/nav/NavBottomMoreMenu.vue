@@ -199,25 +199,16 @@ const { dragging, dragDistance } = invoke(() => {
 <style scoped>
 .nav-bottom-drawer-enter-active {
   transition: opacity var(--motion-moderate, 160ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
-
-  .nav-bottom-drawer-panel {
-    transition: transform var(--motion-moderate, 160ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
-  }
 }
 
 .nav-bottom-drawer-leave-active {
-  transition: opacity var(--motion-moderate-exit, 120ms) var(--ease-fluid-exit, cubic-bezier(0.4, 0, 1, 1));
-
-  .nav-bottom-drawer-panel {
-    transition: transform var(--motion-moderate-exit, 120ms) var(--ease-fluid-exit, cubic-bezier(0.4, 0, 1, 1));
-  }
+  transition: opacity var(--motion-moderate-exit, 120ms) var(--ease-fluid-exit, cubic-bezier(0.23, 1, 0.32, 1));
 }
 
 .nav-bottom-drawer-panel {
   transform-origin: center bottom;
   max-height: calc(100vh - 200px);
   max-height: calc(100dvh - 200px);
-  transition: transform var(--motion-moderate, 160ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
 }
 
 .nav-bottom-drawer-panel-dragging {
@@ -230,17 +221,31 @@ const { dragging, dragDistance } = invoke(() => {
   bottom: calc(3.5rem + env(safe-area-inset-bottom));
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .nav-bottom-drawer-enter-active .nav-bottom-drawer-panel {
+    transition: transform var(--motion-moderate, 160ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
+  }
+
+  .nav-bottom-drawer-leave-active .nav-bottom-drawer-panel {
+    transition: transform var(--motion-moderate-exit, 120ms) var(--ease-fluid-exit, cubic-bezier(0.23, 1, 0.32, 1));
+  }
+
+  .nav-bottom-drawer-panel {
+    transition: transform var(--motion-moderate, 160ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .nav-bottom-drawer-enter-active {
     transition: opacity var(--motion-moderate, 160ms) ease-out;
   }
 
   .nav-bottom-drawer-leave-active {
-    transition: opacity var(--motion-moderate-exit, 120ms) ease-in;
+    transition: opacity var(--motion-moderate-exit, 120ms) ease-out;
   }
 
   .nav-bottom-drawer-panel {
-    transition-duration: 0ms;
+    transition: none;
   }
 
   .nav-bottom-drawer-enter-from .nav-bottom-drawer-panel,

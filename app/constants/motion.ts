@@ -10,7 +10,7 @@ export const MOTION_TOKENS = {
   moderateExit: 120,
   slowExit: 160,
   easeFluid: 'cubic-bezier(0.23, 1, 0.32, 1)',
-  easeFluidExit: 'cubic-bezier(0.4, 0, 1, 1)',
+  easeFluidExit: 'cubic-bezier(0.23, 1, 0.32, 1)',
 } as const
 
 export type MotionTier = 'fast' | 'moderate' | 'slow'

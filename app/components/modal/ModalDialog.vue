@@ -184,7 +184,7 @@ useEventListener('keydown', (e: KeyboardEvent) => {
   }
 
   .dialog-main {
-    transition: opacity var(--motion-slow, 240ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1)), transform var(--motion-slow, 240ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
+    transition: opacity var(--motion-slow, 240ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
   }
 }
 
@@ -192,11 +192,11 @@ useEventListener('keydown', (e: KeyboardEvent) => {
   transition-duration: var(--motion-slow-exit, 160ms);
 
   .dialog-mask {
-    transition: opacity var(--motion-slow-exit, 160ms) var(--ease-fluid-exit, cubic-bezier(0.4, 0, 1, 1));
+    transition: opacity var(--motion-slow-exit, 160ms) var(--ease-fluid-exit, cubic-bezier(0.23, 1, 0.32, 1));
   }
 
   .dialog-main {
-    transition: opacity var(--motion-slow-exit, 160ms) var(--ease-fluid-exit, cubic-bezier(0.4, 0, 1, 1)), transform var(--motion-slow-exit, 160ms) var(--ease-fluid-exit, cubic-bezier(0.4, 0, 1, 1));
+    transition: opacity var(--motion-slow-exit, 160ms) var(--ease-fluid-exit, cubic-bezier(0.23, 1, 0.32, 1));
   }
 }
 
@@ -209,6 +209,20 @@ useEventListener('keydown', (e: KeyboardEvent) => {
   .dialog-main {
     transform: translateY(28px);
     opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dialog-visible-enter-active .dialog-main {
+    transition:
+      opacity var(--motion-slow, 240ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1)),
+      transform var(--motion-slow, 240ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1));
+  }
+
+  .dialog-visible-leave-active .dialog-main {
+    transition:
+      opacity var(--motion-slow-exit, 160ms) var(--ease-fluid-exit, cubic-bezier(0.23, 1, 0.32, 1)),
+      transform var(--motion-slow-exit, 160ms) var(--ease-fluid-exit, cubic-bezier(0.23, 1, 0.32, 1));
   }
 }
 
@@ -227,7 +241,7 @@ useEventListener('keydown', (e: KeyboardEvent) => {
 
     .dialog-mask,
     .dialog-main {
-      transition: opacity var(--motion-moderate-exit, 120ms) ease-in;
+      transition: opacity var(--motion-moderate-exit, 120ms) ease-out;
     }
   }
 

@@ -23,9 +23,9 @@ useCommands(() => command
   : [])
 
 const containerEl = ref<HTMLElement>()
-const indicatorStyle = ref<{ left: number, width: number, ready: boolean }>({
+const indicatorStyle = ref<{ left: number, scaleX: number, ready: boolean }>({
   left: 0,
-  width: 0,
+  scaleX: 0,
   ready: false,
 })
 
@@ -38,11 +38,10 @@ function updateIndicator(target?: HTMLElement) {
     const containerRect = containerEl.value.getBoundingClientRect()
     const textRect = textEl.getBoundingClientRect()
     const left = textRect.left - containerRect.left + containerEl.value.scrollLeft
-    const width = textRect.width
-    if (width > 0) {
+    if (textRect.width > 0 && containerRect.width > 0) {
       indicatorStyle.value = {
         left,
-        width,
+        scaleX: textRect.width / containerRect.width,
         ready: true,
       }
     }
@@ -89,8 +88,7 @@ useResizeObserver(containerEl, () => {
     <div
       class="route-tab-indicator"
       :style="{
-        transform: `translate3d(${indicatorStyle.left}px, 0, 0)`,
-        width: `${indicatorStyle.width}px`,
+        transform: `translate3d(${indicatorStyle.left}px, 0, 0) scaleX(${indicatorStyle.scaleX})`,
         opacity: indicatorStyle.ready ? 1 : 0,
       }"
       aria-hidden="true"
@@ -181,10 +179,17 @@ useResizeObserver(containerEl, () => {
   border-radius: 9999px;
   pointer-events: none;
   z-index: 1;
-  transition:
-    transform var(--motion-moderate, 160ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1)),
-    width var(--motion-moderate, 160ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1)),
-    opacity var(--motion-fast, 80ms) ease;
+  width: 100%;
+  transform-origin: left center;
+  transition: opacity var(--motion-fast, 80ms) ease-out;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .route-tab-indicator {
+    transition:
+      transform var(--motion-moderate, 160ms) var(--ease-fluid, cubic-bezier(0.23, 1, 0.32, 1)),
+      opacity var(--motion-fast, 80ms) ease;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
