@@ -45,8 +45,20 @@ export interface UserSettings {
   fontSize: FontSize
   language: string
   disabledTranslationLanguages: string[]
+  translationPreferenceVersion?: number
   themeColors?: ThemeColors
   themeSettingsVersion?: number
+}
+
+const TRANSLATION_PREFERENCE_VERSION = 1
+
+export function migrateTranslationPreference(settings: UserSettings) {
+  if ((settings.translationPreferenceVersion ?? 0) >= TRANSLATION_PREFERENCE_VERSION)
+    return
+
+  settings.preferences ??= {}
+  settings.preferences.hideTranslation = true
+  settings.translationPreferenceVersion = TRANSLATION_PREFERENCE_VERSION
 }
 
 export interface ThemeColors {
@@ -69,7 +81,7 @@ export const DEFAULT__PREFERENCES_SETTINGS: PreferencesSettings = {
   hideReplyCount: false,
   hideFavoriteCount: false,
   hideFollowerCount: false,
-  hideTranslation: false,
+  hideTranslation: true,
   hideUsernameEmojis: false,
   hideAccountHoverCard: false,
   hideTagHoverCard: false,

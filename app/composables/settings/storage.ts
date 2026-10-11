@@ -3,11 +3,14 @@ import type { Ref } from 'vue'
 import type { FontSize, OldFontSize, PreferencesSettings, UserSettings } from './definition'
 import { LEGACY_DEFAULT_THEME, STORAGE_KEY_SETTINGS, THEME_SETTINGS_VERSION } from '~/constants'
 import { oldFontSizeMap } from '~/constants/options'
+import { migrateTranslationPreference } from './definition'
 
 export function useUserSettings() {
   const { locales } = useNuxtApp().$i18n
   const supportLanguages = (unref(locales) as LocaleObject[]).map(locale => locale.code)
   const settingsStorage = useUserLocalStorage<UserSettings>(STORAGE_KEY_SETTINGS, () => getDefaultUserSettings(supportLanguages))
+
+  migrateTranslationPreference(settingsStorage.value)
 
   // Backward compatibility, font size was xs, sm, md, lg, xl before
   if (settingsStorage.value.fontSize && !settingsStorage.value.fontSize.includes('px'))
