@@ -1,14 +1,12 @@
+import type { Buffer } from 'node:buffer'
 import type { PngOptions, ResizeOptions } from 'sharp'
-import { Buffer } from 'node:buffer'
-import { copyFile, readFile, rm, writeFile } from 'node:fs/promises'
+import { copyFile, rm, writeFile } from 'node:fs/promises'
 import process from 'node:process'
 import { resolve } from 'pathe'
 import sharp from 'sharp'
 import ico from 'sharp-ico'
 
 const TEMP_PNG_POSTFIX_RE = /-temp\.png$/
-const EMBEDDED_PNG_RE = /(?:xlink:)?href="data:image\/png;base64,([^"]+)"/
-
 interface Icon {
   sizes: number[]
   padding: number
@@ -86,13 +84,11 @@ const defaultIcons: Icons = {
 
 const root = process.cwd()
 
-const publicFolders = ['public', 'public-dev', 'public-staging'].map(folder => resolve(root, folder))
+const publicFolders = ['public', 'public-dev', 'public-staging', 'docs/public'].map(folder => resolve(root, folder))
 
 async function prepareLogoSource() {
-  const source = await readFile(resolve(root, 'public/elk-logo.svg'), 'utf8')
-  const embeddedPng = source.match(EMBEDDED_PNG_RE)
-  const input = embeddedPng ? Buffer.from(embeddedPng[1], 'base64') : Buffer.from(source)
-  const { data, info } = await sharp(input).ensureAlpha().raw().toBuffer({ resolveWithObject: true })
+  const inputPath = resolve(root, 'public/deer-with-rainbow-antlers.png')
+  const { data, info } = await sharp(inputPath).ensureAlpha().raw().toBuffer({ resolveWithObject: true })
   let left = info.width
   let top = info.height
   let right = -1
@@ -121,7 +117,7 @@ async function prepareLogoSource() {
   const width = right - left + 1
   const height = bottom - top + 1
   const size = Math.max(width, height)
-  const png = await sharp(input)
+  const png = await sharp(inputPath)
     .extract({ left, top, width, height })
     .png({ compressionLevel: 9, palette: false })
     .toBuffer()
