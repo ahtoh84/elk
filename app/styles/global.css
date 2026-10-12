@@ -160,9 +160,7 @@ button,
   border: 1px solid var(--c-border);
   border-radius: 1.25rem;
   background: var(--c-bg-panel);
-  box-shadow:
-    0 1px 2px rgba(35, 35, 35, 0.04),
-    0 12px 28px rgba(35, 35, 35, 0.07);
+  box-shadow: none;
 }
 
 .main-content-body .timeline-feed {
@@ -179,9 +177,7 @@ button,
   border: 1px solid var(--c-border);
   border-radius: 1.25rem;
   background: var(--c-bg-panel);
-  box-shadow:
-    0 1px 2px rgba(35, 35, 35, 0.04),
-    0 12px 28px rgba(35, 35, 35, 0.07);
+  box-shadow: none;
 }
 
 .timeline-post {
@@ -218,9 +214,7 @@ button,
   border: 1px solid var(--c-border);
   border-radius: 1.25rem;
   background: var(--c-bg-panel);
-  box-shadow:
-    0 1px 2px rgba(35, 35, 35, 0.04),
-    0 12px 28px rgba(35, 35, 35, 0.07);
+  box-shadow: none;
 }
 
 .settings-sidebar {
@@ -356,33 +350,11 @@ button,
   border-block-end: 0;
 }
 
-.dark .settings-frame {
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.28),
-    0 12px 28px rgba(0, 0, 0, 0.2);
-}
-
 .timeline-home-feed > .timeline-feed {
   margin: 0;
   border: 0;
   border-radius: 0;
   background: transparent;
-  box-shadow: none;
-}
-
-.dark .main-content-body {
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.28),
-    0 12px 28px rgba(0, 0, 0, 0.2);
-}
-
-.dark .timeline-feed {
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.28),
-    0 12px 28px rgba(0, 0, 0, 0.2);
-}
-
-.dark .main-content-body .timeline-feed {
   box-shadow: none;
 }
 
