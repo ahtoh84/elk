@@ -19,7 +19,7 @@ const key = computed(() => `${currentUser.value?.server ?? currentServer.value}:
 </script>
 
 <template>
-  <NuxtLoadingIndicator color="repeating-linear-gradient(to right,var(--c-primary) 0%,var(--c-primary-active) 100%)" />
+  <NuxtLoadingIndicator color="var(--c-loading-rainbow)" error-color="var(--c-loading-rainbow)" />
   <NuxtLayout :key="key">
     <NuxtPage :transition="{ name: 'page' }" />
   </NuxtLayout>

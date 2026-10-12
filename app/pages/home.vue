@@ -29,6 +29,12 @@ useHydratedHead({
       </MainTitle>
     </template>
 
-    <TimelineHome v-if="isHydrated && currentUser" />
+    <TimelineSkeleton
+      v-if="!isHydrated"
+      role="status"
+      aria-busy="true"
+      :aria-label="$t('a11y.loading_page')"
+    />
+    <TimelineHome v-else-if="currentUser" />
   </MainContent>
 </template>

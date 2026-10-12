@@ -17,12 +17,14 @@ const rootPageState = computed(() => {
 
 <template>
   <MainContent>
-    <div min-h="[calc(100vh-8rem)]" flex="~ items-center justify-center" p6>
-      <UserSignIn v-if="rootPageState === 'sign-in'" :default-server="publicServer" />
-      <div v-else role="status" aria-busy="true">
-        <span block i-ri:loader-2-fill animate-spin text-xl text-secondary aria-hidden="true" />
-        <span sr-only>{{ $t('state.loading') }}</span>
-      </div>
+    <div v-if="rootPageState === 'sign-in'" min-h="[calc(100vh-8rem)]" flex="~ items-center justify-center" p6>
+      <UserSignIn :default-server="publicServer" />
     </div>
+    <TimelineSkeleton
+      v-else
+      role="status"
+      aria-busy="true"
+      :aria-label="$t('a11y.loading_page')"
+    />
   </MainContent>
 </template>

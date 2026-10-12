@@ -123,6 +123,9 @@ export default defineConfig({
         DEFAULT: 'var(--c-danger)',
         active: 'var(--c-danger-active)',
       },
+      success: 'var(--c-success)',
+      warning: 'var(--c-warning)',
+      error: 'var(--c-error)',
     },
   },
   variants: [

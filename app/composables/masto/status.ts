@@ -1,4 +1,5 @@
 import type { mastodon } from 'masto'
+import type { Ref } from 'vue'
 
 type Action = 'reblogged' | 'favourited' | 'bookmarked' | 'pinned' | 'muted'
 type CountField = 'reblogsCount' | 'favouritesCount' | 'quotesCount'
@@ -7,9 +8,17 @@ export interface StatusActionsProps {
   status: mastodon.v1.Status
 }
 
-export function useStatusActions(props: StatusActionsProps) {
+export interface StatusActionsDependencies {
+  cacheStatus?: (status: mastodon.v1.Status, server?: string, override?: boolean) => void
+  checkLogin?: () => boolean
+  client?: Ref<mastodon.rest.Client>
+}
+
+export function useStatusActions(props: StatusActionsProps, dependencies: StatusActionsDependencies = {}) {
   const status = ref<mastodon.v1.Status>({ ...props.status })
-  const { client } = useMasto()
+  const client = dependencies.client ?? useMasto().client
+  const canPerformAction = dependencies.checkLogin ?? checkLogin
+  const saveStatus = dependencies.cacheStatus ?? cacheStatus
 
   watch(
     () => props.status,
@@ -26,32 +35,48 @@ export function useStatusActions(props: StatusActionsProps) {
     translation: false,
     muted: false,
   })
+  const actionError = ref(false)
 
   async function toggleStatusAction(action: Action, fetchNewStatus: () => Promise<mastodon.v1.Status>, countField?: CountField) {
     // check login
-    if (!checkLogin())
+    if (!canPerformAction())
       return
 
+    const wasActive = status.value[action]
     const prevCount = countField ? status.value[countField] : undefined
-
+    actionError.value = false
     isLoading.value[action] = true
-    const isCancel = status.value[action]
-    fetchNewStatus().then((newStatus) => {
+
+    try {
+      // Resolve the endpoint from the current state before applying the optimistic toggle.
+      const request = fetchNewStatus()
+
+      // Optimistically update the UI while the request is in flight.
+      status.value[action] = !wasActive
+      if (countField)
+        status.value[countField] += status.value[action] ? 1 : -1
+      saveStatus(status.value, undefined, true)
+
+      const newStatus = await request
       // when the action is cancelled, the count is not updated highly likely (if they're the same)
       // issue of Mastodon API
-      if (isCancel && countField && prevCount === newStatus[countField])
+      if (wasActive && countField && prevCount === newStatus[countField])
         newStatus[countField] -= 1
 
       Object.assign(status.value, newStatus)
-      cacheStatus(newStatus, undefined, true)
-    }).finally(() => {
+      saveStatus(newStatus, undefined, true)
+    }
+    catch {
+      // Roll back only this action so other concurrent status actions stay intact.
+      status.value[action] = wasActive
+      if (countField && prevCount !== undefined)
+        status.value[countField] = prevCount
+      saveStatus(status.value, undefined, true)
+      actionError.value = true
+    }
+    finally {
       isLoading.value[action] = false
-    })
-    // Optimistic update
-    status.value[action] = !status.value[action]
-    cacheStatus(status.value, undefined, true)
-    if (countField)
-      status.value[countField] += status.value[action] ? 1 : -1
+    }
   }
 
   const toggleFavourite = () => toggleStatusAction(
@@ -65,16 +90,20 @@ export function useStatusActions(props: StatusActionsProps) {
     && (status.value.visibility !== 'private' || status.value.account.id === currentUser.value?.account.id),
   )
 
-  const toggleReblog = () => toggleStatusAction(
-    'reblogged',
-    () => client.value.v1.statuses.$select(status.value.id)[status.value.reblogged ? 'unreblog' : 'reblog']().then((res) => {
-      if (status.value.reblogged)
-        // returns the original status
-        return res.reblog!
-      return res
-    }),
-    'reblogsCount',
-  )
+  const toggleReblog = () => {
+    const wasReblogged = status.value.reblogged
+    return toggleStatusAction(
+      'reblogged',
+      () => client.value.v1.statuses.$select(status.value.id)[wasReblogged ? 'unreblog' : 'reblog']().then((res) => {
+        if (wasReblogged) {
+          // Returns the original status when unboosting.
+          return res.reblog!
+        }
+        return res
+      }),
+      'reblogsCount',
+    )
+  }
 
   const canQuote = computed(() => {
     if (status.value.visibility === 'private' || status.value.visibility === 'direct')
@@ -103,6 +132,7 @@ export function useStatusActions(props: StatusActionsProps) {
   return {
     status,
     isLoading,
+    actionError,
     canQuote,
     canReblog,
     toggleMute,

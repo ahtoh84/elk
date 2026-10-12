@@ -32,7 +32,7 @@ async function reload() {
 </script>
 
 <template>
-  <NuxtLoadingIndicator color="repeating-linear-gradient(to right,var(--c-primary) 0%,var(--c-primary-active) 100%)" />
+  <NuxtLoadingIndicator color="var(--c-loading-rainbow)" error-color="var(--c-loading-rainbow)" />
   <NuxtLayout>
     <MainContent>
       <template #title>

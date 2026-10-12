@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
+import { useId } from 'vue'
 import { toggleBlockAccount, toggleMuteAccount, useRelationship } from '~/composables/masto/relationship'
 
 const { details, ...props } = defineProps<{
@@ -13,10 +14,12 @@ const emit = defineEmits<{
 }>()
 
 const focusEditor = inject<typeof noop>('focus-editor', noop)
+const actionErrorId = useId()
 
 const {
   status,
   isLoading,
+  actionError,
   toggleBookmark,
   toggleFavourite,
   togglePin,
@@ -353,4 +356,11 @@ function showReactedBy() {
       </div>
     </template>
   </CommonDropdown>
+  <CommonErrorMessage
+    v-if="actionError"
+    :described-by="actionErrorId"
+    mt-1
+  >
+    <span :id="actionErrorId">{{ $t('error.status_action_failed') }}</span>
+  </CommonErrorMessage>
 </template>
