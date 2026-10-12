@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { usePreferences } from '~/composables/settings'
+import { shouldUseFullscreenRootEntry } from '~/utils/auth'
 
 const route = useRoute()
 const info = useBuildInfo()
 
+const fullscreenRootEntry = computed(() =>
+  shouldUseFullscreenRootEntry(route.path, isAuthReady.value, !!currentUser.value),
+)
 const wideLayout = computed(() => route.meta.wideLayout ?? false)
 const autoHideBottomNavEnabled = computed(() =>
   isHydrated.value
@@ -22,7 +26,10 @@ const isGrayscale = usePreferences('grayscaleMode')
 
 <template>
   <div h-full :data-mode="isHydrated && isGrayscale ? 'grayscale' : ''">
-    <main flex w-full mxa lg:max-w-80rem>
+    <main v-if="fullscreenRootEntry" class="fullscreen-root-layout">
+      <slot />
+    </main>
+    <main v-else flex w-full mxa lg:max-w-80rem>
       <aside class="w-1/8 md:w-1/6 lg:w-1/5 xl:w-1/4 zen-hide" hidden sm:flex justify-end xl:me-4 relative>
         <div sticky top-0 w-20 xl:w-100 h-100dvh flex="~ col" lt-xl-items-center>
           <slot name="left">
@@ -91,6 +98,12 @@ const isGrayscale = usePreferences('grayscaleMode')
 </template>
 
 <style scoped>
+.fullscreen-root-layout {
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+}
+
 .mobile-viewport-shell {
   min-height: 100vh;
   min-height: 100dvh;

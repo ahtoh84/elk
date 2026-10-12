@@ -560,7 +560,7 @@
   },
   "user": {
     "add_existing": "加入現有帳號",
-    "server_address_label": "Mastodon 伺服器位置",
+    "server_address_label": "請輸入 Mastodon 執行個體位址",
     "sign_in_desc": "登入後可追蹤其他人或標籤、點讚、分享和回覆貼文，或與不同伺服器上的帳號互動。",
     "sign_in_notice_title": "正在查看 {0} 的公共數據",
     "sign_out_account": "登出 {0}",

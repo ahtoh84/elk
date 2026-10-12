@@ -97,15 +97,7 @@ onClickOutside(input, () => {
 
 <template>
   <form text-center justify-center items-center max-w-150 py6 flex="~ col gap-3" @submit.prevent="oauth">
-    <div flex="~ center" items-end mb2 gap-x-2>
-      <img :src="`/${''}logo.svg`" w-12 h-12 mxa height="48" width="48" :alt="$t('app_logo')" class="rtl-flip">
-      <div text-3xl>
-        {{ $t('action.sign_in') }}
-      </div>
-    </div>
-    <div>
-      {{ $t('user.server_address_label') }}
-    </div>
+    <img :src="`/${''}logo.svg`" w-24 h-24 height="96" width="96" :alt="$t('app_logo')" class="rtl-flip">
     <div :class="error ? 'animate animate-shake-x animate-delay-100' : null">
       <div
         dir="ltr"
@@ -118,6 +110,7 @@ onClickOutside(input, () => {
         <span text-secondary-light me1>https://</span>
 
         <input
+          id="mastodon-instance-address"
           ref="input"
           v-model="server"
           autocapitalize="off"
@@ -162,6 +155,9 @@ onClickOutside(input, () => {
         </Transition>
       </div>
     </div>
+    <label for="mastodon-instance-address" text-secondary text-sm>
+      {{ $t('user.server_address_label') }}
+    </label>
     <div text-secondary text-sm flex>
       <div i-ri:lightbulb-line me-1 />
       <span>
