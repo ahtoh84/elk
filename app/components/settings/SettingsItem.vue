@@ -58,7 +58,8 @@ useCommand({
     <div
       class="settings-item-row"
       w-full flex px5 py3 md:gap2 gap4 items-center
-      transition-150 group-hover:bg-active
+      transition-150
+      :class="{ 'group-hover:bg-active': !navigation }"
       group-focus-visible:ring="2 current"
     >
       <div flex-1 flex items-center md:gap2 gap4>
@@ -96,7 +97,7 @@ useCommand({
           {{ content }}
         </slot>
       </p>
-      <div v-if="to" :class="!external ? 'i-ri:arrow-right-s-line' : 'i-ri:external-link-line'" text-xl text-secondary-light class="rtl-flip" />
+      <div v-if="to" :class="[!external ? 'i-ri:arrow-right-s-line' : 'i-ri:external-link-line', { 'settings-nav-chevron': navigation }]" text-xl text-secondary-light class="rtl-flip" />
     </div>
   </NuxtLink>
 </template>

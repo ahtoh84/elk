@@ -9,6 +9,7 @@ const fullscreenRootEntry = computed(() =>
   shouldUseFullscreenRootEntry(route.path, isAuthReady.value, !!currentUser.value),
 )
 const wideLayout = computed(() => route.meta.wideLayout ?? false)
+const isSettingsPage = computed(() => route.path === '/settings' || route.path.startsWith('/settings/'))
 const autoHideBottomNavEnabled = computed(() =>
   isHydrated.value
   && isSmallScreen.value
@@ -29,8 +30,8 @@ const isGrayscale = usePreferences('grayscaleMode')
     <main v-if="fullscreenRootEntry" class="fullscreen-root-layout">
       <slot />
     </main>
-    <main v-else flex w-full mxa lg:max-w-80rem>
-      <aside class="w-1/8 md:w-1/6 lg:w-1/5 xl:w-1/4 zen-hide" hidden sm:flex justify-end xl:me-4 relative>
+    <main v-else flex w-full mxa lg:max-w-80rem :class="{ 'settings-workspace-layout': isSettingsPage }">
+      <aside v-if="!isSettingsPage" class="w-1/8 md:w-1/6 lg:w-1/5 xl:w-1/4 zen-hide" hidden sm:flex justify-end xl:me-4 relative>
         <div sticky top-0 w-20 xl:w-100 h-100dvh flex="~ col" lt-xl-items-center>
           <slot name="left">
             <div flex="~ col" overflow-y-auto justify-between h-full max-w-full overflow-x-hidden>
@@ -60,7 +61,11 @@ const isGrayscale = usePreferences('grayscaleMode')
           </slot>
         </div>
       </aside>
-      <div class="mobile-viewport-shell" w-full :class="isHydrated && wideLayout ? 'xl:w-full sm:w-600px' : 'sm:w-600px md:shrink-0'" border-base>
+      <div
+        class="mobile-viewport-shell" w-full
+        :class="isSettingsPage ? 'settings-workspace-content' : isHydrated && wideLayout ? 'xl:w-full sm:w-600px' : 'sm:w-600px md:shrink-0'"
+        border-base
+      >
         <div class="mobile-viewport-page">
           <slot />
         </div>
@@ -79,7 +84,7 @@ const isGrayscale = usePreferences('grayscaleMode')
           </div>
         </div>
       </div>
-      <aside v-if="isHydrated && !wideLayout" class="hidden lg:w-1/5 xl:w-1/4 sm:none xl:block zen-hide">
+      <aside v-if="isHydrated && !wideLayout && !isSettingsPage" class="hidden lg:w-1/5 xl:w-1/4 sm:none xl:block zen-hide">
         <div sticky top-0 h-100dvh flex="~ col" gap-2 py3 ms-2>
           <slot name="right">
             <SearchWidget mt-4 mx-1 hidden xl:block />
@@ -98,6 +103,15 @@ const isGrayscale = usePreferences('grayscaleMode')
 </template>
 
 <style scoped>
+.settings-workspace-layout {
+  max-inline-size: 68rem;
+}
+
+.settings-workspace-content {
+  min-inline-size: 0;
+  inline-size: 100%;
+}
+
 .fullscreen-root-layout {
   min-height: 100vh;
   min-height: 100dvh;

@@ -27,22 +27,28 @@ const modes = [
 </script>
 
 <template>
-  <section space-y-2>
-    <h2 id="interface-cm" font-medium>
+  <section class="settings-color-mode">
+    <h2 id="interface-cm" class="settings-control-title">
       {{ $t('settings.interface.color_mode') }}
     </h2>
-    <div flex="~ gap4 wrap" w-full role="group" aria-labelledby="interface-cm">
+    <div class="settings-mode-options" role="group" aria-labelledby="interface-cm">
       <button
         v-for="{ icon, label, mode } in modes"
         :key="mode"
         type="button"
-        btn-text flex-1 flex="~ gap-1 center" p4 border="~ base rounded" bg-base ws-nowrap
+        class="settings-mode-option"
         :aria-pressed="colorMode.preference === mode ? 'true' : 'false'"
-        :class="colorMode.preference === mode ? 'pointer-events-none text-primary' : 'filter-saturate-0 text-secondary-light'"
         @click="setColorMode(mode)"
       >
-        <span :class="`${icon}`" />
-        {{ $t(label) }}
+        <span aria-hidden="true" class="settings-mode-preview" :class="`settings-mode-preview--${mode}`">
+          <span class="settings-mode-preview-sidebar"><span /><span /><span /></span>
+          <span class="settings-mode-preview-content"><span /><span /><span /></span>
+        </span>
+        <span class="settings-mode-label">
+          <span aria-hidden="true" :class="icon" />
+          <span>{{ $t(label) }}</span>
+          <span v-if="colorMode.preference === mode" aria-hidden="true" class="settings-mode-check i-ri:checkbox-circle-fill" />
+        </span>
       </button>
     </div>
   </section>

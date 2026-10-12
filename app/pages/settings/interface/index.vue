@@ -13,10 +13,12 @@ useHydratedHead({
         {{ $t('settings.interface.label') }}
       </MainTitle>
     </template>
-    <div px-6 pt-3 pb-6 flex="~ col gap6">
+    <div class="settings-detail-content settings-interface-content">
+      <div class="settings-appearance-group">
+        <SettingsColorMode />
+        <SettingsThemeColors />
+      </div>
       <SettingsFontSize />
-      <SettingsColorMode />
-      <SettingsThemeColors />
       <SettingsBottomNav />
     </div>
   </MainContent>

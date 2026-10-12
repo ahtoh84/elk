@@ -69,7 +69,11 @@ const showBackButton = computed(() => {
         'backdrop-blur': !getPreferences(userSettings, 'optimizeForLowPerformanceDevice'),
       }"
     >
-      <div flex="~ justify-between" min-h-53px px-2 py-1 :class="{ 'xl:hidden': $route.name !== 'tag' }" border="b base">
+      <div
+        class="main-content-header" flex="~ justify-between" min-h-53px px-2 py-1
+        :class="{ 'xl:hidden': $route.name !== 'tag' && !($route.path === '/settings' || $route.path.startsWith('/settings/')) }"
+        border="b base"
+      >
         <div flex="~ items-center" w-full>
           <button
             v-if="backOnSmallScreen || showBackButton"
@@ -103,7 +107,7 @@ const showBackButton = computed(() => {
       :class="isHydrated && wideLayout ? 'xl:w-full sm:max-w-600px' : 'sm:max-w-600px md:shrink-0'"
       m-auto
     >
-      <div hidden :class="{ 'xl:block': !flushTop && $route.name !== 'tag' && !$slots.header }" h-6 />
+      <div class="main-content-top-spacer" hidden :class="{ 'xl:block': !flushTop && $route.name !== 'tag' && !$slots.header }" h-6 />
       <slot />
     </div>
   </div>

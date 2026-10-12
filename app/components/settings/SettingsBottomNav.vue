@@ -70,8 +70,8 @@ function save() {
 </script>
 
 <template>
-  <section space-y-2>
-    <h2 id="interface-bn" font-medium>
+  <section class="settings-bottom-nav">
+    <h2 id="interface-bn" class="settings-control-title">
       {{ $t('settings.interface.bottom_nav') }}
     </h2>
     <form
@@ -79,47 +79,46 @@ function save() {
       :aria-describedby="selectedNavButtonNames.includes('moreMenu') ? 'interface-bn-desc' : 'interface-bn-desc interface-bn-more-required'"
       @submit.prevent="save"
     >
-      <p id="interface-bn-desc" pb-2>
+      <p id="interface-bn-desc" class="settings-control-description">
         {{ $t('settings.interface.bottom_nav_instructions') }}
       </p>
       <!-- preview -->
-      <div aria-hidden="true" flex="~ gap4 wrap" items-center select-settings h-14>
-        <nav
-          v-for="availableNavButton in selectedNavButtons" :key="availableNavButton.name"
-          flex="~ 1" items-center justify-center text-xl
-          scrollbar-hide overscroll-none
-        >
-          <span :class="availableNavButton.icon" />
-        </nav>
+      <div aria-hidden="true" class="settings-bottom-nav-preview">
+        <div class="settings-bottom-nav-preview-icons">
+          <span v-for="navButton in selectedNavButtons" :key="navButton.name">
+            <span :class="navButton.icon" />
+          </span>
+        </div>
+        <span class="settings-bottom-nav-home-indicator" />
       </div>
 
-      <details border="t base">
+      <details class="settings-navigation-editor">
         <summary
-          flex="~ items-center justify-between gap-3 wrap" py3 cursor-pointer
-          focus-visible:ring="2 current"
+          class="settings-navigation-summary"
           aria-controls="interface-bn-choices"
         >
           <span flex-1 min-w-0>{{ $t('settings.interface.bottom_nav_options') }}</span>
           <span role="status" aria-live="polite" flex-shrink-0 text-sm text-secondary tabular-nums>
             {{ $t('settings.interface.bottom_nav_selected_count', [selectedNavButtonNames.length, maxButtonNumber]) }}
           </span>
+          <span aria-hidden="true" class="settings-navigation-chevron i-ri:arrow-down-s-line" />
         </summary>
 
         <!-- button selection -->
-        <div id="interface-bn-choices" flex="~ gap4 wrap" py4>
+        <div id="interface-bn-choices" class="settings-navigation-choices">
           <button
             v-for="{ name, label, icon } in availableNavButtons"
             :key="name"
-            btn-text flex="~ gap-2" items-center p2 border="~ base rounded" bg-base ws-nowrap
-            :class="isAdded(name) ? 'text-secondary hover:text-second bg-auto' : ''"
+            class="settings-navigation-choice"
             :disabled="!isAdded(name) && selectedNavButtonNames.length >= maxButtonNumber"
             type="button"
             role="switch"
             :aria-checked="isAdded(name)"
             @click="isAdded(name) ? remove(name) : append(name)"
           >
-            <span :class="icon" />
-            {{ label ? $t(label) : 'More menu' }}
+            <span aria-hidden="true" :class="icon" />
+            <span class="settings-navigation-choice-label">{{ $t(label) }}</span>
+            <span aria-hidden="true" class="settings-navigation-choice-check" :class="isAdded(name) ? 'i-ri:checkbox-circle-fill' : 'i-ri:add-circle-line'" />
           </button>
         </div>
       </details>
@@ -128,19 +127,18 @@ function save() {
         {{ $t('settings.interface.bottom_nav_more_menu_required') }}
       </p>
 
-      <div flex="~ col" gap-y-4 gap-x-2 py-1 sm="~ justify-end flex-row">
+      <div class="settings-navigation-actions">
         <button
-          btn-outline font-semibold py2 full-w sm-wa flex="~ gap2 center"
+          class="settings-navigation-clear settings-quiet-button"
           type="button"
           :disabled="selectedNavButtonNames.length === 0"
-          :class="selectedNavButtonNames.length === 0 ? 'border-none' : undefined"
           @click="clear"
         >
           <span aria-hidden="true" class="block i-ri:delete-bin-line" />
           {{ $t('action.clear') }}
         </button>
         <button
-          btn-outline font-semibold py2 full-w sm-wa flex="~ gap2 center"
+          class="settings-quiet-button"
           type="reset"
           @click="reset"
         >
@@ -148,7 +146,7 @@ function save() {
           {{ $t('action.reset') }}
         </button>
         <button
-          btn-solid font-semibold py2 full-w sm-wa flex="~ gap2 center"
+          btn-solid class="settings-save-button" flex="~ gap2 center"
           type="submit"
           :disabled="!canSave"
         >
