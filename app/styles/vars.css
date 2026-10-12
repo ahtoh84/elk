@@ -95,6 +95,7 @@
   --c-border-dark: rgba(255, 255, 255, 0.07);
 
   --rgb-bg-base: 8, 8, 8;
+  --c-bg-base: var(--c-dark-bg-base, rgb(var(--rgb-bg-base)));
 
   --c-bg-active: color-mix(in srgb, #eeeeee, #111111 96%);
   --c-bg-card: #181818;

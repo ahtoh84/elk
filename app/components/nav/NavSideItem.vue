@@ -26,13 +26,32 @@ useCommand({
   },
 })
 
-const activeClass = ref('text-primary')
+const route = useRoute()
+const isItemActive = computed(() => {
+  if (!to)
+    return false
+  const targetPath = typeof to === 'string' ? to : (to.path || '')
+  if (!targetPath)
+    return false
+  const currentPath = route.path
+  if (currentPath === targetPath || (targetPath !== '/' && currentPath.startsWith(`${targetPath}/`)))
+    return true
+  const server = currentServer.value
+  if (server && currentPath.startsWith(`/${server}/`)) {
+    const withoutServer = currentPath.slice(server.length + 1)
+    if (withoutServer === targetPath || (targetPath !== '/' && withoutServer.startsWith(`${targetPath}/`)))
+      return true
+  }
+  return false
+})
+
+const activeClass = ref('text-primary nav-side-item-active')
 onHydrated(async () => {
   // TODO: force NuxtLink to reevaluate, we now we are in this route though, so we should force it to active
   // we don't have currentServer defined until later
   activeClass.value = ''
   await nextTick()
-  activeClass.value = 'text-primary'
+  activeClass.value = 'text-primary nav-side-item-active'
 })
 
 // Optimize rendering for the common case of being logged in, only show visual feedback for disabled user-only items
@@ -47,6 +66,7 @@ const noUserVisual = computed(() => isHydrated.value && userOnly && !currentUser
     :disabled="noUserDisable"
     :class="noUserVisual ? 'op50 pointer-events-none ' : ''"
     :active-class="activeClass"
+    exact-active-class="nav-side-item-exact-active"
     group focus:outline-none disabled:pointer-events-none
     :tabindex="noUserDisable ? -1 : undefined"
     @click="$scrollToTop"
@@ -56,20 +76,23 @@ const noUserVisual = computed(() => isHydrated.value && userOnly && !currentUser
         class="item"
         flex items-center gap4
         xl="ml0 mr5 px5 w-auto"
-        :class="isSmallScreen
-          ? `
-            w-full
-            px5 sm:mxa
-            transition-colors duration-200 transform
-            hover-bg-gray-100 hover-dark:(bg-gray-700 text-white)
-          ` : `
-            w-fit rounded-3
-            px2 mx3 sm:mxa
-            transition-100
-            elk-group-hover-bg-active
-            group-focus-visible:ring-2
-            group-focus-visible:ring-current
-          `"
+        :class="[
+          isItemActive ? 'item--active' : '',
+          isSmallScreen
+            ? `
+              w-full
+              px5 sm:mxa
+              transition-colors duration-200 transform
+              hover:bg-active active:bg-active
+            ` : `
+              w-fit rounded-3
+              px2 mx3 sm:mxa
+              transition-100
+              elk-group-hover-bg-active
+              group-focus-visible:ring-2
+              group-focus-visible:ring-current
+            `,
+        ]"
       >
         <slot name="icon">
           <div :class="icon" text-xl />
@@ -86,7 +109,18 @@ const noUserVisual = computed(() => isHydrated.value && userOnly && !currentUser
   .item {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
+    transition: background-color var(--motion-moderate, 160ms) ease, color var(--motion-moderate, 160ms) ease;
   }
+
+  .item--active,
+  :deep(.nav-side-item-active) .item,
+  .nav-side-item-active .item,
+  :deep(a.router-link-active) .item {
+    background-color: var(--c-primary-fade);
+    color: var(--c-primary);
+    font-weight: 600;
+  }
+
   @media screen and ( max-height: 820px ) and ( min-width: 1280px ) {
     .item {
       padding-top: 0.25rem;

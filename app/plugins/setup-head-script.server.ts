@@ -12,12 +12,25 @@ export default defineNuxtPlugin(() => {
       {
         innerHTML: `
 ;(function() {
+  const html = document.documentElement
+  try {
+    const localColor = localStorage.getItem('nuxt-color-mode')
+    if (localColor && !document.cookie.includes('nuxt-color-mode=')) {
+      document.cookie = 'nuxt-color-mode=' + localColor + '; path=/; max-age=31536000'
+    }
+    const isDark = document.cookie.includes('nuxt-color-mode=dark')
+      || localColor === 'dark'
+      || ((!localColor || localColor === 'system') && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    if (isDark && !html.classList.contains('dark')) {
+      html.classList.add('dark')
+    }
+  } catch (e) {}
+
   const handle = localStorage.getItem('${STORAGE_KEY_CURRENT_USER_HANDLE}') || '[anonymous]'
   const allSettings = JSON.parse(localStorage.getItem('${STORAGE_KEY_SETTINGS}') || '{}')
   const settings = allSettings[handle]
   if (!settings) { return }
 
-  const html = document.documentElement
   ${import.meta.dev ? 'console.log({ settings })' : ''}
 
   if (settings.fontSize) {

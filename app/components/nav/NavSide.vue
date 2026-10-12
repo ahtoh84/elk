@@ -16,14 +16,39 @@ const lastAccessedExploreRoute = useLocalStorage(STORAGE_KEY_LAST_ACCESSED_EXPLO
 const moreButtonId = computed(() => `nav-side-more-${props.variant}`)
 const moreItemsId = computed(() => `nav-side-more-items-${props.variant}`)
 const floatingMoreOpen = ref(false)
-
 const showMoreItems = computed(() => props.variant === 'desktop' ? floatingMoreOpen.value : moreOpen.value)
 const userOnlyDisabled = computed(() => !isHydrated.value || !currentUser.value)
 
+const moreRoutes = computed(() => {
+  const prefix = currentServer.value ? `/${currentServer.value}` : ''
+  return [
+    '/conversations',
+    '/public',
+    `${prefix}/public`,
+    '/favourites',
+    '/bookmarks',
+    '/lists',
+    `${prefix}/lists`,
+    '/hashtags',
+    '/scheduled-posts',
+    '/collections',
+    `${prefix}/collections`,
+    '/settings',
+  ]
+})
+
+const isMoreRouteActive = computed(() => {
+  const path = route.path
+  return moreRoutes.value.some(r => path === r || path.startsWith(`${r}/`))
+})
+
 watch(() => route.path, () => {
   floatingMoreOpen.value = false
-  moreOpen.value = false
-})
+  if (props.variant === 'mobile' && isMoreRouteActive.value)
+    moreOpen.value = true
+  else
+    moreOpen.value = false
+}, { immediate: true })
 
 function toggleMore() {
   if (props.variant === 'desktop') {
@@ -97,6 +122,7 @@ const exploreLink = computed(() => {
           :id="`${moreButtonId}-floating`"
           type="button"
           class="nav-more-button w-fit rounded-3 px2 mx3 transition-100 elk-group-hover-bg-active focus-visible:ring-2 focus-visible:ring-current"
+          :class="isMoreRouteActive ? 'text-primary' : ''"
           flex items-center gap4 focus:outline-none
           xl="ml0 mr0 px5 w-auto"
           :aria-label="$t('nav.more_menu')"
@@ -147,7 +173,11 @@ const exploreLink = computed(() => {
         <button
           :id="`${moreButtonId}-inline`"
           type="button"
-          class="nav-more-button transition-colors duration-200 transform hover-bg-gray-100 hover-dark:(bg-gray-700 text-white)"
+          class="nav-more-button transition-colors duration-200 transform hover:bg-active active:bg-active"
+          :class="{
+            'nav-more-button--active': isMoreRouteActive,
+            'nav-more-button--open': showMoreItems && !isMoreRouteActive,
+          }"
           flex items-center gap4 focus:outline-none
           w-full px5
           :aria-label="$t('nav.more_menu')"
@@ -182,6 +212,27 @@ const exploreLink = computed(() => {
 <style scoped>
   .spacer {
     margin-top: 0.5em;
+  }
+
+  @media (max-width: 639.98px) {
+    .nav-more-button {
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+      transition:
+        background-color var(--motion-moderate, 160ms) ease,
+        color var(--motion-moderate, 160ms) ease;
+    }
+
+    .nav-more-button--active {
+      background-color: var(--c-primary-fade);
+      color: var(--c-primary);
+      font-weight: 600;
+    }
+
+    .nav-more-button--open {
+      background-color: var(--c-bg-active);
+      color: var(--c-primary);
+    }
   }
 
   .nav-more-items {

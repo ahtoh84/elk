@@ -323,7 +323,11 @@ export default defineNuxtConfig({
     },
     rateLimiter: false,
   },
-  colorMode: { classSuffix: '' },
+  colorMode: {
+    classSuffix: '',
+    storage: 'cookie',
+    disableTransition: true,
+  },
   i18n: {
     locales: currentLocales,
     strategy: 'no_prefix',

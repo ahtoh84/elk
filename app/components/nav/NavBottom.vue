@@ -52,7 +52,7 @@ const selectedNavButtonNames = useLocalStorage<NavButtonName[]>(STORAGE_KEY_BOTT
 const selectedNavButtons = computed(() => selectedNavButtonNames.value.map(name => navButtons.find(navButton => navButton.name === name)))
 
 // only one icon can be lit up at the same time
-const moreMenuVisible = ref(false)
+const moreMenuVisible = useState<boolean>('bottom-more-menu-open', () => false)
 const route = useRoute()
 
 watch(() => route.path, () => {

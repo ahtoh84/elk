@@ -10,12 +10,21 @@ const fullscreenRootEntry = computed(() =>
 )
 const wideLayout = computed(() => route.meta.wideLayout ?? false)
 const isSettingsPage = computed(() => route.path === '/settings' || route.path.startsWith('/settings/'))
+const isBottomMoreMenuOpen = useState<boolean>('bottom-more-menu-open', () => false)
 const autoHideBottomNavEnabled = computed(() =>
   isHydrated.value
   && isSmallScreen.value
+  && !isBottomMoreMenuOpen.value
   && route.meta.hideBottomNavOnScroll === true,
 )
-const { isHidden: isBottomNavHidden } = useAutoHideBottomNav(autoHideBottomNavEnabled)
+const { isHidden: isBottomNavHiddenRaw } = useAutoHideBottomNav(autoHideBottomNavEnabled)
+const isBottomNavHidden = computed(() =>
+  !isBottomMoreMenuOpen.value && isBottomNavHiddenRaw.value,
+)
+const isBottomNavHiddenState = useState<boolean>('bottom-nav-hidden', () => false)
+watchEffect(() => {
+  isBottomNavHiddenState.value = isBottomNavHidden.value
+})
 
 const showUserPicker = logicAnd(
   usePreferences('experimentalUserPicker'),
