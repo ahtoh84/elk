@@ -1,9 +1,34 @@
 import type { NavButtonName } from './settings'
 
 const trailingSlashPattern = /\/$/
+const localTimelineRoutePattern = /(?:^|\/)public\/local(?:\/|$)/
 
 function matchesPath(path: string, route: string) {
   return path === route || path.startsWith(`${route}/`)
+}
+
+export function isMoreMenuRouteActive(path: string, currentServer?: string): boolean {
+  const normalizedPath = path.replace(trailingSlashPattern, '') || '/'
+  if (localTimelineRoutePattern.test(normalizedPath))
+    return false
+
+  const prefix = currentServer ? `/${currentServer}` : ''
+  const moreMenuRoutes = [
+    '/conversations',
+    '/public',
+    `${prefix}/public`,
+    '/favourites',
+    '/bookmarks',
+    '/lists',
+    `${prefix}/lists`,
+    '/hashtags',
+    '/scheduled-posts',
+    '/collections',
+    `${prefix}/collections`,
+    '/settings',
+  ]
+
+  return moreMenuRoutes.some(route => matchesPath(normalizedPath, route))
 }
 
 export function getActiveNavButtonName(path: string): NavButtonName | undefined {

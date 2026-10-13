@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoreMenuRouteActive } from '~/composables/nav'
 import { STORAGE_KEY_LAST_ACCESSED_EXPLORE_ROUTE, STORAGE_KEY_LAST_ACCESSED_NOTIFICATION_ROUTE } from '~/constants'
 
 const props = withDefaults(defineProps<{
@@ -23,28 +24,7 @@ const isNavCollapsed = computed(() => props.variant === 'desktop' && Boolean(unr
 provide('isNavCollapsed', isNavCollapsed)
 provide('navSideVariant', computed(() => props.variant))
 
-const moreRoutes = computed(() => {
-  const prefix = currentServer.value ? `/${currentServer.value}` : ''
-  return [
-    '/conversations',
-    '/public',
-    `${prefix}/public`,
-    '/favourites',
-    '/bookmarks',
-    '/lists',
-    `${prefix}/lists`,
-    '/hashtags',
-    '/scheduled-posts',
-    '/collections',
-    `${prefix}/collections`,
-    '/settings',
-  ]
-})
-
-const isMoreRouteActive = computed(() => {
-  const path = route.path
-  return moreRoutes.value.some(r => path === r || path.startsWith(`${r}/`))
-})
+const isMoreRouteActive = computed(() => isMoreMenuRouteActive(route.path, currentServer.value))
 
 watch(() => route.path, () => {
   floatingMoreOpen.value = false
