@@ -46,6 +46,14 @@ export default defineNuxtPlugin(() => {
   const hasLegacyDefaultTheme = settings.themeSettingsVersion == null && settings.themeColors?.['--theme-color-name'] === ${JSON.stringify(LEGACY_DEFAULT_THEME)}
   if (settings.themeColors && !hasLegacyDefaultTheme) {
     Object.entries(settings.themeColors).map(i => html.style.setProperty(i[0], i[1]))
+    if (!settings.themeColors['--c-nav-active-bg']) {
+      const isInk = settings.themeColors['--theme-color-name'] === '#242424'
+      html.style.setProperty('--c-nav-active-bg', (isInk && !isDark) ? '#f0f0f0' : (settings.themeColors['--c-primary-fade'] || 'transparent'))
+    }
+    if (!settings.themeColors['--c-container-border']) {
+      const isInk = settings.themeColors['--theme-color-name'] === '#242424'
+      html.style.setProperty('--c-container-border', (isInk && !isDark) ? '#D5D5D5' : (settings.themeColors['--c-border'] || 'transparent'))
+    }
   }
 })()`.trim().replace(WHITESPACE_REGEX, ';'),
       },

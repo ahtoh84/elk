@@ -23,6 +23,12 @@ export function resolveTheme(theme: ThemeColors, dark: boolean): ThemeColors {
     resolved['--c-primary'] = `color-mix(in srgb, ${theme['--c-primary']}, black 25%)`
   }
 
+  const isInk = resolved['--theme-color-name'] === '#242424'
+  if (!resolved['--c-nav-active-bg'])
+    resolved['--c-nav-active-bg'] = (isInk && !dark) ? '#f0f0f0' : (resolved['--c-primary-fade'] || 'transparent')
+  if (!resolved['--c-container-border'])
+    resolved['--c-container-border'] = (isInk && !dark) ? '#D5D5D5' : (resolved['--c-border'] || 'transparent')
+
   return resolved
 }
 

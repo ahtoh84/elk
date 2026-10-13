@@ -58,6 +58,7 @@ onHydrated(async () => {
 // when we know there is no user.
 const noUserDisable = computed(() => !isHydrated.value || (userOnly && !currentUser.value))
 const noUserVisual = computed(() => isHydrated.value && userOnly && !currentUser.value)
+const isNavCollapsed = inject<Ref<boolean>>('isNavCollapsed', ref(false))
 </script>
 
 <template>
@@ -75,10 +76,10 @@ const noUserVisual = computed(() => isHydrated.value && userOnly && !currentUser
       <div
         class="item"
         flex items-center gap4
-        xl="ml0 mr5 px5 w-auto"
         :class="[
           isItemActive ? 'item--active' : '',
-          isSmallScreen
+          isNavCollapsed ? 'nav-side-item--compact' : 'xl:ml0 xl:mr5 xl:px5 xl:w-auto',
+          (isSmallScreen && !isNavCollapsed)
             ? `
               w-full
               px5 sm:mxa
@@ -98,7 +99,7 @@ const noUserVisual = computed(() => isHydrated.value && userOnly && !currentUser
           <div :class="icon" text-xl />
         </slot>
         <slot>
-          <span block sm:hidden xl:block select-none>{{ isHydrated ? text : '&nbsp;' }}</span>
+          <span v-if="!isNavCollapsed" block sm:hidden xl:block select-none class="nav-side-item-text">{{ isHydrated ? text : '&nbsp;' }}</span>
         </slot>
       </div>
     </CommonTooltip>
@@ -117,7 +118,7 @@ const noUserVisual = computed(() => isHydrated.value && userOnly && !currentUser
   :deep(.nav-side-item-active) .item,
   .nav-side-item-active .item,
   :deep(a.router-link-active) .item {
-    background-color: var(--c-nav-active-bg, #F0F0F0);
+    background-color: var(--c-nav-active-bg, var(--c-primary-fade));
     color: var(--c-primary);
     font-weight: 600;
   }

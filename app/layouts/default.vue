@@ -10,6 +10,7 @@ const fullscreenRootEntry = computed(() =>
 )
 const wideLayout = computed(() => route.meta.wideLayout ?? false)
 const isSettingsPage = computed(() => route.path === '/settings' || route.path.startsWith('/settings/'))
+provide('isNavCollapsed', isSettingsPage)
 const isBottomMoreMenuOpen = useState<boolean>('bottom-more-menu-open', () => false)
 const autoHideBottomNavEnabled = computed(() =>
   isHydrated.value
@@ -57,20 +58,30 @@ watchEffect(() => {
         fullscreenRootEntry
           ? 'fullscreen-root-layout'
           : 'app-workspace-main flex flex-row flex-nowrap mxa lg:max-w-80rem',
-        { 'settings-workspace-layout': isSettingsPage },
       ]"
     >
       <template v-if="!fullscreenRootEntry">
-        <aside v-if="!isSettingsPage" class="w-1/8 md:w-1/6 lg:w-1/5 xl:w-1/4 shrink-0 zen-hide" hidden sm:flex justify-end xl:me-4 relative>
-          <div sticky top-0 w-20 xl:w-100 h-100dvh flex="~ col" lt-xl-items-center>
+        <aside
+          class="shrink-0 zen-hide relative"
+          :class="[
+            isSettingsPage
+              ? 'w-20 justify-center nav-compact-mode'
+              : 'w-1/8 md:w-1/6 lg:w-1/5 xl:w-1/4 justify-end xl:me-4',
+          ]"
+          hidden sm:flex
+        >
+          <div
+            sticky top-0 h-100dvh flex="~ col"
+            :class="isSettingsPage ? 'w-20 items-center' : 'w-20 xl:w-100 lt-xl-items-center'"
+          >
             <slot name="left">
               <div flex="~ col" overflow-y-auto justify-between h-full max-w-full overflow-x-hidden>
                 <NavTitle />
                 <NavSide command variant="desktop" />
                 <div flex-auto />
                 <div v-if="isHydrated && currentUser" flex flex-col sticky bottom-0 bg-base>
-                  <div p6 pb8 w-full>
-                    <div hidden xl:block>
+                  <div p6 pb8 w-full class="user-section-pad">
+                    <div v-if="!isSettingsPage" hidden xl:block>
                       <UserPicker v-if="showUserPicker" />
                       <div v-else flex="~" items-center justify-between>
                         <NuxtLink
@@ -84,7 +95,7 @@ watchEffect(() => {
                         <UserDropdown />
                       </div>
                     </div>
-                    <UserDropdown xl:hidden />
+                    <UserDropdown :compact="isSettingsPage" :class="{ 'xl:hidden': !isSettingsPage }" />
                   </div>
                 </div>
               </div>
@@ -93,7 +104,7 @@ watchEffect(() => {
         </aside>
         <div
           class="mobile-viewport-shell" w-full
-          :class="isSettingsPage ? 'settings-workspace-content' : isHydrated && wideLayout ? 'xl:w-full sm:w-600px' : 'sm:w-600px md:shrink-0'"
+          :class="isHydrated && wideLayout ? 'xl:w-full sm:w-600px' : 'sm:w-600px md:shrink-0'"
           border-base
         >
           <div class="mobile-viewport-page">
@@ -114,7 +125,7 @@ watchEffect(() => {
             </div>
           </div>
         </div>
-        <aside v-if="isHydrated && !wideLayout && !isSettingsPage" class="hidden lg:w-1/5 xl:w-1/4 shrink-0 sm:none xl:block zen-hide">
+        <aside v-if="isHydrated && !wideLayout" class="hidden lg:w-1/5 xl:w-1/4 shrink-0 sm:none xl:block zen-hide">
           <div sticky top-0 h-100dvh flex="~ col" gap-2 py3 ms-2>
             <slot name="right">
               <SearchWidget mt-4 mx-1 hidden xl:block />
@@ -142,16 +153,6 @@ watchEffect(() => {
   width: 100%;
   margin-inline: auto !important;
   max-width: 80rem;
-}
-
-.settings-workspace-layout {
-  max-inline-size: 68rem !important;
-  margin-inline: auto !important;
-}
-
-.settings-workspace-content {
-  min-inline-size: 0;
-  inline-size: 100%;
 }
 
 .fullscreen-root-layout {

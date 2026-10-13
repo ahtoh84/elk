@@ -51,12 +51,6 @@ const visibleNavigationGroups = computed(() => navigationGroups
               {{ $t('nav.settings') }}
             </MainTitle>
           </template>
-          <template #actions>
-            <NuxtLink to="/home" class="settings-exit-link" :aria-label="$t('nav.home')">
-              <span aria-hidden="true" class="i-ri:arrow-left-line rtl-flip" />
-              <span>{{ $t('nav.home') }}</span>
-            </NuxtLink>
-          </template>
           <nav class="settings-navigation-list" :aria-label="$t('nav.settings')">
             <ul v-for="(group, groupIndex) in visibleNavigationGroups" :key="groupIndex" class="settings-navigation-group">
               <li v-for="item in group" :key="item.to">

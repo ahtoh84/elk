@@ -20,8 +20,6 @@
   --c-border: rgba(0, 0, 0, 0.055);
   --c-border-dark: rgba(0, 0, 0, 0.08);
   --c-border-code: rgba(0, 0, 0, 0.035);
-  --c-container-border: #D5D5D5;
-  --c-nav-active-bg: #F0F0F0;
   --c-danger: #b42318;
   --c-danger-active: color-mix(in srgb, #b42318, black 12%);
   --c-success: #217a4d;
@@ -48,8 +46,6 @@
   --c-dark-border: rgba(255, 255, 255, 0.085);
   --c-dark-border-dark: rgba(255, 255, 255, 0.07);
   --c-dark-border-code: rgba(255, 255, 255, 0.06);
-  --c-dark-container-border: var(--c-dark-border);
-  --c-dark-nav-active-bg: var(--c-dark-primary-fade);
   --c-dark-danger: #a33a32;
   --c-dark-danger-active: color-mix(in srgb, #ff8a80, black 12%);
   --c-dark-success: #5dd39e;
@@ -61,6 +57,10 @@
   --c-dark-text-secondary-light: #b8b8b8;
   --c-dark-text-btn-disabled: #111111;
   --c-dark-text-btn-disabled-deeper: #9c9c9c;
+  --c-container-border: #D5D5D5;
+  --c-dark-container-border: rgba(255, 255, 255, 0.085);
+  --c-nav-active-bg: #f0f0f0;
+  --c-dark-nav-active-bg: #eeeeee1f;
 }
 
 .dark {
@@ -79,8 +79,6 @@
   --c-border: var(--c-dark-border);
   --c-border-dark: var(--c-dark-border-dark);
   --c-border-code: var(--c-dark-border-code);
-  --c-container-border: var(--c-dark-container-border);
-  --c-nav-active-bg: var(--c-dark-nav-active-bg);
   --c-danger: var(--c-dark-danger);
   --c-danger-active: var(--c-dark-danger-active);
   --c-success: var(--c-dark-success);
@@ -92,37 +90,39 @@
   --c-text-secondary-light: var(--c-dark-text-secondary-light);
   --c-text-btn-disabled: var(--c-dark-text-btn-disabled);
   --c-text-btn-disabled-deeper: var(--c-dark-text-btn-disabled-deeper);
+  --c-container-border: var(--c-dark-container-border);
+  --c-nav-active-bg: var(--c-dark-nav-active-bg);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    --c-primary: var(--c-dark-primary);
-    --c-primary-active: var(--c-dark-primary-active);
-    --c-primary-light: var(--c-dark-primary-light);
-    --c-primary-fade: var(--c-dark-primary-fade);
-    --c-bg-base: var(--c-dark-bg-base);
-    --c-bg-active: var(--c-dark-bg-active);
-    --c-bg-card: var(--c-dark-bg-card);
-    --c-bg-panel: var(--c-dark-bg-panel);
-    --c-bg-code: var(--c-dark-bg-code);
-    --c-bg-selection: var(--c-dark-bg-selection);
-    --c-bg-dm: var(--c-dark-bg-dm);
-    --c-bg-btn-disabled: var(--c-dark-bg-btn-disabled);
-    --c-border: var(--c-dark-border);
-    --c-border-dark: var(--c-dark-border-dark);
-    --c-border-code: var(--c-dark-border-code);
-    --c-container-border: var(--c-dark-container-border);
-    --c-nav-active-bg: var(--c-dark-nav-active-bg);
-    --c-danger: var(--c-dark-danger);
-    --c-danger-active: var(--c-dark-danger-active);
-    --c-success: var(--c-dark-success);
-    --c-warning: var(--c-dark-warning);
-    --c-error: var(--c-dark-error);
-    --c-text-base: var(--c-dark-text-base);
-    --c-text-code: var(--c-dark-text-code);
-    --c-text-secondary: var(--c-dark-text-secondary);
-    --c-text-secondary-light: var(--c-dark-text-secondary-light);
-    --c-text-btn-disabled: var(--c-dark-text-btn-disabled);
-    --c-text-btn-disabled-deeper: var(--c-dark-text-btn-disabled-deeper);
+  --c-primary: var(--c-dark-primary);
+  --c-primary-active: var(--c-dark-primary-active);
+  --c-primary-light: var(--c-dark-primary-light);
+  --c-primary-fade: var(--c-dark-primary-fade);
+  --c-bg-base: var(--c-dark-bg-base);
+  --c-bg-active: var(--c-dark-bg-active);
+  --c-bg-card: var(--c-dark-bg-card);
+  --c-bg-panel: var(--c-dark-bg-panel);
+  --c-bg-code: var(--c-dark-bg-code);
+  --c-bg-selection: var(--c-dark-bg-selection);
+  --c-bg-dm: var(--c-dark-bg-dm);
+  --c-bg-btn-disabled: var(--c-dark-bg-btn-disabled);
+  --c-border: var(--c-dark-border);
+  --c-border-dark: var(--c-dark-border-dark);
+  --c-border-code: var(--c-dark-border-code);
+  --c-danger: var(--c-dark-danger);
+  --c-danger-active: var(--c-dark-danger-active);
+  --c-success: var(--c-dark-success);
+  --c-warning: var(--c-dark-warning);
+  --c-error: var(--c-dark-error);
+  --c-text-base: var(--c-dark-text-base);
+  --c-text-code: var(--c-dark-text-code);
+  --c-text-secondary: var(--c-dark-text-secondary);
+  --c-text-secondary-light: var(--c-dark-text-secondary-light);
+  --c-text-btn-disabled: var(--c-dark-text-btn-disabled);
+  --c-text-btn-disabled-deeper: var(--c-dark-text-btn-disabled-deeper);
+  --c-container-border: var(--c-dark-container-border);
+  --c-nav-active-bg: var(--c-dark-nav-active-bg);
   }
 }

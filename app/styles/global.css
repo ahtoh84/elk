@@ -157,7 +157,7 @@ button,
 .main-content-body {
   overflow: hidden;
   margin-block: 0.75rem 1.5rem;
-  border: 1px solid var(--c-container-border, #D5D5D5);
+  border: 0.5px solid var(--c-container-border, var(--c-border));
   border-radius: 0;
   background: var(--c-bg-panel);
   box-shadow: none;
@@ -174,7 +174,7 @@ button,
 .timeline-feed {
   overflow: hidden;
   margin-block: 0.75rem 1.5rem;
-  border: 1px solid var(--c-container-border, #D5D5D5);
+  border: 0.5px solid var(--c-container-border, var(--c-border));
   border-radius: 0;
   background: var(--c-bg-panel);
   box-shadow: none;
@@ -213,6 +213,46 @@ button,
   border-bottom: 1px solid var(--c-border);
 }
 
+/* Compact navigation mode (used on settings pages and medium viewports) */
+.nav-compact-mode {
+  width: 5rem !important;
+}
+
+.nav-compact-mode .nav-title {
+  width: 100% !important;
+  justify-content: center !important;
+}
+
+.nav-compact-mode .nav-logo-link {
+  justify-content: center !important;
+  padding-inline: 0.5rem !important;
+}
+
+.nav-compact-mode .nav-title-text,
+.nav-compact-mode .nav-title-back,
+.nav-compact-mode .nav-side-item-text,
+.nav-compact-mode .nav-more-text,
+.nav-compact-mode .user-dropdown-more-icon {
+  display: none !important;
+}
+
+.nav-compact-mode .user-dropdown-avatar {
+  display: block !important;
+}
+
+.nav-compact-mode .item,
+.nav-compact-mode .nav-more-button {
+  width: fit-content !important;
+  margin-inline: auto !important;
+  padding-inline: 0.5rem !important;
+}
+
+.nav-compact-mode .user-section-pad {
+  display: flex !important;
+  justify-content: center !important;
+  padding-inline: 0 !important;
+}
+
 .settings-page {
   min-height: 100dvh;
   padding: 1rem 1rem 2rem;
@@ -242,7 +282,8 @@ button,
   border-block-end: 0;
 }
 
-.settings-page .main-content-header h1 {
+.settings-page .main-content-header h1,
+.settings-page .main-content-header .settings-navigation-title {
   padding-inline: 0;
   font-size: 1.5rem;
   line-height: 1.3;
@@ -255,7 +296,8 @@ button,
 .settings-page .settings-navigation-title {
   padding-inline: 0;
   color: var(--c-text-base);
-  font-size: 1.25rem;
+  font-size: 1.5rem;
+  line-height: 1.3;
 }
 
 .settings-page .main-content-top-spacer {
@@ -331,7 +373,7 @@ button,
 }
 
 .settings-nav-link-active {
-  background: var(--c-nav-active-bg, #F0F0F0);
+  background: var(--c-nav-active-bg, var(--c-primary-fade));
   color: var(--c-primary);
 }
 
@@ -885,7 +927,8 @@ button,
     border-block-end: 1px solid var(--c-border);
   }
 
-  .settings-page .main-content-header h1 {
+  .settings-page .main-content-header h1,
+  .settings-page .settings-navigation-title {
     font-size: var(--fs-title);
   }
 

@@ -14,7 +14,7 @@ mockNuxtImport('isHydrated', () => hydrated)
 
 async function mountLayout(path: string) {
   route.path = path
-  route.meta.wideLayout = path.startsWith('/settings')
+  route.meta.wideLayout = path === '/settings' || path.startsWith('/settings/')
 
   return mountSuspended(DefaultLayout, {
     slots: { default: () => h('div', { 'data-page-content': '' }, 'Page content') },
@@ -36,14 +36,15 @@ async function mountLayout(path: string) {
 
 describe('settings workspace', () => {
   it.each(['/settings', '/settings/interface', '/settings/profile/appearance'])(
-    'shows %s without the duplicate desktop navigation while keeping mobile navigation',
+    'keeps the desktop site navigation and mobile navigation on %s',
     async (path) => {
       const wrapper = await mountLayout(path)
 
-      expect(wrapper.find('[data-site-navigation]').exists()).toBe(false)
+      expect(wrapper.find('[data-site-navigation]').exists()).toBe(true)
       expect(wrapper.find('[data-bottom-navigation]').exists()).toBe(true)
       expect(wrapper.get('[data-page-content]').text()).toBe('Page content')
       expect(wrapper.find('[data-modal-container]').exists()).toBe(true)
+      expect(wrapper.find('aside.nav-compact-mode').exists()).toBe(true)
     },
   )
 
@@ -54,6 +55,7 @@ describe('settings workspace', () => {
 
       expect(wrapper.find('[data-site-navigation]').exists()).toBe(true)
       expect(wrapper.find('[data-bottom-navigation]').exists()).toBe(true)
+      expect(wrapper.find('aside.nav-compact-mode').exists()).toBe(false)
     },
   )
 })

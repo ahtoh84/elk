@@ -42,10 +42,11 @@ describe('settings navigation', () => {
     expect(wrapper.findAll('.settings-nav-link-active')).toHaveLength(1)
   })
 
-  it('offers a way back to the timeline without a second sidebar', async () => {
+  it('does not render an exit link inside the settings header', async () => {
     const wrapper = await mountSettings('/settings/interface')
 
-    expect(wrapper.get('[href="/home"]').attributes('aria-label')).toBeTruthy()
+    expect(wrapper.find('.settings-exit-link').exists()).toBe(false)
+    expect(wrapper.find('[href="/home"]').exists()).toBe(false)
   })
 
   it('keeps the parent selected for nested pages without matching unrelated prefixes', async () => {

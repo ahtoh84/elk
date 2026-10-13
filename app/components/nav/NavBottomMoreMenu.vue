@@ -250,7 +250,7 @@ const { dragging, dragDistance } = invoke(() => {
 }
 
 .nav-drawer-action--active {
-  background-color: var(--c-nav-active-bg, #F0F0F0);
+  background-color: var(--c-nav-active-bg, var(--c-primary-fade));
   color: var(--c-primary);
   font-weight: 600;
 }

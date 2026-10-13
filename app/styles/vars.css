@@ -2,8 +2,6 @@
   --c-border: rgba(0, 0, 0, 0.055);
   --c-border-dark: rgba(0, 0, 0, 0.08);
   --c-border-code: rgba(0, 0, 0, 0.035);
-  --c-container-border: #D5D5D5;
-  --c-nav-active-bg: #F0F0F0;
   --c-danger: #b42318;
   --c-danger-active: color-mix(in srgb, #b42318, black 12%);
 
@@ -95,8 +93,6 @@
   --c-border: rgba(255, 255, 255, 0.085);
   --c-border-code: rgba(255, 255, 255, 0.06);
   --c-border-dark: rgba(255, 255, 255, 0.07);
-  --c-container-border: var(--c-border);
-  --c-nav-active-bg: var(--c-primary-fade);
 
   --rgb-bg-base: 8, 8, 8;
   --c-bg-base: var(--c-dark-bg-base, rgb(var(--rgb-bg-base)));

@@ -55,4 +55,20 @@ describe('theme color modes', () => {
       }
     }
   })
+
+  it('uses custom active background and border only for ink light mode', () => {
+    const inkLight = getThemeColors('#242424', false)
+    const inkDark = getThemeColors('#242424', true)
+    expect(inkLight['--c-nav-active-bg']).toBe('#f0f0f0')
+    expect(inkLight['--c-container-border']).toBe('#D5D5D5')
+    expect(inkDark['--c-nav-active-bg']).toBe('#eeeeee1f')
+    expect(inkDark['--c-container-border']).toBe('rgba(255, 255, 255, 0.085)')
+
+    const paperLight = getThemeColors('#b8956a', false)
+    const paperDark = getThemeColors('#b8956a', true)
+    expect(paperLight['--c-nav-active-bg']).toBe('#b8956a1f')
+    expect(paperLight['--c-container-border']).toBe('rgba(61, 52, 38, 0.07)')
+    expect(paperDark['--c-nav-active-bg']).toBe('#d4a5741f')
+    expect(paperDark['--c-container-border']).toBe('rgba(245, 237, 227, 0.12)')
+  })
 })

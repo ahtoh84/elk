@@ -18,6 +18,7 @@ const moreItemsId = computed(() => `nav-side-more-items-${props.variant}`)
 const floatingMoreOpen = ref(false)
 const showMoreItems = computed(() => props.variant === 'desktop' ? floatingMoreOpen.value : moreOpen.value)
 const userOnlyDisabled = computed(() => !isHydrated.value || !currentUser.value)
+const isNavCollapsed = inject<Ref<boolean>>('isNavCollapsed', ref(false))
 
 const moreRoutes = computed(() => {
   const prefix = currentServer.value ? `/${currentServer.value}` : ''
@@ -124,16 +125,16 @@ const exploreLink = computed(() => {
           class="nav-more-button w-fit rounded-3 px2 mx3 transition-100 focus-visible:ring-2 focus-visible:ring-current"
           :class="[
             isMoreRouteActive ? 'nav-more-button--active text-primary' : 'elk-group-hover-bg-active',
+            isNavCollapsed ? 'nav-more-button--compact' : 'xl:ml0 xl:mr0 xl:px5 xl:w-auto',
           ]"
           flex items-center gap4 focus:outline-none
-          xl="ml0 mr0 px5 w-auto"
           :aria-label="$t('nav.more_menu')"
           :aria-expanded="showMoreItems"
           :aria-controls="`${moreItemsId}-floating`"
           @click.stop="toggleMore"
         >
           <span :class="showMoreItems ? 'i-ri:arrow-down-s-line' : 'i-ri:more-fill'" text-xl />
-          <span block sm:hidden xl:block select-none>{{ $t('nav.more_menu') }}</span>
+          <span v-if="!isNavCollapsed" block sm:hidden xl:block select-none class="nav-more-text">{{ $t('nav.more_menu') }}</span>
         </button>
       </CommonTooltip>
 
@@ -226,7 +227,7 @@ const exploreLink = computed(() => {
 
   .nav-more-button--active,
   .nav-more-button--active:hover {
-    background-color: var(--c-nav-active-bg, #F0F0F0);
+    background-color: var(--c-nav-active-bg, var(--c-primary-fade));
     color: var(--c-primary);
     font-weight: 600;
   }

@@ -4,6 +4,7 @@ const router = useRouter()
 const back = ref<any>('')
 
 const nuxtApp = useNuxtApp()
+const isNavCollapsed = inject<Ref<boolean>>('isNavCollapsed', ref(false))
 
 function onClickLogo() {
   nuxtApp.hooks.callHook('elk-logo:click')
@@ -18,8 +19,9 @@ router.afterEach(() => {
 </script>
 
 <template>
-  <div flex justify-between sticky top-0 bg-base z-1 py-4>
+  <div class="nav-title" flex justify-between sticky top-0 bg-base z-1 py-4>
     <NuxtLink
+      class="nav-logo-link"
       flex items-end gap-3
       py2 px-5
       text-2xl
@@ -29,11 +31,11 @@ router.afterEach(() => {
       @click.prevent="onClickLogo"
     >
       <NavLogo shrink-0 aspect="1/1" sm:h-8 xl:h-10 class="rtl-flip" />
-      <div v-show="isHydrated" hidden xl:block text-secondary>
+      <div v-if="!isNavCollapsed" v-show="isHydrated" hidden xl:block text-secondary class="nav-title-text">
         {{ $t('app_name') }} <sup v-if="env !== 'release'" text-sm italic mt-1>{{ env }}</sup>
       </div>
     </NuxtLink>
-    <div hidden xl:flex items-center me-6 mt-2 gap-1>
+    <div v-if="!isNavCollapsed" hidden xl:flex items-center me-6 mt-2 gap-1 class="nav-title-back">
       <CommonTooltip :content="$t('nav.back')" :distance="0">
         <button
           type="button"

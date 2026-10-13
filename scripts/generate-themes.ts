@@ -383,6 +383,8 @@ export function getThemeColors(primary: string): ThemeColors {
   if (!palette)
     throw new Error(`Unknown Tangerine palette: ${primary}`)
 
+  const isInk = primary === '#242424'
+
   return {
     '--theme-color-name': primary,
     '--theme-color-label': TANGERINE_PALETTE_NAMES[primary],
@@ -392,6 +394,10 @@ export function getThemeColors(primary: string): ThemeColors {
     '--rgb-dark-bg-base': hexToRgb(palette.dark.bgBase),
     ...getSurfaceColors(palette.light, '--c-'),
     ...getSurfaceColors(palette.dark, '--c-dark-'),
+    '--c-container-border': isInk ? '#D5D5D5' : palette.light.lines,
+    '--c-dark-container-border': palette.dark.lines,
+    '--c-nav-active-bg': isInk ? '#f0f0f0' : `${palette.light.primary}1f`,
+    '--c-dark-nav-active-bg': `${palette.dark.primary}1f`,
   } as ThemeColors
 }
 
