@@ -45,6 +45,9 @@ describe('settings workspace', () => {
       expect(wrapper.get('[data-page-content]').text()).toBe('Page content')
       expect(wrapper.find('[data-modal-container]').exists()).toBe(true)
       expect(wrapper.find('aside.nav-compact-mode').exists()).toBe(true)
+      const asideClasses = wrapper.find('aside').classes()
+      expect(asideClasses).toContain('md:w-1/6')
+      expect(asideClasses).toContain('lg:w-20')
     },
   )
 

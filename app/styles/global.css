@@ -214,8 +214,10 @@ button,
 }
 
 /* Compact navigation mode (used on settings pages and medium viewports) */
-.nav-compact-mode {
-  width: 5rem !important;
+@media (min-width: 1024px) {
+  .nav-compact-mode {
+    width: 5rem !important;
+  }
 }
 
 .nav-compact-mode .nav-title {

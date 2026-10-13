@@ -104,7 +104,7 @@ const showBackButton = computed(() => {
       ref="body"
       class="main-content-body"
       :style="noOverflowHidden ? { overflow: 'visible' } : undefined"
-      :class="isHydrated && wideLayout ? 'xl:w-full sm:max-w-600px' : 'sm:max-w-600px md:shrink-0'"
+      :class="isHydrated && wideLayout ? 'lg:w-full sm:max-w-600px' : 'sm:max-w-600px md:shrink-0'"
       m-auto
     >
       <div class="main-content-top-spacer" hidden :class="{ 'xl:block': !flushTop && $route.name !== 'tag' && !$slots.header }" h-6 />
