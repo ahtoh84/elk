@@ -157,7 +157,7 @@ button,
 .main-content-body {
   overflow: hidden;
   margin-block: 0.75rem 1.5rem;
-  border: 1px solid var(--c-border);
+  border: 1px solid var(--c-container-border, #D5D5D5);
   border-radius: 0;
   background: var(--c-bg-panel);
   box-shadow: none;
@@ -174,10 +174,22 @@ button,
 .timeline-feed {
   overflow: hidden;
   margin-block: 0.75rem 1.5rem;
-  border: 1px solid var(--c-border);
+  border: 1px solid var(--c-container-border, #D5D5D5);
   border-radius: 0;
   background: var(--c-bg-panel);
   box-shadow: none;
+}
+
+.dark .main-content-body,
+.dark .timeline-feed {
+  border-color: var(--c-border);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) .main-content-body,
+  :root:not(.light) .timeline-feed {
+    border-color: var(--c-border);
+  }
 }
 
 .timeline-post {
@@ -319,7 +331,7 @@ button,
 }
 
 .settings-nav-link-active {
-  background: var(--c-primary-fade);
+  background: var(--c-nav-active-bg, #F0F0F0);
   color: var(--c-primary);
 }
 

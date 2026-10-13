@@ -20,6 +20,8 @@
   --c-border: rgba(0, 0, 0, 0.055);
   --c-border-dark: rgba(0, 0, 0, 0.08);
   --c-border-code: rgba(0, 0, 0, 0.035);
+  --c-container-border: #D5D5D5;
+  --c-nav-active-bg: #F0F0F0;
   --c-danger: #b42318;
   --c-danger-active: color-mix(in srgb, #b42318, black 12%);
   --c-success: #217a4d;
@@ -46,6 +48,8 @@
   --c-dark-border: rgba(255, 255, 255, 0.085);
   --c-dark-border-dark: rgba(255, 255, 255, 0.07);
   --c-dark-border-code: rgba(255, 255, 255, 0.06);
+  --c-dark-container-border: var(--c-dark-border);
+  --c-dark-nav-active-bg: var(--c-dark-primary-fade);
   --c-dark-danger: #a33a32;
   --c-dark-danger-active: color-mix(in srgb, #ff8a80, black 12%);
   --c-dark-success: #5dd39e;
@@ -75,6 +79,8 @@
   --c-border: var(--c-dark-border);
   --c-border-dark: var(--c-dark-border-dark);
   --c-border-code: var(--c-dark-border-code);
+  --c-container-border: var(--c-dark-container-border);
+  --c-nav-active-bg: var(--c-dark-nav-active-bg);
   --c-danger: var(--c-dark-danger);
   --c-danger-active: var(--c-dark-danger-active);
   --c-success: var(--c-dark-success);
@@ -105,6 +111,8 @@
     --c-border: var(--c-dark-border);
     --c-border-dark: var(--c-dark-border-dark);
     --c-border-code: var(--c-dark-border-code);
+    --c-container-border: var(--c-dark-container-border);
+    --c-nav-active-bg: var(--c-dark-nav-active-bg);
     --c-danger: var(--c-dark-danger);
     --c-danger-active: var(--c-dark-danger-active);
     --c-success: var(--c-dark-success);

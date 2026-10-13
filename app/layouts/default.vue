@@ -32,88 +32,121 @@ const showUserPicker = logicAnd(
 )
 
 const isGrayscale = usePreferences('grayscaleMode')
+
+const mainEl = ref<HTMLElement>()
+watchEffect(() => {
+  if (mainEl.value) {
+    if (fullscreenRootEntry.value) {
+      mainEl.value.classList.add('fullscreen-root-layout')
+      mainEl.value.classList.remove('app-workspace-main', 'flex', 'flex-row', 'flex-nowrap', 'mxa', 'lg:max-w-80rem')
+    }
+    else {
+      mainEl.value.classList.remove('fullscreen-root-layout')
+      mainEl.value.classList.add('app-workspace-main', 'flex', 'flex-row', 'flex-nowrap', 'mxa', 'lg:max-w-80rem')
+    }
+  }
+})
 </script>
 
 <template>
   <div h-full :data-mode="isHydrated && isGrayscale ? 'grayscale' : ''">
-    <main v-if="fullscreenRootEntry" class="fullscreen-root-layout">
-      <slot />
-    </main>
-    <main v-else flex w-full mxa lg:max-w-80rem :class="{ 'settings-workspace-layout': isSettingsPage }">
-      <aside v-if="!isSettingsPage" class="w-1/8 md:w-1/6 lg:w-1/5 xl:w-1/4 zen-hide" hidden sm:flex justify-end xl:me-4 relative>
-        <div sticky top-0 w-20 xl:w-100 h-100dvh flex="~ col" lt-xl-items-center>
-          <slot name="left">
-            <div flex="~ col" overflow-y-auto justify-between h-full max-w-full overflow-x-hidden>
-              <NavTitle />
-              <NavSide command variant="desktop" />
-              <div flex-auto />
-              <div v-if="isHydrated && currentUser" flex flex-col sticky bottom-0 bg-base>
-                <div p6 pb8 w-full>
-                  <div hidden xl-block>
-                    <UserPicker v-if="showUserPicker" />
-                    <div v-else flex="~" items-center justify-between>
-                      <NuxtLink
-                        hidden xl:block
-                        rounded-3 text-primary text-start w-full
-                        hover:bg-active cursor-pointer transition-100
-                        :to="getAccountRoute(currentUser.account)"
-                      >
-                        <AccountInfo :account="currentUser.account" md:break-words />
-                      </NuxtLink>
-                      <UserDropdown />
+    <main
+      ref="mainEl"
+      class="w-full"
+      :class="[
+        fullscreenRootEntry
+          ? 'fullscreen-root-layout'
+          : 'app-workspace-main flex flex-row flex-nowrap mxa lg:max-w-80rem',
+        { 'settings-workspace-layout': isSettingsPage },
+      ]"
+    >
+      <template v-if="!fullscreenRootEntry">
+        <aside v-if="!isSettingsPage" class="w-1/8 md:w-1/6 lg:w-1/5 xl:w-1/4 shrink-0 zen-hide" hidden sm:flex justify-end xl:me-4 relative>
+          <div sticky top-0 w-20 xl:w-100 h-100dvh flex="~ col" lt-xl-items-center>
+            <slot name="left">
+              <div flex="~ col" overflow-y-auto justify-between h-full max-w-full overflow-x-hidden>
+                <NavTitle />
+                <NavSide command variant="desktop" />
+                <div flex-auto />
+                <div v-if="isHydrated && currentUser" flex flex-col sticky bottom-0 bg-base>
+                  <div p6 pb8 w-full>
+                    <div hidden xl:block>
+                      <UserPicker v-if="showUserPicker" />
+                      <div v-else flex="~" items-center justify-between>
+                        <NuxtLink
+                          hidden xl:block
+                          rounded-3 text-primary text-start w-full
+                          hover:bg-active cursor-pointer transition-100
+                          :to="getAccountRoute(currentUser.account)"
+                        >
+                          <AccountInfo :account="currentUser.account" md:break-words />
+                        </NuxtLink>
+                        <UserDropdown />
+                      </div>
                     </div>
+                    <UserDropdown xl:hidden />
                   </div>
-                  <UserDropdown xl:hidden />
                 </div>
               </div>
-            </div>
-          </slot>
-        </div>
-      </aside>
-      <div
-        class="mobile-viewport-shell" w-full
-        :class="isSettingsPage ? 'settings-workspace-content' : isHydrated && wideLayout ? 'xl:w-full sm:w-600px' : 'sm:w-600px md:shrink-0'"
-        border-base
-      >
-        <div class="mobile-viewport-page">
-          <slot />
-        </div>
+            </slot>
+          </div>
+        </aside>
         <div
-          class="bottom-nav-container"
-          :class="{ 'bottom-nav-container--hidden': isBottomNavHidden }"
-          sticky left-0 right-0 bottom-0 z-10 bg-base pb="[env(safe-area-inset-bottom)]" transition="padding 20"
+          class="mobile-viewport-shell" w-full
+          :class="isSettingsPage ? 'settings-workspace-content' : isHydrated && wideLayout ? 'xl:w-full sm:w-600px' : 'sm:w-600px md:shrink-0'"
+          border-base
         >
-          <CommonOfflineChecker v-if="isHydrated" class="offline-checker" />
+          <div class="mobile-viewport-page">
+            <slot />
+          </div>
           <div
-            class="bottom-nav-shell"
-            :class="{ 'bottom-nav-shell--hidden': isBottomNavHidden }"
-            :inert="isBottomNavHidden"
+            class="bottom-nav-container"
+            :class="{ 'bottom-nav-container--hidden': isBottomNavHidden }"
+            sticky left-0 right-0 bottom-0 z-10 bg-base pb="[env(safe-area-inset-bottom)]" transition="padding 20"
           >
-            <NavBottom v-if="isHydrated" sm:hidden />
+            <CommonOfflineChecker v-if="isHydrated" class="offline-checker" />
+            <div
+              class="bottom-nav-shell"
+              :class="{ 'bottom-nav-shell--hidden': isBottomNavHidden }"
+              :inert="isBottomNavHidden"
+            >
+              <NavBottom v-if="isHydrated" sm:hidden />
+            </div>
           </div>
         </div>
-      </div>
-      <aside v-if="isHydrated && !wideLayout && !isSettingsPage" class="hidden lg:w-1/5 xl:w-1/4 sm:none xl:block zen-hide">
-        <div sticky top-0 h-100dvh flex="~ col" gap-2 py3 ms-2>
-          <slot name="right">
-            <SearchWidget mt-4 mx-1 hidden xl:block />
+        <aside v-if="isHydrated && !wideLayout && !isSettingsPage" class="hidden lg:w-1/5 xl:w-1/4 shrink-0 sm:none xl:block zen-hide">
+          <div sticky top-0 h-100dvh flex="~ col" gap-2 py3 ms-2>
+            <slot name="right">
+              <SearchWidget mt-4 mx-1 hidden xl:block />
 
-            <div flex-auto />
-            <PwaPrompt />
-            <PwaInstallPrompt />
-            <LazyCommonPreviewPrompt v-if="info.env === 'preview'" />
-            <NavFooter />
-          </slot>
-        </div>
-      </aside>
+              <div flex-auto />
+              <PwaPrompt />
+              <PwaInstallPrompt />
+              <LazyCommonPreviewPrompt v-if="info.env === 'preview'" />
+              <NavFooter />
+            </slot>
+          </div>
+        </aside>
+      </template>
+      <slot v-else />
     </main>
     <ModalContainer />
   </div>
 </template>
 
 <style scoped>
+.app-workspace-main {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  width: 100%;
+  margin-inline: auto !important;
+  max-width: 80rem;
+}
+
 .settings-workspace-layout {
-  max-inline-size: 68rem;
+  max-inline-size: 68rem !important;
+  margin-inline: auto !important;
 }
 
 .settings-workspace-content {
@@ -122,6 +155,7 @@ const isGrayscale = usePreferences('grayscaleMode')
 }
 
 .fullscreen-root-layout {
+  display: block !important;
   min-height: 100vh;
   min-height: 100dvh;
   width: 100%;

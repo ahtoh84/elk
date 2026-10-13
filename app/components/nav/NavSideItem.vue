@@ -88,7 +88,7 @@ const noUserVisual = computed(() => isHydrated.value && userOnly && !currentUser
               w-fit rounded-3
               px2 mx3 sm:mxa
               transition-100
-              elk-group-hover-bg-active
+              ${!isItemActive ? 'elk-group-hover-bg-active' : ''}
               group-focus-visible:ring-2
               group-focus-visible:ring-current
             `,
@@ -113,12 +113,21 @@ const noUserVisual = computed(() => isHydrated.value && userOnly && !currentUser
   }
 
   .item--active,
+  .item--active:hover,
   :deep(.nav-side-item-active) .item,
   .nav-side-item-active .item,
   :deep(a.router-link-active) .item {
-    background-color: var(--c-primary-fade);
+    background-color: var(--c-nav-active-bg, #F0F0F0);
     color: var(--c-primary);
     font-weight: 600;
+  }
+
+  :root.dark .item--active,
+  :root.dark .item--active:hover,
+  :root.dark :deep(.nav-side-item-active) .item,
+  :root.dark .nav-side-item-active .item,
+  :root.dark :deep(a.router-link-active) .item {
+    background-color: var(--c-nav-active-bg, var(--c-primary-fade));
   }
 
   @media screen and ( max-height: 820px ) and ( min-width: 1280px ) {

@@ -22,6 +22,7 @@ const isRestoringRootAuth = computed(() => rootPageState.value === 'restoring')
 <template>
   <div
     v-if="isRestoringRootAuth"
+    key="root-restoring"
     class="fullscreen-root-content"
     role="status"
     aria-busy="true"
@@ -29,10 +30,10 @@ const isRestoringRootAuth = computed(() => rootPageState.value === 'restoring')
   >
     <span i-ri:loader-2-line animate-spin text-2xl text-secondary aria-hidden="true" />
   </div>
-  <div v-else-if="fullscreenSignIn" class="fullscreen-root-content">
+  <div v-else-if="fullscreenSignIn" key="root-fullscreen-signin" class="fullscreen-root-content">
     <UserSignIn :default-server="publicServer" />
   </div>
-  <MainContent v-else>
+  <MainContent v-else key="root-main">
     <div v-if="rootPageState === 'sign-in'" min-h="[calc(100vh-8rem)]" flex="~ items-center justify-center" p6>
       <UserSignIn :default-server="publicServer" />
     </div>
