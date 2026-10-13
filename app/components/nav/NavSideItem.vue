@@ -59,6 +59,9 @@ onHydrated(async () => {
 const noUserDisable = computed(() => !isHydrated.value || (userOnly && !currentUser.value))
 const noUserVisual = computed(() => isHydrated.value && userOnly && !currentUser.value)
 const isNavCollapsed = inject<Ref<boolean>>('isNavCollapsed', ref(false))
+const navSideVariant = inject<Ref<'desktop' | 'mobile'> | 'desktop' | 'mobile'>('navSideVariant', 'desktop')
+const isMobileVariant = computed(() => unref(navSideVariant) === 'mobile')
+const isCollapsed = computed(() => !isMobileVariant.value && Boolean(unref(isNavCollapsed)))
 </script>
 
 <template>
@@ -78,8 +81,8 @@ const isNavCollapsed = inject<Ref<boolean>>('isNavCollapsed', ref(false))
         flex items-center gap4
         :class="[
           isItemActive ? 'item--active' : '',
-          isNavCollapsed ? 'nav-side-item--compact' : 'xl:ml0 xl:mr5 xl:px5 xl:w-auto',
-          (isSmallScreen && !isNavCollapsed)
+          isCollapsed ? 'nav-side-item--compact' : (isMobileVariant ? '' : 'xl:ml0 xl:mr5 xl:px5 xl:w-auto'),
+          (isMobileVariant || (isSmallScreen && !isCollapsed))
             ? `
               w-full
               px5 sm:mxa
@@ -99,7 +102,14 @@ const isNavCollapsed = inject<Ref<boolean>>('isNavCollapsed', ref(false))
           <div :class="icon" text-xl />
         </slot>
         <slot>
-          <span v-if="!isNavCollapsed" block sm:hidden xl:block select-none class="nav-side-item-text">{{ isHydrated ? text : '&nbsp;' }}</span>
+          <span
+            v-if="!isCollapsed"
+            select-none
+            class="nav-side-item-text"
+            :class="isMobileVariant ? 'block' : 'block sm:hidden xl:block'"
+          >
+            {{ isHydrated ? text : '&nbsp;' }}
+          </span>
         </slot>
       </div>
     </CommonTooltip>

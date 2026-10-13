@@ -8,6 +8,9 @@ const isBottomNavHidden = useState<boolean>('bottom-nav-hidden', () => false)
 
 const userSettings = useUserSettings()
 
+provide('isNavCollapsed', ref(false))
+provide('navSideVariant', 'mobile')
+
 const drawerEl = ref<HTMLDivElement>()
 const isLocked = useScrollLock(import.meta.client ? document.body : null)
 

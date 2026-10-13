@@ -18,7 +18,10 @@ const moreItemsId = computed(() => `nav-side-more-items-${props.variant}`)
 const floatingMoreOpen = ref(false)
 const showMoreItems = computed(() => props.variant === 'desktop' ? floatingMoreOpen.value : moreOpen.value)
 const userOnlyDisabled = computed(() => !isHydrated.value || !currentUser.value)
-const isNavCollapsed = inject<Ref<boolean>>('isNavCollapsed', ref(false))
+const isParentNavCollapsed = inject<Ref<boolean>>('isNavCollapsed', ref(false))
+const isNavCollapsed = computed(() => props.variant === 'desktop' && Boolean(unref(isParentNavCollapsed)))
+provide('isNavCollapsed', isNavCollapsed)
+provide('navSideVariant', computed(() => props.variant))
 
 const moreRoutes = computed(() => {
   const prefix = currentServer.value ? `/${currentServer.value}` : ''
