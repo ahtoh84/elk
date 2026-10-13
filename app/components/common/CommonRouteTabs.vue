@@ -50,7 +50,7 @@ function updateIndicator(target?: HTMLElement) {
 
 function handleTabClick(event: MouseEvent) {
   if (!preventScrollTop)
-    $scrollToTop()
+    useNuxtApp().$scrollToTop()
   const currentTarget = event.currentTarget as HTMLElement
   if (currentTarget)
     updateIndicator(currentTarget)
