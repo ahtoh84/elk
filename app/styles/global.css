@@ -211,7 +211,7 @@ button,
 }
 
 /* Compact navigation mode (used on settings pages and medium viewports) */
-@media (min-width: 1024px) {
+@media (min-width: 1280px) {
   .nav-compact-mode {
     width: 5rem !important;
   }
@@ -958,6 +958,32 @@ button,
   .settings-mode-preview-sidebar,
   .settings-mode-preview-content {
     padding-inline: 0.375rem;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .settings-page {
+    padding: 0.5rem 0.5rem 2rem;
+  }
+
+  .settings-frame {
+    grid-template-columns: 11rem minmax(0, 1fr);
+  }
+
+  .settings-sidebar {
+    padding-inline: 0.25rem 0.5rem;
+  }
+
+  .settings-content .main-content-header {
+    padding-inline: 1.25rem;
+  }
+
+  .settings-detail-content {
+    padding: 1.25rem 1.25rem 3rem;
+  }
+
+  .settings-mode-options {
+    gap: 0.5rem;
   }
 }
 

@@ -65,7 +65,7 @@ watchEffect(() => {
           class="shrink-0 zen-hide relative"
           :class="[
             isSettingsPage
-              ? 'w-1/8 md:w-1/6 lg:w-20 justify-end lg:justify-center lg:me-0 nav-compact-mode'
+              ? 'w-1/8 md:w-1/6 lg:w-1/5 xl:w-20 justify-end xl:justify-center xl:me-0 nav-compact-mode'
               : 'w-1/8 md:w-1/6 lg:w-1/5 xl:w-1/4 justify-end xl:me-4',
           ]"
           hidden sm:flex
@@ -104,7 +104,7 @@ watchEffect(() => {
         </aside>
         <div
           class="mobile-viewport-shell" w-full
-          :class="isHydrated && wideLayout ? 'lg:w-full sm:w-600px' : 'sm:w-600px md:shrink-0'"
+          :class="isHydrated && wideLayout ? 'xl:w-full sm:w-600px' : 'sm:w-600px md:shrink-0'"
         >
           <div class="mobile-viewport-page">
             <slot />

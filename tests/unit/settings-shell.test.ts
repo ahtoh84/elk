@@ -47,7 +47,8 @@ describe('settings workspace', () => {
       expect(wrapper.find('aside.nav-compact-mode').exists()).toBe(true)
       const asideClasses = wrapper.find('aside').classes()
       expect(asideClasses).toContain('md:w-1/6')
-      expect(asideClasses).toContain('lg:w-20')
+      expect(asideClasses).toContain('lg:w-1/5')
+      expect(asideClasses).toContain('xl:w-20')
     },
   )
 
