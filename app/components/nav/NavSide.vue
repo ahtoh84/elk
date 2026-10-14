@@ -107,7 +107,7 @@ const exploreLink = computed(() => {
           type="button"
           class="nav-more-button w-fit rounded-3 px2 mx3 transition-100 focus-visible:ring-2 focus-visible:ring-current"
           :class="[
-            isMoreRouteActive ? 'nav-more-button--active text-primary' : 'elk-group-hover-bg-active',
+            isMoreRouteActive ? 'nav-more-button--active' : 'elk-group-hover-bg-active',
             isNavCollapsed ? 'nav-more-button--compact' : 'xl:ml0 xl:mr0 xl:px5 xl:w-auto',
           ]"
           flex items-center gap4 focus:outline-none
@@ -210,14 +210,9 @@ const exploreLink = computed(() => {
 
   .nav-more-button--active,
   .nav-more-button--active:hover {
-    background-color: var(--c-nav-active-bg, var(--c-primary-fade));
-    color: var(--c-primary);
-    font-weight: 600;
-  }
-
-  :root.dark .nav-more-button--active,
-  :root.dark .nav-more-button--active:hover {
-    background-color: var(--c-nav-active-bg, var(--c-primary-fade));
+    background-color: transparent;
+    color: var(--c-text-base);
+    font-weight: 700;
   }
 
   @media (max-width: 639.98px) {

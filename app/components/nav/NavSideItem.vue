@@ -45,13 +45,13 @@ const isItemActive = computed(() => {
   return false
 })
 
-const activeClass = ref('text-primary nav-side-item-active')
+const activeClass = ref('nav-side-item-active')
 onHydrated(async () => {
   // TODO: force NuxtLink to reevaluate, we now we are in this route though, so we should force it to active
   // we don't have currentServer defined until later
   activeClass.value = ''
   await nextTick()
-  activeClass.value = 'text-primary nav-side-item-active'
+  activeClass.value = 'nav-side-item-active'
 })
 
 // Optimize rendering for the common case of being logged in, only show visual feedback for disabled user-only items
@@ -128,17 +128,9 @@ const isCollapsed = computed(() => !isMobileVariant.value && Boolean(unref(isNav
   :deep(.nav-side-item-active) .item,
   .nav-side-item-active .item,
   :deep(a.router-link-active) .item {
-    background-color: var(--c-nav-active-bg, var(--c-primary-fade));
-    color: var(--c-primary);
-    font-weight: 600;
-  }
-
-  :root.dark .item--active,
-  :root.dark .item--active:hover,
-  :root.dark :deep(.nav-side-item-active) .item,
-  :root.dark .nav-side-item-active .item,
-  :root.dark :deep(a.router-link-active) .item {
-    background-color: var(--c-nav-active-bg, var(--c-primary-fade));
+    background-color: transparent;
+    color: var(--c-text-base);
+    font-weight: 700;
   }
 
   @media screen and ( max-height: 820px ) and ( min-width: 1280px ) {

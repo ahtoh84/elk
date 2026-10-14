@@ -105,7 +105,6 @@ watchEffect(() => {
         <div
           class="mobile-viewport-shell" w-full
           :class="isHydrated && wideLayout ? 'lg:w-full sm:w-600px' : 'sm:w-600px md:shrink-0'"
-          border-base
         >
           <div class="mobile-viewport-page">
             <slot />
@@ -165,6 +164,7 @@ watchEffect(() => {
 .mobile-viewport-shell {
   min-height: 100vh;
   min-height: 100dvh;
+  border-inline: 1px solid var(--c-border);
 }
 
 .mobile-viewport-page {

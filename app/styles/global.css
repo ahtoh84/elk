@@ -156,7 +156,7 @@ button,
 .main-content-body {
   overflow: hidden;
   margin-block: 0.75rem 1.5rem;
-  border: 0.5px solid var(--c-container-border, var(--c-border));
+  border: 0;
   border-radius: 0;
   background: var(--c-bg-panel);
   box-shadow: none;
@@ -179,13 +179,11 @@ button,
   box-shadow: none;
 }
 
-.dark .main-content-body,
 .dark .timeline-feed {
   border-color: var(--c-border);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not(.light) .main-content-body,
   :root:not(.light) .timeline-feed {
     border-color: var(--c-border);
   }
