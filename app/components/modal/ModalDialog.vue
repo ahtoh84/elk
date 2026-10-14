@@ -258,6 +258,10 @@ useEventListener('keydown', (e: KeyboardEvent) => {
   padding-left: env(safe-area-inset-left);
 }
 
+.dialog-main.dialog-main--radius-16 {
+  border-radius: 16px;
+}
+
 .dialog-mask-dimming {
   opacity: var(--dialog-mask-opacity, 0.48);
 }

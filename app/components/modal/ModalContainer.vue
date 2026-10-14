@@ -63,6 +63,7 @@ function handleReactedByClose() {
     </ModalDialog>
     <ModalDialog
       v-model="isPublishDialogOpen"
+      class="dialog-main--radius-16"
       max-w-180 flex w-full
       @close="handlePublishClose"
     >
@@ -86,7 +87,7 @@ function handleReactedByClose() {
     <ModalDialog v-model="isEditHistoryDialogOpen" :focus-first-element="false" max-w-125>
       <StatusEditPreview v-if="statusEdit" :edit="statusEdit" />
     </ModalDialog>
-    <ModalDialog v-model="isCommandPanelOpen" motion="instant" max-w-fit flex>
+    <ModalDialog v-model="isCommandPanelOpen" class="dialog-main--radius-16" motion="instant" max-w-fit flex>
       <CommandPanel @close="closeCommandPanel()" />
     </ModalDialog>
     <ModalDialog v-model="isConfirmDialogOpen" py-4 px-8 max-w-125>
@@ -102,7 +103,7 @@ function handleReactedByClose() {
     >
       <StatusReactedBy />
     </ModalDialog>
-    <ModalDialog v-model="isKeyboardShortcutsDialogOpen" max-w-full sm:max-w-140 md:max-w-170 lg:max-w-220 md:min-w-160>
+    <ModalDialog v-model="isKeyboardShortcutsDialogOpen" class="dialog-main--radius-16" max-w-full sm:max-w-140 md:max-w-170 lg:max-w-220 md:min-w-160>
       <MagickeysKeyboardShortcuts @close="closeKeyboardShortcuts()" />
     </ModalDialog>
     <ModalDialog v-model="isReportDialogOpen" keep-alive max-w-175>
