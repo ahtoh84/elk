@@ -57,4 +57,36 @@ describe('auto-hide bottom navigation helpers', () => {
 
     expect(navigation.isHidden.value).toBe(true)
   })
+
+  it('tracks drag progress continuously and snaps back when reaching the top', async () => {
+    vi.useFakeTimers()
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((callback) => {
+      callback(0)
+      return 1
+    })
+
+    let navigation!: ReturnType<typeof useAutoHideBottomNav>
+    wrapper = mount(defineComponent({
+      setup() {
+        navigation = useAutoHideBottomNav(computed(() => true))
+        return () => h('div')
+      },
+    }))
+
+    // Scroll down 28px (half of 56px)
+    Object.defineProperty(window, 'scrollY', { configurable: true, value: 28 })
+    window.dispatchEvent(new Event('scroll'))
+    await Promise.resolve()
+
+    expect(navigation.isDragging.value).toBe(true)
+    expect(navigation.progress.value).toBeCloseTo(0.5, 1)
+
+    // Scroll to top
+    Object.defineProperty(window, 'scrollY', { configurable: true, value: 0 })
+    window.dispatchEvent(new Event('scroll'))
+    await Promise.resolve()
+
+    expect(navigation.progress.value).toBe(0)
+    expect(navigation.isHidden.value).toBe(false)
+  })
 })

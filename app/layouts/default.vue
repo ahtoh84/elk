@@ -18,9 +18,16 @@ const autoHideBottomNavEnabled = computed(() =>
   && !isBottomMoreMenuOpen.value
   && route.meta.hideBottomNavOnScroll === true,
 )
-const { isHidden: isBottomNavHiddenRaw } = useAutoHideBottomNav(autoHideBottomNavEnabled)
+const {
+  isHidden: isBottomNavHiddenRaw,
+  isDragging: isBottomNavDragging,
+  progress: bottomNavProgress,
+} = useAutoHideBottomNav(autoHideBottomNavEnabled)
 const isBottomNavHidden = computed(() =>
   !isBottomMoreMenuOpen.value && isBottomNavHiddenRaw.value,
+)
+const isBottomNavDraggingActive = computed(() =>
+  !isBottomMoreMenuOpen.value && isBottomNavDragging.value,
 )
 const isBottomNavHiddenState = useState<boolean>('bottom-nav-hidden', () => false)
 watchEffect(() => {
@@ -111,14 +118,18 @@ watchEffect(() => {
           </div>
           <div
             class="bottom-nav-container"
-            :class="{ 'bottom-nav-container--hidden': isBottomNavHidden }"
-            sticky left-0 right-0 bottom-0 z-10 bg-base pb="[env(safe-area-inset-bottom)]" transition="padding 20"
+            :class="{ 'bottom-nav-container--hidden': isBottomNavHidden && !isBottomNavDraggingActive }"
+            sticky left-0 right-0 bottom-0 z-10 pointer-events-none transition="padding 20"
           >
-            <CommonOfflineChecker v-if="isHydrated" class="offline-checker" />
+            <CommonOfflineChecker v-if="isHydrated" class="offline-checker pointer-events-auto" />
             <div
-              class="bottom-nav-shell"
-              :class="{ 'bottom-nav-shell--hidden': isBottomNavHidden }"
-              :inert="isBottomNavHidden"
+              class="bottom-nav-shell bg-base pb-[env(safe-area-inset-bottom)] pointer-events-auto"
+              :class="{
+                'bottom-nav-shell--hidden': isBottomNavHidden && !isBottomNavDraggingActive,
+                'bottom-nav-shell--dragging': isBottomNavDraggingActive,
+              }"
+              :style="isBottomNavDraggingActive ? { transform: `translate3d(0, calc(${bottomNavProgress} * (100% + env(safe-area-inset-bottom, 0px))), 0)` } : undefined"
+              :inert="isBottomNavHidden && !isBottomNavDraggingActive"
             >
               <NavBottom v-if="isHydrated" sm:hidden />
             </div>
@@ -179,8 +190,11 @@ watchEffect(() => {
   }
 }
 
-.bottom-nav-container--hidden {
+.bottom-nav-container {
   background: transparent;
+}
+
+.bottom-nav-container--hidden {
   pointer-events: none;
 }
 
@@ -193,7 +207,12 @@ watchEffect(() => {
 }
 
 .bottom-nav-shell {
+  will-change: transform;
   transition: opacity var(--motion-moderate-exit, 120ms) ease-out;
+}
+
+.bottom-nav-shell--dragging {
+  transition: none !important;
 }
 
 .bottom-nav-shell--hidden {
@@ -217,7 +236,7 @@ watchEffect(() => {
 @media (prefers-reduced-motion: no-preference) {
   .bottom-nav-shell,
   .offline-checker {
-    transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 260ms cubic-bezier(0.2, 0.9, 0.3, 1);
   }
 }
 </style>
