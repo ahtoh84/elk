@@ -19,6 +19,8 @@ const status = computed(() => {
   return props.status
 })
 
+const hasEmojiReactions = computed(() => status.value.emojiReactions?.some(reaction => reaction.count > 0) ?? false)
+
 const createdAt = useFormattedDateTime(status.value.createdAt)
 
 const { t } = useI18n()
@@ -63,10 +65,10 @@ useHydratedHead({
         {{ status.application?.name }}
       </div>
     </div>
-    <div border="t base" py-2>
-      <StatusEmojiReaction v-if="actions" :status="status" details :command="command" />
+    <div v-if="actions && hasEmojiReactions" border="t base" py-2>
+      <StatusEmojiReaction :status="status" details :command="command" />
     </div>
-    <div border="t base" py-2>
+    <div :class="{ 'border-t border-base': actions && hasEmojiReactions }" py-2>
       <StatusActions v-if="actions" :status="status" details :command="command" />
     </div>
   </div>
