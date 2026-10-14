@@ -38,7 +38,7 @@ const isSingleImage = computed(() => {
 
 const isSinglePortrait = computed(() => {
   const attachment = status.mediaAttachments[0]
-  return !isCarousel.value && !isSingleVideo.value && !!attachment && attachment.type !== 'audio' && getMediaAspectRatio(attachment) < 1
+  return isSingleImage.value && !!attachment && (getRawMediaAspectRatio(attachment) ?? 1) < 1
 })
 
 const isDragging = ref(false)
@@ -55,16 +55,24 @@ let dragState: {
 let dragSafetyListenersAttached = false
 
 function getMediaAspectRatio(attachment: mastodon.v1.MediaAttachment) {
-  const aspect = getRawMediaAspectRatio(attachment)
+  const aspect = getRawMediaAspectRatio(attachment) ?? 1
   return Math.min(Math.max(aspect, 0.8), 6)
 }
 
 function getRawMediaAspectRatio(attachment: mastodon.v1.MediaAttachment) {
-  const aspect = attachment.meta?.original?.aspect || attachment.meta?.small?.aspect
-  if (!aspect)
-    return 1
+  const original = attachment.meta?.original
+  const small = attachment.meta?.small
 
-  return aspect
+  if (original?.aspect)
+    return original.aspect
+  if (original?.width && original.height)
+    return original.width / original.height
+  if (small?.aspect)
+    return small.aspect
+  if (small?.width && small.height)
+    return small.width / small.height
+
+  return undefined
 }
 
 function onWindowPointerUp(event: PointerEvent) {
@@ -266,19 +274,72 @@ onBeforeUnmount(() => resetCarouselDrag())
   overflow: hidden;
 }
 
-.status-media-container:not(.status-media-container--carousel) {
+.status-media-container:not(.status-media-container--carousel):not(.status-media-container--single-image) {
   height: var(--status-media-height);
 }
 
-.status-media-container:not(.status-media-container--carousel) > .status-media-attachment {
+.status-media-container:not(.status-media-container--carousel):not(.status-media-container--single-image) > .status-media-attachment {
   min-height: 0;
   height: 100%;
 }
 
+.status-media-container--single-image {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  overflow: hidden;
+  border-radius: 1rem;
+}
+
+.status-media-container--single-image > .status-media-attachment {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: min(430px, 70vh);
+  margin: 0;
+  justify-self: start;
+}
+
 .status-media-container--single-image > .status-media-attachment > button,
-.status-media-container--single-image .status-attachment-image,
 .status-media-container--single-video > .status-media-attachment :is(.status-attachment-spoiler-frame, button, img, video) {
   border-radius: 1rem;
+}
+
+.status-media-container--single-image > .status-media-attachment > button {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: min(430px, 70vh);
+  overflow: hidden;
+}
+
+.status-media-container--single-image .status-attachment-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  max-height: min(430px, 70vh);
+  object-fit: contain;
+  border-radius: 1rem;
+}
+
+.status-media-container--single-portrait {
+  width: fit-content;
+}
+
+.status-media-container--single-portrait > .status-media-attachment {
+  width: fit-content;
+}
+
+.status-media-container--single-portrait > .status-media-attachment > button {
+  width: fit-content;
+}
+
+.status-media-container--single-portrait .status-attachment-image {
+  width: auto;
+  height: min(430px, 70vh);
 }
 
 .status-media-container:not(.status-media-container--carousel).status-media-container--single-video {
@@ -324,54 +385,6 @@ onBeforeUnmount(() => resetCarouselDrag())
   max-width: 100%;
   max-height: min(430px, 70vh);
   object-fit: contain;
-}
-
-.status-media-container--single-portrait > .status-media-attachment {
-  width: auto;
-  max-width: 100%;
-  margin: 0;
-  justify-self: start;
-}
-
-.status-media-container--single-portrait img,
-.status-media-container--single-portrait video {
-  object-fit: contain;
-}
-
-@media (min-width: 640px) {
-  .status-media-container:not(.status-media-container--carousel).status-media-container--single-portrait {
-    height: min(430px, 70vh);
-  }
-}
-
-@media (max-width: 639px) {
-  .status-media-container:not(.status-media-container--carousel).status-media-container--single-image {
-    height: auto;
-  }
-
-  .status-media-container:not(.status-media-container--carousel).status-media-container--single-image > .status-media-attachment {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    margin: 0;
-    justify-self: stretch;
-  }
-
-  .status-media-container--single-image > .status-media-attachment > button {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    overflow: hidden;
-  }
-
-  .status-media-container--single-image .status-attachment-image {
-    display: block;
-    width: 100%;
-    height: auto;
-    max-width: 100%;
-    object-fit: contain;
-  }
 }
 
 .status-media-container--carousel {

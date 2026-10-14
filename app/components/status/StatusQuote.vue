@@ -117,6 +117,7 @@ const quotedStatus = computed(() => {
         :cite="quotedStatus.uri"
       >
         <StatusCard
+          class="status-quote-card"
           :status="quotedStatus"
           :actions="false"
           :is-nested="true"
@@ -128,6 +129,10 @@ const quotedStatus = computed(() => {
 </template>
 
 <style scoped>
+.status-quote-card {
+  border-radius: 16px;
+}
+
 * {
   cursor: pointer;
 }
