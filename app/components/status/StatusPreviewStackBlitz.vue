@@ -62,7 +62,7 @@ const vnodeCode = computed(() => {
     flex flex-col gap-1
     display-block of-hidden
     w-full
-    rounded-lg
+    :class="{ 'rounded-4': !root }"
     overflow-hidden
     pb-2
   >

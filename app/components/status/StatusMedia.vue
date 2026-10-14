@@ -26,6 +26,11 @@ const isSingleVideo = computed(() => {
   return !isCarousel.value && !!attachment && (attachment.type === 'video' || attachment.type === 'gifv')
 })
 
+const isSingleAudio = computed(() => {
+  const attachment = status.mediaAttachments[0]
+  return !isCarousel.value && !!attachment && attachment.type === 'audio'
+})
+
 const isSingleImage = computed(() => {
   const attachment = status.mediaAttachments[0]
   return !isCarousel.value && !!attachment && !isSingleVideo.value && attachment.type !== 'audio'
@@ -33,7 +38,7 @@ const isSingleImage = computed(() => {
 
 const isSinglePortrait = computed(() => {
   const attachment = status.mediaAttachments[0]
-  return !isCarousel.value && !isSingleVideo.value && !!attachment && getMediaAspectRatio(attachment) < 1
+  return !isCarousel.value && !isSingleVideo.value && !!attachment && attachment.type !== 'audio' && getMediaAspectRatio(attachment) < 1
 })
 
 const isDragging = ref(false)
@@ -197,6 +202,7 @@ onBeforeUnmount(() => resetCarouselDrag())
       'status-media-container--breakout': isCarousel && breakout,
       'status-media-container--dragging': isDragging,
       'status-media-container--single-video': isSingleVideo,
+      'status-media-container--single-audio': isSingleAudio,
       'status-media-container--single-image': isSingleImage,
       'status-media-container--single-portrait': isSinglePortrait,
     }"
@@ -269,7 +275,17 @@ onBeforeUnmount(() => resetCarouselDrag())
   height: 100%;
 }
 
+.status-media-container--single-image > .status-media-attachment > button,
+.status-media-container--single-image .status-attachment-image,
+.status-media-container--single-video > .status-media-attachment :is(.status-attachment-spoiler-frame, button, img, video) {
+  border-radius: 1rem;
+}
+
 .status-media-container:not(.status-media-container--carousel).status-media-container--single-video {
+  height: auto;
+}
+
+.status-media-container:not(.status-media-container--carousel).status-media-container--single-audio {
   height: auto;
 }
 
@@ -279,6 +295,19 @@ onBeforeUnmount(() => resetCarouselDrag())
   height: auto;
   margin: 0;
   justify-self: start;
+}
+
+.status-media-container--single-audio > .status-media-attachment {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  margin: 0;
+  justify-self: start;
+}
+
+.status-media-container--single-audio > .status-media-attachment > audio {
+  display: block;
+  max-width: 100%;
 }
 
 .status-media-container--single-video > .status-media-attachment > :is(div, button) {

@@ -94,7 +94,7 @@ const meta = computed(() => {
     relative
     w-full min-h-50 md:min-h-60
     justify-center
-    rounded-lg
+    rounded-4
   >
     <div p4 sm:px-8 flex flex-col justify-between min-h-50 md:min-h-60 h-full>
       <div flex justify-between items-center gap-2 sm:gap-6 h-full mb-2 min-h-35 md:min-h-45>

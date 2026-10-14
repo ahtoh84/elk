@@ -49,7 +49,7 @@ function loadAttachment() {
     :class="{
       'flex flex-col': isSquare,
       'p-4': root,
-      'rounded-lg': !root,
+      'rounded-4': !root,
     }"
     target="_blank"
     external
