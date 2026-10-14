@@ -36,10 +36,7 @@ const isSingleImage = computed(() => {
   return !isCarousel.value && !!attachment && !isSingleVideo.value && attachment.type !== 'audio'
 })
 
-const isSinglePortrait = computed(() => {
-  const attachment = status.mediaAttachments[0]
-  return isSingleImage.value && !!attachment && (getRawMediaAspectRatio(attachment) ?? 1) < 1
-})
+const { height: windowHeight } = useSharedWindowSize()
 
 const isDragging = ref(false)
 const suppressClick = ref(false)
@@ -73,6 +70,18 @@ function getRawMediaAspectRatio(attachment: mastodon.v1.MediaAttachment) {
     return small.width / small.height
 
   return undefined
+}
+
+function getSingleImageStyle(attachment: mastodon.v1.MediaAttachment) {
+  const aspectRatio = getRawMediaAspectRatio(attachment)
+  if (!aspectRatio || !Number.isFinite(aspectRatio) || aspectRatio <= 0)
+    return undefined
+
+  const maxHeight = Math.min(430, (windowHeight.value || 768) * 0.7)
+  return {
+    aspectRatio,
+    maxWidth: `${maxHeight * aspectRatio}px`,
+  }
 }
 
 function onWindowPointerUp(event: PointerEvent) {
@@ -205,6 +214,7 @@ onBeforeUnmount(() => resetCarouselDrag())
 <template>
   <div
     class="status-media-container"
+    :style="isSingleImage ? getSingleImageStyle(status.mediaAttachments[0]!) : undefined"
     :class="{
       'status-media-container--carousel': isCarousel,
       'status-media-container--breakout': isCarousel && breakout,
@@ -212,7 +222,6 @@ onBeforeUnmount(() => resetCarouselDrag())
       'status-media-container--single-video': isSingleVideo,
       'status-media-container--single-audio': isSingleAudio,
       'status-media-container--single-image': isSingleImage,
-      'status-media-container--single-portrait': isSinglePortrait,
     }"
     @pointerdown="onCarouselPointerDown"
     @pointermove="onCarouselPointerMove"
@@ -250,7 +259,6 @@ onBeforeUnmount(() => resetCarouselDrag())
         :attachment="attachment"
         :attachments="status.mediaAttachments"
         :full-size="fullSize"
-        :style="isSingleImage ? { aspectRatio: getRawMediaAspectRatio(attachment) } : undefined"
         :preserve-aspect-ratio="isSingleImage"
         w-full
         h-full
@@ -296,7 +304,7 @@ onBeforeUnmount(() => resetCarouselDrag())
   width: 100%;
   max-width: 100%;
   height: auto;
-  max-height: min(430px, 70vh);
+  max-height: none;
   margin: 0;
   justify-self: start;
 }
@@ -310,36 +318,19 @@ onBeforeUnmount(() => resetCarouselDrag())
   display: block;
   width: 100%;
   max-width: 100%;
-  height: auto;
-  max-height: min(430px, 70vh);
+  height: 100%;
+  max-height: none;
   overflow: hidden;
 }
 
 .status-media-container--single-image .status-attachment-image {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
   max-width: 100%;
   max-height: min(430px, 70vh);
   object-fit: contain;
   border-radius: 1rem;
-}
-
-.status-media-container--single-portrait {
-  width: fit-content;
-}
-
-.status-media-container--single-portrait > .status-media-attachment {
-  width: fit-content;
-}
-
-.status-media-container--single-portrait > .status-media-attachment > button {
-  width: fit-content;
-}
-
-.status-media-container--single-portrait .status-attachment-image {
-  width: auto;
-  height: min(430px, 70vh);
 }
 
 .status-media-container:not(.status-media-container--carousel).status-media-container--single-video {
