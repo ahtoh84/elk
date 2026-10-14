@@ -15,8 +15,8 @@ export function isMoreMenuRouteActive(path: string, currentServer?: string): boo
   const prefix = currentServer ? `/${currentServer}` : ''
   const moreMenuRoutes = [
     '/conversations',
-    '/public',
-    `${prefix}/public`,
+    '/explore',
+    `${prefix}/explore`,
     '/favourites',
     '/bookmarks',
     '/lists',

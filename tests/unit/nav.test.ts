@@ -25,9 +25,14 @@ describe('side navigation more button active state', () => {
     expect(isMoreMenuRouteActive('/public/local')).toBe(false)
   })
 
-  it('keeps the federated timeline active under the more menu', () => {
-    expect(isMoreMenuRouteActive('/qaf.men/public', 'qaf.men')).toBe(true)
-    expect(isMoreMenuRouteActive('/public')).toBe(true)
+  it('keeps explore routes active under the more menu', () => {
+    expect(isMoreMenuRouteActive('/explore', 'qaf.men')).toBe(true)
+    expect(isMoreMenuRouteActive('/qaf.men/explore/tags', 'qaf.men')).toBe(true)
+  })
+
+  it('does not treat the federated timeline as a more-menu route', () => {
+    expect(isMoreMenuRouteActive('/qaf.men/public', 'qaf.men')).toBe(false)
+    expect(isMoreMenuRouteActive('/public')).toBe(false)
   })
 
   it('keeps nested pages of more-menu routes active', () => {

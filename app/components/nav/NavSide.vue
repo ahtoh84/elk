@@ -76,7 +76,7 @@ const exploreLink = computed(() => {
     <div class="spacer" shrink xl:hidden />
     <NavSideItem :text="$t('nav.home')" to="/home" icon="i-ri:home-5-line" user-only :command="command" />
     <NavSideItem :text="$t('nav.local')" :to="isHydrated ? `/${currentServer}/public/local` : '/public/local'" icon="i-ri:group-2-line" :command="command" />
-    <NavSideItem :text="$t('nav.explore')" :to="exploreLink" icon="i-ri:compass-3-line" :command="command" />
+    <NavSideItem :text="$t('nav.federated')" :to="isHydrated ? `/${currentServer}/public` : '/public'" icon="i-ri:earth-line" :command="command" />
     <NavSideItem :text="$t('nav.notifications')" :to="notificationsLink" icon="i-ri:notification-4-line" user-only :command="command">
       <template #icon>
         <div flex relative>
@@ -123,11 +123,11 @@ const exploreLink = computed(() => {
 
       <template #popper>
         <div :id="`${moreItemsId}-floating`" min-w-52 flex="~ col gap1" p-1>
+          <NuxtLink :to="exploreLink">
+            <CommonDropdownItem :text="$t('nav.explore')" icon="i-ri:compass-3-line" :command="command" />
+          </NuxtLink>
           <NuxtLink to="/conversations" :class="userOnlyDisabled ? 'op50 pointer-events-none' : undefined" :tabindex="userOnlyDisabled ? -1 : undefined">
             <CommonDropdownItem :text="$t('nav.conversations')" icon="i-ri:at-line" :command="command" />
-          </NuxtLink>
-          <NuxtLink :to="isHydrated ? `/${currentServer}/public` : '/public'">
-            <CommonDropdownItem :text="$t('nav.federated')" icon="i-ri:earth-line" :command="command" />
           </NuxtLink>
           <NuxtLink to="/favourites" :class="userOnlyDisabled ? 'op50 pointer-events-none' : undefined" :tabindex="userOnlyDisabled ? -1 : undefined">
             <CommonDropdownItem :text="$t('nav.favourites')" :icon="useStarFavoriteIcon ? 'i-ri:star-line' : 'i-ri:heart-3-line'" :command="command" />
@@ -179,8 +179,8 @@ const exploreLink = computed(() => {
       <Transition name="nav-more-items">
         <div v-if="showMoreItems" :id="`${moreItemsId}-inline`" class="nav-more-items">
           <div class="nav-more-items-content" flex="~ col gap2">
+            <NavSideItem :text="$t('nav.explore')" :to="exploreLink" icon="i-ri:compass-3-line" :command="command" />
             <NavSideItem :text="$t('nav.conversations')" to="/conversations" icon="i-ri:at-line" user-only :command="command" />
-            <NavSideItem :text="$t('nav.federated')" :to="isHydrated ? `/${currentServer}/public` : '/public'" icon="i-ri:earth-line" :command="command" />
             <NavSideItem :text="$t('nav.favourites')" to="/favourites" :icon="useStarFavoriteIcon ? 'i-ri:star-line' : 'i-ri:heart-3-line'" user-only :command="command" />
             <NavSideItem :text="$t('nav.bookmarks')" to="/bookmarks" icon="i-ri:bookmark-line" user-only :command="command" />
             <NavSideItem :text="$t('nav.lists')" :to="isHydrated ? `/${currentServer}/lists` : '/lists'" icon="i-ri:list-check" user-only :command="command" />
