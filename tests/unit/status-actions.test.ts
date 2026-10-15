@@ -75,4 +75,30 @@ describe('status action failures', () => {
     expect(wrapper.get('[data-test="count"]').text()).toBe('3')
     expect(wrapper.find('[role="alert"]').exists()).toBe(false)
   })
+
+  it('uses subtle primary-fade hover background for more button instead of heavy dark background', async () => {
+    const { createI18n } = await import('vue-i18n')
+    const { default: StatusActionsMore } = await import('~/components/status/StatusActionsMore.vue')
+    const wrapper = await mountSuspended(StatusActionsMore, {
+      props: {
+        status: statusFixture,
+      },
+      global: {
+        plugins: [createI18n({
+          legacy: false,
+          locale: 'en',
+          messages: { en: { action: { more: 'More' } } },
+        })],
+        stubs: {
+          CommonDropdown: { template: '<div><slot /><slot name="popper" /></div>' },
+          StatusActionButton: {
+            props: ['elkGroupHover'],
+            template: '<div data-test="action-btn" :data-elk-group-hover="elkGroupHover" />',
+          },
+        },
+      },
+    })
+    const actionBtn = wrapper.find('[data-test="action-btn"]')
+    expect(actionBtn.attributes('data-elk-group-hover')).toBe('bg-primary-fade')
+  })
 })

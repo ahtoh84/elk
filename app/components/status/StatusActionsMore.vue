@@ -140,7 +140,7 @@ function showReactedBy() {
       :content="$t('action.more')"
       color="text-primary"
       hover="text-primary"
-      elk-group-hover="bg-primary-light"
+      elk-group-hover="bg-primary-fade"
       icon="i-ri:more-line"
       my--2
     />
