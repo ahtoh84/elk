@@ -17,20 +17,38 @@ function removeCached(key: string) {
   cache.delete(key)
 }
 
-export function fetchStatus(id: string, force = false): Promise<mastodon.v1.Status> {
-  const server = currentServer.value
-  const userId = currentUser.value?.account.id
-  const key = `${server}:${userId}:status:${id}`
+function getOrFetch<T>(key: string, fetcher: () => Promise<T>, force = false): Promise<T> {
   const cached = cache.get(key)
   if (cached && !force)
     return Promise.resolve(cached)
 
-  const promise = useMastoClient().v1.statuses.$select(id).fetch().then((status) => {
-    cacheStatus(status)
-    return status
-  })
+  const promise = fetcher()
+    .then((result) => {
+      cache.set(key, result)
+      return result
+    })
+    .catch((err) => {
+      cache.delete(key)
+      throw err
+    })
+
   cache.set(key, promise)
   return promise
+}
+
+export function clearCache() {
+  cache.clear()
+}
+
+export function fetchStatus(id: string, force = false): Promise<mastodon.v1.Status> {
+  const server = currentServer.value
+  const userId = currentUser.value?.account.id
+  const key = `${server}:${userId}:status:${id}`
+  return getOrFetch(key, async () => {
+    const status = await useMastoClient().v1.statuses.$select(id).fetch()
+    cacheStatus(status, server, true)
+    return status
+  }, force)
 }
 
 export function fetchAccountById(id?: string | null): Promise<mastodon.v1.Account | null> {
@@ -40,20 +58,15 @@ export function fetchAccountById(id?: string | null): Promise<mastodon.v1.Accoun
   const server = currentServer.value
   const userId = currentUser.value?.account.id
   const key = `${server}:${userId}:account:${id}`
-  const cached = cache.get(key)
-  if (cached)
-    return Promise.resolve(cached)
-
   const domain = getInstanceDomainFromServer(server)
-  const promise = useMastoClient().v1.accounts.$select(id).fetch().then((r) => {
+  return getOrFetch(key, async () => {
+    const r = await useMastoClient().v1.accounts.$select(id).fetch()
     if (r.acct && !r.acct.includes('@') && domain)
       r.acct = `${r.acct}@${domain}`
 
     cacheAccount(r, server, true)
     return r
   })
-  cache.set(key, promise)
-  return promise
 }
 
 export async function fetchAccountByHandle(acct: string): Promise<mastodon.v1.Account> {
@@ -62,11 +75,8 @@ export async function fetchAccountByHandle(acct: string): Promise<mastodon.v1.Ac
   const domain = getInstanceDomainFromServer(server)
   const userAcct = (domain && acct.endsWith(`@${domain}`)) ? acct.slice(0, -domain.length - 1) : acct
   const key = `${server}:${userId}:account:${userAcct}`
-  const cached = cache.get(key)
-  if (cached)
-    return Promise.resolve(cached)
 
-  async function lookupAccount() {
+  return getOrFetch(key, async () => {
     const client = useMastoClient()
     let account: mastodon.v1.Account
     if (!isGotoSocial.value) { // TODO: GoToSocial will support this endpoint from 0.10.0
@@ -79,32 +89,21 @@ export async function fetchAccountByHandle(acct: string): Promise<mastodon.v1.Ac
 
     if (account.acct && !account.acct.includes('@') && domain)
       account.acct = `${account.acct}@${domain}`
-    return account
-  }
 
-  const promise = lookupAccount()
-    .then((r) => {
-      cacheAccount(r, server, true)
-      return r
-    })
-  cache.set(key, promise)
-  return promise
+    cacheAccount(account, server, true)
+    return account
+  })
 }
 
 export function fetchTag(tagName: string, force = false): Promise<mastodon.v1.Tag> {
   const server = currentServer.value
   const userId = currentUser.value?.account.id
   const key = `${server}:${userId}:tag:${tagName}`
-  const cached = cache.get(key)
-  if (cached && !force)
-    return Promise.resolve(cached)
-
-  const promise = useMastoClient().v1.tags.$select(tagName).fetch().then((tag) => {
-    cacheTag(tag)
+  return getOrFetch(key, async () => {
+    const tag = await useMastoClient().v1.tags.$select(tagName).fetch()
+    cacheTag(tag, server, true)
     return tag
-  })
-  cache.set(key, promise)
-  return promise
+  }, force)
 }
 
 export function useAccountById(id?: string | null) {

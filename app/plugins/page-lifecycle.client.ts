@@ -23,8 +23,15 @@ export default defineNuxtPlugin(() => {
     }
   })
 
+  const removeFrozenListener = (listener: () => void) => {
+    const index = frozenListeners.indexOf(listener)
+    if (index !== -1)
+      frozenListeners.splice(index, 1)
+  }
+
   const addFrozenListener = (listener: () => void) => {
     frozenListeners.push(listener)
+    return () => removeFrozenListener(listener)
   }
 
   addFrozenListener(() => {
@@ -39,6 +46,7 @@ export default defineNuxtPlugin(() => {
       pageLifecycle: reactive({
         state,
         addFrozenListener,
+        removeFrozenListener,
       }),
     },
   }

@@ -134,8 +134,12 @@ export function useStreaming(
       stream.value = cb(streamingClient.value)
   })
 
-  if (import.meta.client && !import.meta.test)
-    useNuxtApp().$pageLifecycle.addFrozenListener(cleanup)
+  if (import.meta.client && !import.meta.test) {
+    const unsubscribe = useNuxtApp().$pageLifecycle.addFrozenListener(cleanup)
+    tryOnScopeDispose(() => {
+      unsubscribe?.()
+    })
+  }
 
   tryOnBeforeUnmount(() => isActive.value = false)
 

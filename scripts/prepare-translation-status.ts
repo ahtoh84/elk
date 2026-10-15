@@ -1,6 +1,5 @@
 import type { LocaleEntry } from '../docs/types'
 import type { ElkTranslationStatus } from '../shared/types/translation-status'
-import { Buffer } from 'node:buffer'
 import { readFile, writeFile } from 'node:fs/promises'
 import { flatten } from 'flat'
 import { createResolver } from 'nuxt/kit'
@@ -9,10 +8,10 @@ import { countryLocaleVariants, currentLocales } from '../config/i18n.ts'
 export const localeData: [code: string, file: string[], title: string][]
   = currentLocales.map((l: any) => [l.code, l.files ? l.files : [l.file!], l.name ?? l.code])
 
-function merge(src: Record<string, any>, dst: Record<string, any>) {
+export function merge(src: Record<string, any>, dst: Record<string, any>) {
   for (const key in src) {
-    if (typeof src[key] === 'object') {
-      if (!dst[key])
+    if (typeof src[key] === 'object' && src[key] !== null && !Array.isArray(src[key])) {
+      if (!dst[key] || typeof dst[key] !== 'object' || Array.isArray(dst[key]))
         dst[key] = {}
 
       merge(src[key], dst[key])
@@ -23,23 +22,20 @@ function merge(src: Record<string, any>, dst: Record<string, any>) {
   }
 }
 
-async function readI18nFile(file: string | string[]) {
+export async function readI18nFile(file: string | string[]) {
   const resolver = createResolver(import.meta.url)
   if (Array.isArray(file)) {
-    const files = await Promise.all(file.map(f => async () => {
-      return JSON.parse(Buffer.from(
-        await readFile(resolver.resolve(`../locales/${f}`), 'utf-8'),
-      ).toString())
-    })).then(f => f.map(f => f()))
-    const data: Record<string, any> = files[0]
-    files.splice(0, 1)
+    const files = await Promise.all(file.map(async (f) => {
+      const content = await readFile(resolver.resolve(`../locales/${f}`), 'utf-8')
+      return JSON.parse(content)
+    }))
+    const data: Record<string, any> = {}
     files.forEach(f => merge(f, data))
     return data
   }
   else {
-    return JSON.parse(Buffer.from(
-      await readFile(resolver.resolve(`../locales/${file}`), 'utf-8'),
-    ).toString())
+    const content = await readFile(resolver.resolve(`../locales/${file}`), 'utf-8')
+    return JSON.parse(content)
   }
 }
 

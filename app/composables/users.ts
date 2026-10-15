@@ -9,10 +9,12 @@ import { withoutProtocol } from 'ufo'
 import {
   DEFAULT_POST_CHARS_LIMIT,
   STORAGE_KEY_CURRENT_USER_HANDLE,
+  STORAGE_KEY_DRAFTS,
   STORAGE_KEY_NODES,
   STORAGE_KEY_NOTIFICATION,
   STORAGE_KEY_NOTIFICATION_POLICY,
   STORAGE_KEY_SERVERS,
+  STORAGE_KEY_SETTINGS,
 } from '~/constants'
 
 const mock = process.mock
@@ -255,9 +257,8 @@ export async function signOut() {
 
   const masto = useMasto()
 
-  const _currentUserId = currentUser.value.account.id
-
-  const index = users.value.findIndex(u => u.account?.id === _currentUserId)
+  const current = currentUser.value
+  const index = users.value.findIndex(u => u.server === current.server && u.account?.id === current.account.id)
 
   if (index !== -1) {
     // Clear stale data
@@ -294,6 +295,7 @@ export function checkLogin() {
 interface UseUserLocalStorageCache {
   scope: EffectScope
   value: Ref<Record<string, any>>
+  all?: Ref<Record<string, any>>
 }
 
 /**
@@ -310,8 +312,10 @@ export function useUserLocalStorage<T extends object>(key: string, initial: () =
 
   if (!map.has(key)) {
     const scope = effectScope(true)
+    let allRef: Ref<Record<string, any>> | undefined
     const value = scope.run(() => {
       const all = useLocalStorage<Record<string, T>>(key, {}, { deep: true })
+      allRef = all
 
       return computed(() => {
         const id = currentUser.value?.account.id
@@ -338,7 +342,7 @@ export function useUserLocalStorage<T extends object>(key: string, initial: () =
         return all.value[id]
       })
     })
-    map.set(key, { scope, value: value! })
+    map.set(key, { scope, value: value!, all: allRef })
   }
 
   return map.get(key)!.value as Ref<T>
@@ -354,12 +358,41 @@ export function clearUserLocalStorage(account?: mastodon.v1.Account) {
   if (!account)
     return
 
-  const id = `${account.acct}@${currentInstance.value ? getInstanceDomain(currentInstance.value) : currentServer.value}`
+  const acct = account.acct
+  const [username] = acct.split('@')
+  const domain = currentInstance.value ? getInstanceDomain(currentInstance.value) : currentServer.value
+  const fullId = domain ? `${username}@${domain}` : acct
 
   // @ts-expect-error bind value to the function
   const cacheMap = useUserLocalStorage._ as Map<string, UseUserLocalStorageCache> | undefined
-  cacheMap?.forEach(({ value }) => {
-    if (value.value[id])
-      delete value.value[id]
+  cacheMap?.forEach(({ all }) => {
+    if (all?.value) {
+      delete all.value[acct]
+      if (fullId)
+        delete all.value[fullId]
+      if (currentServer.value)
+        delete all.value[`${username}@${currentServer.value}`]
+    }
   })
+
+  if (import.meta.client) {
+    try {
+      const storageKeys = [STORAGE_KEY_SETTINGS, STORAGE_KEY_DRAFTS]
+      for (const k of storageKeys) {
+        const raw = localStorage.getItem(k)
+        if (raw) {
+          const parsed = JSON.parse(raw)
+          if (parsed && typeof parsed === 'object') {
+            delete parsed[acct]
+            if (fullId)
+              delete parsed[fullId]
+            if (currentServer.value)
+              delete parsed[`${username}@${currentServer.value}`]
+            localStorage.setItem(k, JSON.stringify(parsed))
+          }
+        }
+      }
+    }
+    catch {}
+  }
 }
