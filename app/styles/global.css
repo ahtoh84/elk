@@ -217,16 +217,6 @@ button,
   }
 }
 
-.nav-compact-mode .nav-title {
-  width: 100% !important;
-  justify-content: center !important;
-}
-
-.nav-compact-mode .nav-logo-link {
-  justify-content: center !important;
-  padding-inline: 0.5rem !important;
-}
-
 .nav-compact-mode .nav-title-text,
 .nav-compact-mode .nav-title-back,
 .nav-compact-mode .nav-side-item-text,

@@ -34,6 +34,12 @@ watchEffect(() => {
   isBottomNavHiddenState.value = isBottomNavHidden.value
 })
 
+provide('navAutoHide', {
+  isHidden: isBottomNavHidden,
+  isDragging: isBottomNavDraggingActive,
+  progress: bottomNavProgress,
+})
+
 const showUserPicker = logicAnd(
   usePreferences('experimentalUserPicker'),
   () => useUsers().value.length > 1,
@@ -82,7 +88,7 @@ watchEffect(() => {
             :class="isSettingsPage ? 'w-20 items-center' : 'w-20 xl:w-100 lt-xl-items-center'"
           >
             <slot name="left">
-              <div flex="~ col" overflow-y-auto justify-between h-full max-w-full overflow-x-hidden>
+              <div class="w-full" flex="~ col" overflow-y-auto justify-between h-full max-w-full overflow-x-hidden>
                 <NavTitle />
                 <NavSide command variant="desktop" />
                 <div flex-auto />

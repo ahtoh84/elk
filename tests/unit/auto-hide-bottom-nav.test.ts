@@ -1,7 +1,9 @@
+import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { computed, defineComponent, h } from 'vue'
+import { computed, defineComponent, h, ref } from 'vue'
 
+import MainContent from '~/components/main/MainContent.vue'
 import {
   BOTTOM_NAV_SCROLL_THRESHOLD,
   getBottomNavScrollAction,
@@ -88,5 +90,49 @@ describe('auto-hide bottom navigation helpers', () => {
 
     expect(navigation.progress.value).toBe(0)
     expect(navigation.isHidden.value).toBe(false)
+  })
+
+  it('applies hidden and dragging classes to MainContent header from provided navAutoHide context', async () => {
+    const isHidden = ref(false)
+    const isDragging = ref(false)
+    const progress = ref(0)
+
+    const suspendedWrapper = await mountSuspended(MainContent, {
+      global: {
+        provide: {
+          navAutoHide: {
+            isHidden,
+            isDragging,
+            progress,
+          },
+        },
+        stubs: {
+          PwaBadge: true,
+          PwaInstallPrompt: true,
+          NavUser: true,
+          NavUserSkeleton: true,
+        },
+      },
+    })
+
+    const header = suspendedWrapper.find('.main-content-header-container')
+    expect(header.exists()).toBe(true)
+    expect(header.classes()).not.toContain('main-content-header-container--hidden')
+    expect(header.classes()).not.toContain('main-content-header-container--dragging')
+
+    // Dragging state
+    isDragging.value = true
+    progress.value = 0.5
+    await suspendedWrapper.vm.$nextTick()
+    expect(header.classes()).toContain('main-content-header-container--dragging')
+    expect(header.attributes('style')).toContain('translate3d(0, calc(-0.5 * 100%), 0)')
+
+    // Settled hidden state
+    isDragging.value = false
+    isHidden.value = true
+    progress.value = 1
+    await suspendedWrapper.vm.$nextTick()
+    expect(header.classes()).toContain('main-content-header-container--hidden')
+    expect(header.classes()).not.toContain('main-content-header-container--dragging')
   })
 })

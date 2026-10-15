@@ -62,4 +62,15 @@ describe('settings workspace', () => {
       expect(wrapper.find('aside.nav-compact-mode').exists()).toBe(false)
     },
   )
+
+  it('ensures sidebar inner slot container has full width on both home and settings', async () => {
+    const homeWrapper = await mountLayout('/home')
+    const settingsWrapper = await mountLayout('/settings')
+
+    const homeSlotContainer = homeWrapper.find('aside [data-site-navigation]').element.parentElement
+    const settingsSlotContainer = settingsWrapper.find('aside [data-site-navigation]').element.parentElement
+
+    expect(homeSlotContainer?.className).toContain('w-full')
+    expect(settingsSlotContainer?.className).toContain('w-full')
+  })
 })

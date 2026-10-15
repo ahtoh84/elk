@@ -42,6 +42,17 @@ const showBackButton = computed(() => {
       return false
   }
 })
+
+interface NavAutoHideContext {
+  isHidden: ComputedRef<boolean>
+  isDragging: ComputedRef<boolean>
+  progress: ComputedRef<number>
+}
+
+const navAutoHide = inject<NavAutoHideContext | null>('navAutoHide', null)
+const isHeaderHidden = computed(() => navAutoHide?.isHidden.value ?? false)
+const isHeaderDragging = computed(() => navAutoHide?.isDragging.value ?? false)
+const headerProgress = computed(() => navAutoHide?.progress.value ?? 0)
 </script>
 
 <template>
@@ -62,12 +73,17 @@ const showBackButton = computed(() => {
       <span v-if="isRefreshing" sr-only>{{ $t('timeline.refreshing') }}</span>
     </div>
     <div
+      class="main-content-header-container"
       sticky top-0 z-20
       pt="[env(safe-area-inset-top,0)]"
       bg="[rgba(var(--rgb-bg-base),0.7)]"
       :class="{
         'backdrop-blur': !getPreferences(userSettings, 'optimizeForLowPerformanceDevice'),
+        'main-content-header-container--hidden': isHeaderHidden && !isHeaderDragging,
+        'main-content-header-container--dragging': isHeaderDragging,
       }"
+      :style="isHeaderDragging ? { transform: `translate3d(0, calc(-${headerProgress} * 100%), 0)` } : undefined"
+      :inert="isHeaderHidden && !isHeaderDragging"
     >
       <div
         class="main-content-header" flex="~ justify-between" min-h-53px px-2 py-1
@@ -140,6 +156,42 @@ const showBackButton = computed(() => {
 @media (prefers-reduced-motion: reduce) {
   .pull-to-refresh-indicator {
     transition-duration: 0ms;
+  }
+}
+
+.main-content-header-container {
+  will-change: transform;
+}
+
+.main-content-header-container--dragging {
+  transition: none !important;
+}
+
+.main-content-header-container--hidden {
+  pointer-events: none;
+  transform: translate3d(0, -100%, 0);
+}
+
+@media (min-width: 640px) {
+  .main-content-header-container {
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .main-content-header-container {
+    transition: opacity var(--motion-moderate-exit, 120ms) ease-out;
+  }
+
+  .main-content-header-container--hidden {
+    transform: none;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .main-content-header-container {
+    transition: transform 260ms cubic-bezier(0.2, 0.9, 0.3, 1);
   }
 }
 </style>
