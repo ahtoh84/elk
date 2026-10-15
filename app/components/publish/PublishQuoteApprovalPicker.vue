@@ -21,7 +21,7 @@ function chooseQuoteApprovalPolicy(quoteApprovalPolicy: mastodon.rest.v1.QuoteAp
 
 <template>
   <div flex items-center>
-    <div i-ri:double-quotes-l me--2 />
+    <div i-ri:chat-quote-line me--2 />
     <CommonTooltip placement="top" :content="editing ? $t(`quote_approval_policy.${currentQuoteApprovalPolicy.value}`) : $t('tooltip.change_quote_approval_policy')">
       <CommonDropdown placement="bottom">
         <slot :quote-approval-policy="currentQuoteApprovalPolicy" />

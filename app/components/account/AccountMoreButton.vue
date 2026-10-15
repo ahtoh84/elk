@@ -99,7 +99,7 @@ async function removeUserNote() {
           <CommonDropdownItem
             is="button"
             v-if="!relationship?.showingReblogs"
-            icon="i-ri:repeat-line"
+            icon="i-ri:repeat-2-line"
             :text="$t('menu.show_reblogs', [`@${account.acct}`])"
             :command="command"
             @click="toggleReblogs()"
@@ -108,7 +108,7 @@ async function removeUserNote() {
             is="button"
             v-else
             :text="$t('menu.hide_reblogs', [`@${account.acct}`])"
-            icon="i-ri:repeat-line"
+            icon="i-ri:repeat-2-line"
             :command="command"
             @click="toggleReblogs()"
           />

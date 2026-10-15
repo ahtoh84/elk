@@ -39,9 +39,9 @@ const filter = computed<mastodon.v1.NotificationType | undefined>(() => {
 const filterIconMap: Record<mastodon.v1.NotificationType, string> = {
   'mention': 'i-ri:at-line',
   'status': 'i-ri:account-pin-circle-line',
-  'reblog': 'i-ri:repeat-fill',
-  'quote': 'i-ri:double-quotes-l',
-  'quoted_update': 'i-ri:double-quotes-l',
+  'reblog': 'i-ri:repeat-2-fill',
+  'quote': 'i-ri:chat-quote-line',
+  'quoted_update': 'i-ri:chat-quote-line',
   'follow': 'i-ri:user-follow-line',
   'follow_request': 'i-ri:user-shared-line',
   'favourite': 'i-ri:heart-3-line',

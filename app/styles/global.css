@@ -211,12 +211,6 @@ button,
 }
 
 /* Compact navigation mode (used on settings pages and medium viewports) */
-@media (min-width: 1280px) {
-  .nav-compact-mode {
-    width: 5rem !important;
-  }
-}
-
 .nav-compact-mode .nav-title-text,
 .nav-compact-mode .nav-title-back,
 .nav-compact-mode .nav-side-item-text,
@@ -240,6 +234,30 @@ button,
   display: flex !important;
   justify-content: center !important;
   padding-inline: 0 !important;
+}
+
+/* Large viewport (>= 1280px): align settings sidebar icons with home sidebar icons to prevent jitter */
+@media (min-width: 1280px) {
+  .nav-compact-mode {
+    width: 5rem !important;
+  }
+
+  .nav-compact-mode .item,
+  .nav-compact-mode .nav-more-button {
+    margin-inline-start: 0 !important;
+    margin-inline-end: auto !important;
+    padding-inline-start: 1.25rem !important;
+    padding-inline-end: 1.25rem !important;
+    min-height: 2.75rem !important;
+    height: 2.75rem !important;
+    box-sizing: border-box !important;
+  }
+
+  .nav-compact-mode .user-section-pad {
+    justify-content: flex-start !important;
+    padding-inline-start: 1.5rem !important;
+    padding-inline-end: 0 !important;
+  }
 }
 
 .settings-page {
