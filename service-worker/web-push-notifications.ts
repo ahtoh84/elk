@@ -44,19 +44,23 @@ export function onNotificationClick(event: NotificationEvent) {
   event.waitUntil(reactToNotificationClick)
 }
 
-function findBestClient(clients: WindowClient[]) {
+export function findBestClient(clients: WindowClient[]) {
   const focusedClient = clients.find(client => client.focused)
   const visibleClient = clients.find(client => client.visibilityState === 'visible')
 
   return focusedClient || visibleClient || clients[0]
 }
 
-async function openUrl(url: string) {
+export async function openUrl(url: string) {
   const clients = await self.clients.matchAll({ type: 'window' })
   // Chrome 42-48 does not support navigate
   if (clients.length !== 0 && 'navigate' in clients[0]) {
     const client = findBestClient(clients as WindowClient[])
-    await client.navigate(url).then(client => client?.focus())
+    const navigatedClient = await client.navigate(url).catch(() => null)
+    if (navigatedClient) {
+      await navigatedClient.focus().catch(() => null)
+      return
+    }
   }
 
   await self.clients.openWindow(url)

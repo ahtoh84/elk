@@ -185,42 +185,22 @@ const { formatNumber } = useHumanReadableNumber()
       </button>
     </template>
     <template #default="{ item }">
-      <template v-if="virtualScroller">
-        <NotificationGroupedFollow
-          v-if="item.type === 'grouped-follow'"
-          :items="item"
-          border="b base"
-        />
-        <NotificationGroupedLikes
-          v-else-if="item.type === 'grouped-reblogs-and-favourites'"
-          :group="item"
-          border="b base"
-        />
-        <NotificationCard
-          v-else
-          :notification="item"
-          hover:bg-active
-          border="b base"
-        />
-      </template>
-      <template v-else>
-        <NotificationGroupedFollow
-          v-if="item.type === 'grouped-follow'"
-          :items="item"
-          border="b base"
-        />
-        <NotificationGroupedLikes
-          v-else-if="item.type === 'grouped-reblogs-and-favourites'"
-          :group="item"
-          border="b base"
-        />
-        <NotificationCard
-          v-else
-          :notification="item"
-          hover:bg-active
-          border="b base"
-        />
-      </template>
+      <NotificationGroupedFollow
+        v-if="item.type === 'grouped-follow'"
+        :items="item"
+        border="b base"
+      />
+      <NotificationGroupedLikes
+        v-else-if="item.type === 'grouped-reblogs-and-favourites'"
+        :group="item"
+        border="b base"
+      />
+      <NotificationCard
+        v-else
+        :notification="item"
+        hover:bg-active
+        border="b base"
+      />
     </template>
   </CommonPaginator>
 </template>

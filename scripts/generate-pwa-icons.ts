@@ -117,9 +117,12 @@ async function prepareLogoSource() {
   const width = right - left + 1
   const height = bottom - top + 1
   const size = Math.max(width, height)
+  const optWidth = 512
+  const optHeight = Math.round(optWidth * height / width)
   const png = await sharp(inputPath)
     .extract({ left, top, width, height })
-    .png({ compressionLevel: 9, palette: false })
+    .resize(optWidth, optHeight)
+    .png({ palette: true, quality: 95 })
     .toBuffer()
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
   <title>Elk</title>

@@ -36,12 +36,7 @@ function getFollowedTag(status: mastodon.v1.Status): string | null {
         </button>
       </template>
       <template #default="{ item, older, newer }">
-        <template v-if="virtualScroller">
-          <StatusCard class="timeline-post" :followed-tag="getFollowedTag(item)" :status="item" :context="context" :older="older" :newer="newer" :account="account" />
-        </template>
-        <template v-else>
-          <StatusCard class="timeline-post" :followed-tag="getFollowedTag(item)" :status="item" :context="context" :older="older" :newer="newer" :account="account" />
-        </template>
+        <StatusCard class="timeline-post" :followed-tag="getFollowedTag(item)" :status="item" :context="context" :older="older" :newer="newer" :account="account" />
       </template>
       <template v-if="context === 'account'" #done="{ items }">
         <div
