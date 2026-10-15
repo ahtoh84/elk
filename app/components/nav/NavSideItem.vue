@@ -1,10 +1,11 @@
 <script setup lang="ts">
-const { text, icon, to, userOnly = false, command } = defineProps<{
+const { text, icon, to, userOnly = false, command, exact = false } = defineProps<{
   text?: string
   icon: string
   to: string | Record<string, string>
   userOnly?: boolean
   command?: boolean
+  exact?: boolean
 }>()
 
 defineSlots<{
@@ -34,14 +35,30 @@ const isItemActive = computed(() => {
   if (!targetPath)
     return false
   const currentPath = route.path
-  if (currentPath === targetPath || (targetPath !== '/' && currentPath.startsWith(`${targetPath}/`)))
-    return true
   const server = currentServer.value
-  if (server && currentPath.startsWith(`/${server}/`)) {
-    const withoutServer = currentPath.slice(server.length + 1)
-    if (withoutServer === targetPath || (targetPath !== '/' && withoutServer.startsWith(`${targetPath}/`)))
-      return true
-  }
+  const withoutServer = (server && currentPath.startsWith(`/${server}/`))
+    ? currentPath.slice(server.length + 1)
+    : currentPath
+  const targetWithoutServer = (server && targetPath.startsWith(`/${server}/`))
+    ? targetPath.slice(server.length + 1)
+    : targetPath
+
+  if (currentPath === targetPath || (withoutServer && withoutServer === targetWithoutServer))
+    return true
+
+  if (exact)
+    return false
+
+  // Prevent federated timeline (/public) from matching local timeline (/public/local)
+  if (targetWithoutServer === '/public' && (withoutServer === '/public/local' || withoutServer.startsWith('/public/local/')))
+    return false
+
+  if (targetPath !== '/' && currentPath.startsWith(`${targetPath}/`))
+    return true
+
+  if (targetWithoutServer !== '/' && withoutServer.startsWith(`${targetWithoutServer}/`))
+    return true
+
   return false
 })
 
@@ -67,6 +84,7 @@ const isCollapsed = computed(() => !isMobileVariant.value && Boolean(unref(isNav
 <template>
   <NuxtLink
     :to="to"
+    :exact="exact"
     :disabled="noUserDisable"
     :class="noUserVisual ? 'op50 pointer-events-none ' : ''"
     :active-class="activeClass"
