@@ -76,4 +76,15 @@ describe('status detail emoji reactions', () => {
     expect(wrapper.find('[data-test="emoji-reactions"]').element.parentElement?.outerHTML).toMatch(/border/)
     expect(wrapper.find('[data-test="status-actions"]').element.parentElement?.outerHTML).toMatch(/border/)
   })
+
+  it('renders status more action on the right side of the author header row', async () => {
+    const wrapper = await mountStatusDetails(statusFixture)
+    const headerRow = wrapper.find('[aria-roledescription="status-details"] > div:first-child')
+    expect(headerRow.attributes('flex')).toBeDefined()
+    expect(headerRow.attributes('justify-between')).toBeDefined()
+    expect(headerRow.attributes('items-center')).toBeDefined()
+    const children = headerRow.element.children
+    expect(children.length).toBe(2)
+    expect(children[0].tagName.toLowerCase()).toBe('a')
+  })
 })

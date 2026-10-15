@@ -3,6 +3,10 @@ import type { mastodon } from 'masto'
 import { useId } from 'vue'
 import { toggleBlockAccount, toggleMuteAccount, useRelationship } from '~/composables/masto/relationship'
 
+defineOptions({
+  inheritAttrs: false,
+})
+
 const { details, ...props } = defineProps<{
   status: mastodon.v1.Status
   details?: boolean
@@ -135,7 +139,7 @@ function showReactedBy() {
 </script>
 
 <template>
-  <CommonDropdown flex-none ms3 placement="bottom" :eager-mount="command">
+  <CommonDropdown v-bind="$attrs" flex-none ms3 placement="bottom" :eager-mount="command">
     <StatusActionButton
       :content="$t('action.more')"
       color="text-primary"

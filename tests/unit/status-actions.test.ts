@@ -101,4 +101,34 @@ describe('status action failures', () => {
     const actionBtn = wrapper.find('[data-test="action-btn"]')
     expect(actionBtn.attributes('data-elk-group-hover')).toBe('bg-primary-fade')
   })
+
+  it('forwards custom attributes to CommonDropdown', async () => {
+    const { createI18n } = await import('vue-i18n')
+    const { default: StatusActionsMore } = await import('~/components/status/StatusActionsMore.vue')
+    const wrapper = await mountSuspended(StatusActionsMore, {
+      props: {
+        status: statusFixture,
+      },
+      attrs: {
+        'me--2': '',
+        'data-test-attr': 'custom-more-attr',
+      },
+      global: {
+        plugins: [createI18n({
+          legacy: false,
+          locale: 'en',
+          messages: { en: { action: { more: 'More' } } },
+        })],
+        stubs: {
+          CommonDropdown: {
+            template: '<div data-test="dropdown" v-bind="$attrs"><slot /><slot name="popper" /></div>',
+          },
+          StatusActionButton: true,
+        },
+      },
+    })
+    const dropdown = wrapper.find('[data-test="dropdown"]')
+    expect(dropdown.attributes('data-test-attr')).toBe('custom-more-attr')
+    expect(dropdown.attributes('me--2')).toBeDefined()
+  })
 })
