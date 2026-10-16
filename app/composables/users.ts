@@ -5,7 +5,7 @@ import type { mastodon } from 'masto'
 import type { EffectScope, MaybeRefOrGetter, Ref } from 'vue'
 import type { ElkMasto } from './masto/masto'
 import type { PushNotificationPolicy, PushNotificationRequest } from '~/composables/push-notifications/types'
-import { withoutProtocol } from 'ufo'
+import { withBase, withoutProtocol } from 'ufo'
 import {
   DEFAULT_POST_CHARS_LIMIT,
   STORAGE_KEY_CURRENT_USER_HANDLE,
@@ -15,7 +15,9 @@ import {
   STORAGE_KEY_NOTIFICATION_POLICY,
   STORAGE_KEY_SERVERS,
   STORAGE_KEY_SETTINGS,
+  STORAGE_KEY_USERS,
 } from '~/constants'
+import { set } from '~/utils/elk-idb'
 
 const mock = process.mock
 
@@ -239,10 +241,17 @@ export async function removePushNotificationData(user: UserLogin, fromSWPushMana
   if (unregister && (users.value.length === 0 || users.value.every(u => !u.pushSubscription))) {
     // clear sw push subscription
     try {
-      const registration = await navigator.serviceWorker.ready
-      const subscription = await registration.pushManager.getSubscription()
-      if (subscription)
-        await subscription.unsubscribe()
+      if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+        const registration = await (navigator.serviceWorker.getRegistration
+          ? navigator.serviceWorker.getRegistration()
+          : Promise.race([
+              navigator.serviceWorker.ready,
+              new Promise<undefined>((_, reject) => setTimeout(() => reject(new Error('timeout')), 1000)),
+            ]))
+        const subscription = await registration?.pushManager?.getSubscription()
+        if (subscription)
+          await subscription.unsubscribe()
+      }
     }
     catch {
       // just ignore
@@ -285,14 +294,19 @@ export async function signOut() {
   const index = users.value.findIndex(u => u.server === current.server && u.account?.id === current.account.id)
 
   if (index !== -1) {
+    const remainingUsers = toRaw(users.value).filter((_, userIndex) => userIndex !== index)
+
+    // Persist first so a failed write cannot restore this account on the next load.
+    await set(STORAGE_KEY_USERS, remainingUsers)
+
     // Clear stale data
     clearUserLocalStorage()
     if (!users.value.some((u, i) => u.server === currentUser.value!.server && i !== index))
       delete instanceStorage.value[currentUser.value.server]
 
-    await removePushNotifications(currentUser.value)
+    await removePushNotifications(currentUser.value).catch(() => {})
 
-    await removePushNotificationData(currentUser.value)
+    await removePushNotificationData(currentUser.value).catch(() => {})
 
     currentUserHandle.value = ''
     // Remove the current user from the users
@@ -300,10 +314,16 @@ export async function signOut() {
   }
 
   // Set currentUserId to next user if available
-  currentUserHandle.value = users.value[0]?.account?.acct
+  currentUserHandle.value = users.value[0]?.account?.acct || ''
 
-  if (!currentUserHandle.value)
+  if (!currentUserHandle.value) {
+    if (import.meta.client) {
+      window.location.href = withBase('/', useRuntimeConfig().app.baseURL)
+      return
+    }
     await useRouter().push('/')
+    return
+  }
 
   await loginTo(masto, currentUser.value || { server: publicServer.value })
 }

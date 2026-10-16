@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { clearUserLocalStorage, currentUser, currentUserHandle, findUserByHandle, migrateMockUserHandle, signOut, useUsers } from '../../app/composables/users'
-import { STORAGE_KEY_SETTINGS } from '../../app/constants'
+import { STORAGE_KEY_SETTINGS, STORAGE_KEY_USERS } from '../../app/constants'
+import { set } from '../../app/utils/elk-idb'
+
+vi.mock('~/utils/elk-idb', () => ({
+  set: vi.fn().mockResolvedValue(undefined),
+}))
 
 vi.mock('~/composables/masto', () => ({
   useMasto: () => ({}),
@@ -21,6 +26,7 @@ describe('users.ts signOut and clearUserLocalStorage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.mocked(set).mockResolvedValue(undefined)
     users.value = []
     currentUserHandle.value = ''
 
@@ -64,6 +70,40 @@ describe('users.ts signOut and clearUserLocalStorage', () => {
     expect(users.value.length).toBe(1)
     expect(users.value[0].server).toBe('fosstodon.org')
     expect(users.value[0].account.acct).toBe('bob@fosstodon.org')
+    expect(set).toHaveBeenCalledWith(STORAGE_KEY_USERS, [userB])
+  })
+
+  it('cleans up and resets currentUserHandle to empty string when signing out the last user', async () => {
+    const user: any = {
+      server: 'universeodon.com',
+      token: 'token-solo',
+      account: { id: '109424142224653388', acct: 'elkdev@universeodon.com' },
+    }
+    users.value = [user]
+    currentUserHandle.value = 'elkdev@universeodon.com'
+
+    await signOut()
+
+    expect(users.value.length).toBe(0)
+    expect(currentUserHandle.value).toBe('')
+    expect(currentUser.value).toBeUndefined()
+  })
+
+  it('keeps the current account when the updated account list cannot be persisted', async () => {
+    const user: any = {
+      server: 'universeodon.com',
+      token: 'token-solo',
+      account: { id: '109424142224653388', acct: 'elkdev@universeodon.com' },
+    }
+    users.value = [user]
+    currentUserHandle.value = 'elkdev@universeodon.com'
+    vi.mocked(set).mockRejectedValueOnce(new Error('IndexedDB unavailable'))
+
+    await expect(signOut()).rejects.toThrow('IndexedDB unavailable')
+
+    expect(users.value).toEqual([user])
+    expect(currentUserHandle.value).toBe('elkdev@universeodon.com')
+    expect(currentUser.value).toEqual(user)
   })
 
   it('clearUserLocalStorage cleans up entries matching account acct from localStorage', () => {

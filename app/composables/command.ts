@@ -345,8 +345,18 @@ export function provideGlobalCommands() {
     name: () => t('user.sign_out_account', [getFullHandle(currentUser.value!.account)]),
     icon: 'i-ri:logout-box-line',
 
-    onActivate() {
-      signOut()
+    async onActivate() {
+      try {
+        await signOut()
+      }
+      catch (error) {
+        console.error('Failed to sign out account', error)
+        await openErrorDialog({
+          title: t('common.error'),
+          messages: [t('error.sign_out_failed')],
+          close: t('action.close'),
+        })
+      }
     },
   })
 }

@@ -205,6 +205,7 @@
     "file_size_cannot_exceed_n_mb": "File size cannot exceed {0}MB",
     "quote_fetch_error": "Could not fetch the quoted post",
     "sign_in_error": "Cannot connect to the server.",
+    "sign_out_failed": "Sign out failed. Please try again.",
     "status_action_failed": "Action failed. Your change was reverted. Please try again.",
     "status_not_found": "Post not found",
     "unsupported_file_format": "Unsupported file format"
