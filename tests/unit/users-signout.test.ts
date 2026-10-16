@@ -85,4 +85,15 @@ describe('users.ts signOut and clearUserLocalStorage', () => {
     expect(updated['charlie@elk.zone']).toBeUndefined()
     expect(updated['david@elk.zone']).toBeDefined()
   })
+
+  it('matches currentUser when currentUserHandle is an account id before migration', () => {
+    const user: any = {
+      server: 'mastodon.social',
+      account: { id: '109424142224653388', acct: 'elkdev@universeodon.com' },
+    }
+    users.value = [user]
+    currentUserHandle.value = '109424142224653388'
+
+    expect(currentUser.value?.account.acct).toBe('elkdev@universeodon.com')
+  })
 })

@@ -1,7 +1,25 @@
-import { LEGACY_DEFAULT_THEME, STORAGE_KEY_CURRENT_USER_HANDLE, STORAGE_KEY_SETTINGS } from '~/constants'
+import { LEGACY_DEFAULT_THEME, STORAGE_KEY_CURRENT_USER_HANDLE, STORAGE_KEY_SETTINGS, THEME_SETTINGS_VERSION } from '~/constants'
 import { oldFontSizeMap } from '~/constants/options'
+import themesJson from '~/constants/themes.json'
 
-export function generateHeadScript(): string {
+const mock = process.mock
+const canonicalThemes = Object.fromEntries(themesJson)
+
+export function generateHeadScript(options: {
+  mockUser?: { id?: string, acct?: string } | null
+} = {}): string {
+  const mockUser = options.mockUser === null
+    ? null
+    : (options.mockUser ?? (mock?.user?.account ? mock.user.account : { id: '109424142224653388', acct: 'elkdev@universeodon.com' }))
+  const mockUserId = mockUser?.id
+  const mockUserAcct = mockUser?.acct
+  const mockMigrationScript = mockUserId && mockUserAcct
+    ? `if (handle === ${JSON.stringify(mockUserId)}) {
+      handle = ${JSON.stringify(mockUserAcct)};
+      try { localStorage.setItem('${STORAGE_KEY_CURRENT_USER_HANDLE}', handle); } catch (e) {}
+    }`
+    : ''
+
   return `;(function() {
   const html = document.documentElement;
   let isDark = false;
@@ -36,7 +54,8 @@ export function generateHeadScript(): string {
   } catch (e) {}
 
   try {
-    const handle = localStorage.getItem('${STORAGE_KEY_CURRENT_USER_HANDLE}') || '[anonymous]';
+    let handle = localStorage.getItem('${STORAGE_KEY_CURRENT_USER_HANDLE}') || '[anonymous]';
+    ${mockMigrationScript}
     const rawSettings = localStorage.getItem('${STORAGE_KEY_SETTINGS}');
     if (!rawSettings) return;
     const allSettings = JSON.parse(rawSettings);
@@ -55,7 +74,15 @@ export function generateHeadScript(): string {
     }
     const hasLegacyDefaultTheme = settings.themeSettingsVersion == null && settings.themeColors && settings.themeColors['--theme-color-name'] === ${JSON.stringify(LEGACY_DEFAULT_THEME)};
     if (settings.themeColors && !hasLegacyDefaultTheme) {
-      const theme = settings.themeColors;
+      let theme = settings.themeColors;
+      const themeVersion = settings.themeSettingsVersion;
+      if (themeVersion == null || themeVersion < ${THEME_SETTINGS_VERSION}) {
+        const canonicalThemes = ${JSON.stringify(canonicalThemes)};
+        const themeName = theme && theme['--theme-color-name'];
+        if (canonicalThemes && canonicalThemes[themeName]) {
+          theme = canonicalThemes[themeName];
+        }
+      }
       const isInk = theme['--theme-color-name'] === '#242424';
       const darkRegex = /^--(c|rgb)-/;
       Object.keys(theme).forEach(function(key) {

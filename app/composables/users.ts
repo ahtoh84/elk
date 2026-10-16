@@ -23,6 +23,13 @@ const users: Ref<UserLogin[]> | RemovableRef<UserLogin[]> = import.meta.server ?
 export const isAuthReady = ref(false)
 const nodes = useLocalStorage<Record<string, any>>(STORAGE_KEY_NODES, {}, { deep: true })
 export const currentUserHandle = useLocalStorage<string>(STORAGE_KEY_CURRENT_USER_HANDLE, mock ? (mock.user.account.acct || mock.user.account.id) : '')
+
+// Migrate legacy mock user ID to account handle (acct)
+const mockUserId = mock?.user?.account?.id || '109424142224653388'
+const mockUserAcct = mock?.user?.account?.acct || 'elkdev@universeodon.com'
+if (currentUserHandle.value === mockUserId)
+  currentUserHandle.value = mockUserAcct
+
 export const instanceStorage = useLocalStorage<Record<string, mastodon.v2.Instance>>(STORAGE_KEY_SERVERS, mock ? mock.server : {}, { deep: true })
 
 export type ElkInstance = Partial<mastodon.v2.Instance> & {
@@ -37,7 +44,7 @@ export const currentUser = computed<UserLogin | undefined>(() => {
   const handle = currentUserHandle.value
   const currentUsers = users.value
   if (handle) {
-    const user = currentUsers.find(user => user.account?.acct === handle)
+    const user = currentUsers.find(user => user.account?.acct === handle || user.account?.id === handle)
     if (user)
       return user
   }

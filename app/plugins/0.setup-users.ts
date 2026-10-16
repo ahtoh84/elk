@@ -41,6 +41,14 @@ export default defineNuxtPlugin({
       const { readIDB } = await useAsyncIDBKeyval<UserLogin[]>(STORAGE_KEY_USERS, defaultUsers, users)
       isAuthReady.value = true
 
+      // Migrate legacy numeric user ID to account handle (acct) if present
+      if (currentUserHandle.value) {
+        const matchingUser = users.value.find(u => u.account?.id === currentUserHandle.value)
+        if (matchingUser?.account?.acct) {
+          currentUserHandle.value = matchingUser.account.acct
+        }
+      }
+
       function reload() {
         setTimeout(() => {
           window.location.reload()

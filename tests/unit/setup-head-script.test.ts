@@ -126,7 +126,7 @@ describe('setup-head-script.server', () => {
         [STORAGE_KEY_CURRENT_USER_HANDLE]: 'alice@elk.zone',
         [STORAGE_KEY_SETTINGS]: JSON.stringify({
           'alice@elk.zone': {
-            themeSettingsVersion: 1,
+            themeSettingsVersion: 2,
             themeColors: {
               '--theme-color-name': '#242424',
               '--c-primary': '#111111',
@@ -313,5 +313,102 @@ describe('setup-head-script.server', () => {
     expect(anonEnv.classList.has('zen')).toBe(false)
     expect(anonEnv.styleProps['--font-size']).toBeUndefined()
     expect(anonEnv.styleProps['--c-bg-base']).toBeUndefined()
+  })
+
+  it('recovers canonical theme values and prevents dark flash when legacy theme with dark-resolved values is loaded in light mode', () => {
+    const script = generateHeadScript()
+    const { sandbox, styleProps } = createMockEnvironment({
+      cookie: 'nuxt-color-mode=light',
+      localStorageData: {
+        [STORAGE_KEY_CURRENT_USER_HANDLE]: 'alice@elk.zone',
+        [STORAGE_KEY_SETTINGS]: JSON.stringify({
+          'alice@elk.zone': {
+            themeSettingsVersion: 1,
+            // Legacy corrupted theme: all 62 keys present, but light values were overwritten by dark values
+            themeColors: {
+              '--theme-color-name': '#b8956a',
+              '--rgb-primary': '184, 149, 106',
+              '--rgb-dark-primary': '212, 165, 116',
+              '--c-bg-base': '#1c1915', // corrupted dark base
+              '--c-dark-bg-base': '#1c1915',
+              '--c-text-base': '#f5ede3', // corrupted dark text
+              '--c-dark-text-base': '#f5ede3',
+              '--c-primary': 'rgb(var(--rgb-dark-primary))',
+              '--c-dark-primary': 'rgb(var(--rgb-dark-primary))',
+            },
+          },
+        }),
+      },
+    })
+
+    vm.runInNewContext(script, sandbox)
+    // Head script should identify the old version (< 2) and substitute canonical palette
+    expect(styleProps['--c-bg-base']).toBe('#faf8f5')
+    expect(styleProps['--c-text-base']).toBe('#3d3426')
+    expect(styleProps['--c-primary']).toBe('color-mix(in srgb, rgb(var(--rgb-primary)), black 25%)')
+  })
+
+  it('recovers canonical theme values for unversioned non-default theme with dark-resolved values in light mode', () => {
+    const script = generateHeadScript()
+    const { sandbox, styleProps } = createMockEnvironment({
+      cookie: 'nuxt-color-mode=light',
+      localStorageData: {
+        [STORAGE_KEY_CURRENT_USER_HANDLE]: 'alice@elk.zone',
+        [STORAGE_KEY_SETTINGS]: JSON.stringify({
+          'alice@elk.zone': {
+            // themeSettingsVersion is undefined
+            themeColors: {
+              '--theme-color-name': '#8a70c0', // Dusk
+              '--c-bg-base': '#16131c', // dark base
+              '--c-dark-bg-base': '#16131c',
+              '--c-text-base': '#ede8f5',
+              '--c-dark-text-base': '#ede8f5',
+            },
+          },
+        }),
+      },
+    })
+
+    vm.runInNewContext(script, sandbox)
+    // Canonical light values for Dusk: #f8f6fb and #3a3450
+    expect(styleProps['--c-bg-base']).toBe('#f8f6fb')
+    expect(styleProps['--c-text-base']).toBe('#3a3450')
+  })
+
+  it('migrates legacy development mock user ID in localStorage to mock acct and applies settings on first screen', () => {
+    const script = generateHeadScript({
+      mockUser: {
+        id: '109424142224653388',
+        acct: 'elkdev@universeodon.com',
+      },
+    })
+    const { sandbox, classList, styleProps } = createMockEnvironment({
+      cookie: 'nuxt-color-mode=light',
+      localStorageData: {
+        // Developer had the legacy numeric ID in localStorage
+        [STORAGE_KEY_CURRENT_USER_HANDLE]: '109424142224653388',
+        [STORAGE_KEY_SETTINGS]: JSON.stringify({
+          'elkdev@universeodon.com': {
+            fontSize: 'lg',
+            preferences: { zenMode: true },
+            themeSettingsVersion: 2,
+            themeColors: {
+              '--theme-color-name': '#b8956a',
+              '--rgb-primary': '184, 149, 106',
+              '--c-bg-base': '#faf8f5',
+              '--c-text-base': '#3d3426',
+            },
+          },
+        }),
+      },
+    })
+
+    vm.runInNewContext(script, sandbox)
+    // Handle should be migrated in localStorage
+    expect(sandbox.localStorage.getItem(STORAGE_KEY_CURRENT_USER_HANDLE)).toBe('elkdev@universeodon.com')
+    // Settings for elkdev@universeodon.com should be applied immediately
+    expect(classList.has('zen')).toBe(true)
+    expect(styleProps['--font-size']).toBe('16px')
+    expect(styleProps['--c-bg-base']).toBe('#faf8f5')
   })
 })
