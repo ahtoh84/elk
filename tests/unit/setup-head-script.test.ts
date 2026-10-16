@@ -411,4 +411,22 @@ describe('setup-head-script.server', () => {
     expect(styleProps['--font-size']).toBe('16px')
     expect(styleProps['--c-bg-base']).toBe('#faf8f5')
   })
+
+  it('does not rewrite a numeric account handle in a non-mock build', () => {
+    const script = generateHeadScript()
+    const legacyHandle = '109424142224653388'
+    const { sandbox, styleProps } = createMockEnvironment({
+      localStorageData: {
+        [STORAGE_KEY_CURRENT_USER_HANDLE]: legacyHandle,
+        [STORAGE_KEY_SETTINGS]: JSON.stringify({
+          [legacyHandle]: { fontSize: 'lg' },
+        }),
+      },
+    })
+
+    vm.runInNewContext(script, sandbox)
+
+    expect(sandbox.localStorage.getItem(STORAGE_KEY_CURRENT_USER_HANDLE)).toBe(legacyHandle)
+    expect(styleProps['--font-size']).toBe('16px')
+  })
 })

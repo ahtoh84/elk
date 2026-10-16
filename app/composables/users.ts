@@ -24,11 +24,15 @@ export const isAuthReady = ref(false)
 const nodes = useLocalStorage<Record<string, any>>(STORAGE_KEY_NODES, {}, { deep: true })
 export const currentUserHandle = useLocalStorage<string>(STORAGE_KEY_CURRENT_USER_HANDLE, mock ? (mock.user.account.acct || mock.user.account.id) : '')
 
-// Migrate legacy mock user ID to account handle (acct)
-const mockUserId = mock?.user?.account?.id || '109424142224653388'
-const mockUserAcct = mock?.user?.account?.acct || 'elkdev@universeodon.com'
-if (currentUserHandle.value === mockUserId)
-  currentUserHandle.value = mockUserAcct
+export function migrateMockUserHandle(handle: string, mockAccount?: { id?: string, acct?: string } | null): string {
+  return mockAccount?.id && mockAccount.acct && handle === mockAccount.id
+    ? mockAccount.acct
+    : handle
+}
+
+const migratedMockHandle = migrateMockUserHandle(currentUserHandle.value, mock?.user?.account)
+if (migratedMockHandle !== currentUserHandle.value)
+  currentUserHandle.value = migratedMockHandle
 
 export const instanceStorage = useLocalStorage<Record<string, mastodon.v2.Instance>>(STORAGE_KEY_SERVERS, mock ? mock.server : {}, { deep: true })
 
@@ -40,13 +44,26 @@ export function getInstanceCache(server: string): mastodon.v2.Instance | undefin
   return instanceStorage.value[server]
 }
 
+export function findUserByHandle(currentUsers: UserLogin[], handle: string): UserLogin | undefined {
+  const accountMatch = currentUsers.find(user => user.account?.acct === handle)
+  if (accountMatch)
+    return accountMatch
+
+  const idMatches = currentUsers.filter(user => user.account?.id === handle)
+  return idMatches.length === 1 ? idMatches[0] : undefined
+}
+
 export const currentUser = computed<UserLogin | undefined>(() => {
   const handle = currentUserHandle.value
   const currentUsers = users.value
   if (handle) {
-    const user = currentUsers.find(user => user.account?.acct === handle || user.account?.id === handle)
+    const user = findUserByHandle(currentUsers, handle)
     if (user)
       return user
+
+    // An account ID can collide across instances; don't silently select an arbitrary account.
+    if (currentUsers.some(user => user.account?.id === handle))
+      return undefined
   }
   // Fallback to the first account
   return currentUsers.length ? currentUsers[0] : undefined

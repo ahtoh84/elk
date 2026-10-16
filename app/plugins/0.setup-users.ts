@@ -1,5 +1,6 @@
 import type { UserLogin } from '#shared/types'
 import { useAsyncIDBKeyval } from '~/composables/idb'
+import { findUserByHandle } from '~/composables/users'
 import { STORAGE_KEY_USERS } from '~/constants'
 
 const mock = process.mock
@@ -43,8 +44,8 @@ export default defineNuxtPlugin({
 
       // Migrate legacy numeric user ID to account handle (acct) if present
       if (currentUserHandle.value) {
-        const matchingUser = users.value.find(u => u.account?.id === currentUserHandle.value)
-        if (matchingUser?.account?.acct) {
+        const matchingUser = findUserByHandle(users.value, currentUserHandle.value)
+        if (matchingUser?.account?.id === currentUserHandle.value && matchingUser.account.acct !== currentUserHandle.value) {
           currentUserHandle.value = matchingUser.account.acct
         }
       }

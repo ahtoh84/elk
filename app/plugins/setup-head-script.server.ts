@@ -10,7 +10,7 @@ export function generateHeadScript(options: {
 } = {}): string {
   const mockUser = options.mockUser === null
     ? null
-    : (options.mockUser ?? (mock?.user?.account ? mock.user.account : { id: '109424142224653388', acct: 'elkdev@universeodon.com' }))
+    : (options.mockUser ?? mock?.user?.account ?? null)
   const mockUserId = mockUser?.id
   const mockUserAcct = mockUser?.acct
   const mockMigrationScript = mockUserId && mockUserAcct

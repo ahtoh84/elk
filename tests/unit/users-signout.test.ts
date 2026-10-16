@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { clearUserLocalStorage, currentUser, currentUserHandle, signOut, useUsers } from '../../app/composables/users'
+import { clearUserLocalStorage, currentUser, currentUserHandle, findUserByHandle, migrateMockUserHandle, signOut, useUsers } from '../../app/composables/users'
 import { STORAGE_KEY_SETTINGS } from '../../app/constants'
 
 vi.mock('~/composables/masto', () => ({
@@ -95,5 +95,45 @@ describe('users.ts signOut and clearUserLocalStorage', () => {
     currentUserHandle.value = '109424142224653388'
 
     expect(currentUser.value?.account.acct).toBe('elkdev@universeodon.com')
+  })
+
+  it('prefers an exact acct match over another account ID with the same value', () => {
+    const idMatch: any = {
+      server: 'mastodon.social',
+      account: { id: '42', acct: 'alice@mastodon.social' },
+    }
+    const acctMatch: any = {
+      server: 'fosstodon.org',
+      account: { id: '99', acct: '42' },
+    }
+    users.value = [idMatch, acctMatch]
+    currentUserHandle.value = '42'
+
+    expect(currentUser.value?.server).toBe('fosstodon.org')
+    expect(findUserByHandle([idMatch, acctMatch], '42')).toBe(acctMatch)
+  })
+
+  it('does not choose arbitrarily when a legacy ID matches accounts on multiple instances', () => {
+    const accountA: any = {
+      server: 'mastodon.social',
+      account: { id: '1', acct: 'alice@mastodon.social' },
+    }
+    const accountB: any = {
+      server: 'fosstodon.org',
+      account: { id: '1', acct: 'bob@fosstodon.org' },
+    }
+    users.value = [accountA, accountB]
+    currentUserHandle.value = '1'
+
+    expect(currentUser.value).toBeUndefined()
+    expect(findUserByHandle([accountA, accountB], '1')).toBeUndefined()
+  })
+
+  it('migrates mock user IDs only when that mock account is explicitly configured', () => {
+    const legacyId = '109424142224653388'
+
+    expect(migrateMockUserHandle(legacyId, null)).toBe(legacyId)
+    expect(migrateMockUserHandle(legacyId, { id: legacyId, acct: 'elkdev@universeodon.com' }))
+      .toBe('elkdev@universeodon.com')
   })
 })
