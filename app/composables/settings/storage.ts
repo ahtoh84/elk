@@ -17,8 +17,8 @@ export function checkAndMigrateThemeSettings(settings: UserSettings): boolean {
     if (settings.themeColors) {
       const rawTheme = themes.find(([key]) => key === settings.themeColors?.['--theme-color-name'])?.[1]
       if (rawTheme) {
-        const hasMissingKeys = Object.keys(rawTheme).some(key => !(key in settings.themeColors!))
-        if (hasMissingKeys) {
+        const hasMissingOrOutdatedValues = Object.keys(rawTheme).some(key => settings.themeColors![key] !== rawTheme[key])
+        if (hasMissingOrOutdatedValues) {
           settings.themeColors = { ...rawTheme }
           changed = true
         }
