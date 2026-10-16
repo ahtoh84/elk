@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ThemeColors } from '~/composables/settings'
-import { getThemeOptions } from '~/composables/theme-colors'
+import { getThemeOptions, themes } from '~/composables/theme-colors'
 import { THEME_COLORS } from '~/constants'
 
 const settings = useUserSettings()
@@ -12,9 +12,10 @@ const currentTheme = computed(() => settings.value.themeColors?.['--theme-color-
 const currentThemeLabel = computed(() => useThemes.value.find(([, theme]) => theme['--theme-color-name'] === currentTheme.value)?.[1]['--theme-color-label'])
 
 function updateTheme(theme: ThemeColors) {
-  // Store a fresh object so the user settings ref and the CSS synchronizer
-  // both observe the palette change immediately.
-  settings.value.themeColors = { ...theme }
+  // Store the full unmutated theme so both light and dark variable pairs
+  // are retained in storage for instant, flicker-free head script hydration.
+  const rawTheme = themes.find(([key]) => key === theme['--theme-color-name'])?.[1] || theme
+  settings.value.themeColors = { ...rawTheme }
 }
 </script>
 

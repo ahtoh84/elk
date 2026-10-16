@@ -26,8 +26,9 @@ export const STORAGE_KEY_LAST_ACCESSED_EXPLORE_ROUTE = 'elk-last-accessed-explor
 export const STORAGE_KEY_BOTTOM_NAV_BUTTONS = 'elk-bottom-nav-buttons'
 export const STORAGE_KEY_SIDE_NAV_MORE = 'elk-side-nav-more-open'
 
-// Used to migrate settings created before Ink became the default theme.
-export const THEME_SETTINGS_VERSION = 1
+// Used to migrate settings created before Ink became the default theme,
+// and upgrade theme definitions to full light/dark variable pairs.
+export const THEME_SETTINGS_VERSION = 2
 export const LEGACY_DEFAULT_THEME = '#b8956a'
 
 export const HANDLED_MASTO_URLS = /^(https?:\/\/)?([\w\-]+\.)+\w+\/(@[@\w\-.]+)(\/objects)?(\/\d+)?$/

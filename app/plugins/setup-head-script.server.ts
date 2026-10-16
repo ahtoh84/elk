@@ -6,13 +6,32 @@ export function generateHeadScript(): string {
   const html = document.documentElement;
   let isDark = false;
   try {
-    const localColor = localStorage.getItem('nuxt-color-mode');
-    if (localColor && !document.cookie.includes('nuxt-color-mode=')) {
-      document.cookie = 'nuxt-color-mode=' + localColor + '; path=/; max-age=31536000';
+    let cookieColor = null;
+    const match = document.cookie.match(/(?:^|;\\s*)nuxt-color-mode=([^;]+)/);
+    if (match) {
+      cookieColor = decodeURIComponent(match[1]);
     }
-    isDark = document.cookie.includes('nuxt-color-mode=dark') || localColor === 'dark' || ((!localColor || localColor === 'system') && Boolean(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches));
-    if (isDark && !html.classList.contains('dark')) {
-      html.classList.add('dark');
+    const localColor = localStorage.getItem('nuxt-color-mode');
+    if (localColor && !cookieColor) {
+      document.cookie = 'nuxt-color-mode=' + localColor + '; path=/; max-age=31536000';
+      cookieColor = localColor;
+    }
+    const mode = cookieColor || localColor || 'system';
+    if (mode === 'dark') {
+      isDark = true;
+    } else if (mode === 'light') {
+      isDark = false;
+    } else {
+      isDark = Boolean(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+    if (isDark) {
+      if (!html.classList.contains('dark')) {
+        html.classList.add('dark');
+      }
+    } else {
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+      }
     }
   } catch (e) {}
 
@@ -36,16 +55,31 @@ export function generateHeadScript(): string {
     }
     const hasLegacyDefaultTheme = settings.themeSettingsVersion == null && settings.themeColors && settings.themeColors['--theme-color-name'] === ${JSON.stringify(LEGACY_DEFAULT_THEME)};
     if (settings.themeColors && !hasLegacyDefaultTheme) {
-      Object.keys(settings.themeColors).forEach(function(key) {
-        html.style.setProperty(key, settings.themeColors[key]);
+      const theme = settings.themeColors;
+      const isInk = theme['--theme-color-name'] === '#242424';
+      const darkRegex = /^--(c|rgb)-/;
+      Object.keys(theme).forEach(function(key) {
+        if (!key.startsWith('--c-') && !key.startsWith('--rgb-') && key !== '--theme-color-name') return;
+        let val = theme[key];
+        if (isDark) {
+          const darkKey = key.replace(darkRegex, '--$1-dark-');
+          if (theme[darkKey]) {
+            val = theme[darkKey];
+          }
+        } else if (key === '--c-primary' && val && !val.startsWith('color-mix')) {
+          val = 'color-mix(in srgb, ' + val + ', black 25%)';
+        }
+        html.style.setProperty(key, val);
       });
-      if (!settings.themeColors['--c-nav-active-bg']) {
-        const isInk = settings.themeColors['--theme-color-name'] === '#242424';
-        html.style.setProperty('--c-nav-active-bg', (isInk && !isDark) ? '#f0f0f0' : (settings.themeColors['--c-primary-fade'] || 'transparent'));
+      if (!theme['--c-nav-active-bg']) {
+        html.style.setProperty('--c-nav-active-bg', (isInk && !isDark) ? '#f0f0f0' : (theme['--c-primary-fade'] || 'transparent'));
+      } else {
+        html.style.setProperty('--c-nav-active-bg', isDark && theme['--c-dark-nav-active-bg'] ? theme['--c-dark-nav-active-bg'] : theme['--c-nav-active-bg']);
       }
-      if (!settings.themeColors['--c-container-border']) {
-        const isInk = settings.themeColors['--theme-color-name'] === '#242424';
-        html.style.setProperty('--c-container-border', (isInk && !isDark) ? '#D5D5D5' : (settings.themeColors['--c-border'] || 'transparent'));
+      if (!theme['--c-container-border']) {
+        html.style.setProperty('--c-container-border', (isInk && !isDark) ? '#D5D5D5' : (theme['--c-border'] || 'transparent'));
+      } else {
+        html.style.setProperty('--c-container-border', isDark && theme['--c-dark-container-border'] ? theme['--c-dark-container-border'] : theme['--c-container-border']);
       }
     }
   } catch (e) {}

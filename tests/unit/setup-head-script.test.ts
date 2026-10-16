@@ -137,7 +137,7 @@ describe('setup-head-script.server', () => {
     })
 
     vm.runInNewContext(script, sandbox)
-    expect(styleProps['--c-primary']).toBe('#111111')
+    expect(styleProps['--c-primary']).toBe('color-mix(in srgb, #111111, black 25%)')
     expect(styleProps['--c-nav-active-bg']).toBe('#f0f0f0')
     expect(styleProps['--c-container-border']).toBe('#D5D5D5')
   })
@@ -164,5 +164,154 @@ describe('setup-head-script.server', () => {
     expect(() => {
       vm.runInNewContext(script, sandbox)
     }).not.toThrow()
+  })
+
+  it('does NOT add dark class when cookie is nuxt-color-mode=light even if system prefers dark', () => {
+    const script = generateHeadScript()
+    const { sandbox, classList } = createMockEnvironment({
+      cookie: 'nuxt-color-mode=light',
+      matchMediaDark: true,
+    })
+
+    vm.runInNewContext(script, sandbox)
+    expect(classList.has('dark')).toBe(false)
+  })
+
+  it('respects system preference when color mode is system', () => {
+    const script = generateHeadScript()
+
+    const darkEnv = createMockEnvironment({
+      cookie: 'nuxt-color-mode=system',
+      matchMediaDark: true,
+    })
+    vm.runInNewContext(script, darkEnv.sandbox)
+    expect(darkEnv.classList.has('dark')).toBe(true)
+
+    const lightEnv = createMockEnvironment({
+      cookie: 'nuxt-color-mode=system',
+      matchMediaDark: false,
+    })
+    vm.runInNewContext(script, lightEnv.sandbox)
+    expect(lightEnv.classList.has('dark')).toBe(false)
+  })
+
+  it('correctly resolves non-ink theme colors in dark mode', () => {
+    const script = generateHeadScript()
+    const { sandbox, styleProps } = createMockEnvironment({
+      cookie: 'nuxt-color-mode=dark',
+      localStorageData: {
+        [STORAGE_KEY_CURRENT_USER_HANDLE]: 'alice@elk.zone',
+        [STORAGE_KEY_SETTINGS]: JSON.stringify({
+          'alice@elk.zone': {
+            themeSettingsVersion: 1,
+            themeColors: {
+              '--theme-color-name': '#b8956a',
+              '--rgb-primary': '184, 149, 106',
+              '--rgb-dark-primary': '212, 165, 116',
+              '--c-bg-base': '#faf8f5',
+              '--c-dark-bg-base': '#1c1915',
+              '--c-text-base': '#3d3426',
+              '--c-dark-text-base': '#f5ede3',
+              '--c-primary': 'rgb(var(--rgb-primary))',
+              '--c-dark-primary': 'rgb(var(--rgb-dark-primary))',
+              '--c-nav-active-bg': '#b8956a1f',
+              '--c-dark-nav-active-bg': '#d4a5741f',
+              '--c-container-border': 'rgba(61, 52, 38, 0.07)',
+              '--c-dark-container-border': 'rgba(245, 237, 227, 0.12)',
+            },
+          },
+        }),
+      },
+    })
+
+    vm.runInNewContext(script, sandbox)
+    expect(styleProps['--c-bg-base']).toBe('#1c1915')
+    expect(styleProps['--c-text-base']).toBe('#f5ede3')
+    expect(styleProps['--c-primary']).toBe('rgb(var(--rgb-dark-primary))')
+    expect(styleProps['--c-nav-active-bg']).toBe('#d4a5741f')
+    expect(styleProps['--c-container-border']).toBe('rgba(245, 237, 227, 0.12)')
+  })
+
+  it('correctly resolves non-ink theme colors in light mode', () => {
+    const script = generateHeadScript()
+    const { sandbox, styleProps } = createMockEnvironment({
+      cookie: 'nuxt-color-mode=light',
+      localStorageData: {
+        [STORAGE_KEY_CURRENT_USER_HANDLE]: 'elkdev@universeodon.com',
+        [STORAGE_KEY_SETTINGS]: JSON.stringify({
+          'elkdev@universeodon.com': {
+            themeSettingsVersion: 2,
+            themeColors: {
+              '--theme-color-name': '#b8956a',
+              '--rgb-primary': '184, 149, 106',
+              '--rgb-dark-primary': '212, 165, 116',
+              '--c-bg-base': '#faf8f5',
+              '--c-dark-bg-base': '#1c1915',
+              '--c-text-base': '#3d3426',
+              '--c-dark-text-base': '#f5ede3',
+              '--c-primary': 'rgb(var(--rgb-primary))',
+              '--c-dark-primary': 'rgb(var(--rgb-dark-primary))',
+              '--c-nav-active-bg': '#b8956a1f',
+              '--c-dark-nav-active-bg': '#d4a5741f',
+              '--c-container-border': 'rgba(61, 52, 38, 0.07)',
+              '--c-dark-container-border': 'rgba(245, 237, 227, 0.12)',
+            },
+          },
+        }),
+      },
+    })
+
+    vm.runInNewContext(script, sandbox)
+    expect(styleProps['--c-bg-base']).toBe('#faf8f5')
+    expect(styleProps['--c-text-base']).toBe('#3d3426')
+    expect(styleProps['--c-primary']).toBe('color-mix(in srgb, rgb(var(--rgb-primary)), black 25%)')
+    expect(styleProps['--c-nav-active-bg']).toBe('#b8956a1f')
+    expect(styleProps['--c-container-border']).toBe('rgba(61, 52, 38, 0.07)')
+  })
+
+  it('strictly isolates account settings and prevents cross-account or anonymous leakage', () => {
+    const script = generateHeadScript()
+
+    // Scenario 1: Alice is logged in, but only Bob has custom settings
+    const aliceEnv = createMockEnvironment({
+      localStorageData: {
+        [STORAGE_KEY_CURRENT_USER_HANDLE]: 'alice@elk.zone',
+        [STORAGE_KEY_SETTINGS]: JSON.stringify({
+          'bob@elk.zone': {
+            fontSize: 'xl',
+            preferences: { zenMode: true },
+            themeColors: {
+              '--theme-color-name': '#b8956a',
+              '--c-bg-base': '#faf8f5',
+            },
+          },
+        }),
+      },
+    })
+    vm.runInNewContext(script, aliceEnv.sandbox)
+    expect(aliceEnv.classList.has('zen')).toBe(false)
+    expect(aliceEnv.styleProps['--font-size']).toBeUndefined()
+    expect(aliceEnv.styleProps['--c-bg-base']).toBeUndefined()
+
+    // Scenario 2: Visitor is unauthenticated ([anonymous]), Bob has custom settings
+    const anonEnv = createMockEnvironment({
+      localStorageData: {
+        [STORAGE_KEY_CURRENT_USER_HANDLE]: '',
+        [STORAGE_KEY_SETTINGS]: JSON.stringify({
+          'bob@elk.zone': {
+            fontSize: 'xl',
+            preferences: { zenMode: true },
+            themeColors: {
+              '--theme-color-name': '#b8956a',
+              '--c-bg-base': '#faf8f5',
+            },
+          },
+        }),
+      },
+    })
+    vm.runInNewContext(script, anonEnv.sandbox)
+    expect(anonEnv.classList.has('zen')).toBe(false)
+    expect(anonEnv.styleProps['--font-size']).toBeUndefined()
+    expect(anonEnv.styleProps['--c-bg-base']).toBeUndefined()
   })
 })

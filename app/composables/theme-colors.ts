@@ -3,7 +3,7 @@ import { THEME_COLORS } from '~/constants'
 import themesJson from '~/constants/themes.json'
 
 const DARK_THEME_KEY_REGEX = /^--(c|rgb)-/
-const themes = themesJson as [string, ThemeColors][]
+export const themes = themesJson as [string, ThemeColors][]
 
 export function resolveTheme(theme: ThemeColors, dark: boolean): ThemeColors {
   const resolved = { ...theme }

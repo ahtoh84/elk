@@ -1,9 +1,35 @@
 import type { LocaleObject } from '@nuxtjs/i18n'
 import type { Ref } from 'vue'
 import type { FontSize, OldFontSize, PreferencesSettings, UserSettings } from './definition'
+import { themes } from '~/composables/theme-colors'
 import { LEGACY_DEFAULT_THEME, STORAGE_KEY_SETTINGS, THEME_SETTINGS_VERSION } from '~/constants'
 import { oldFontSizeMap } from '~/constants/options'
 import { migrateTranslationPreference } from './definition'
+
+export function checkAndMigrateThemeSettings(settings: UserSettings): boolean {
+  let changed = false
+  if (settings.themeSettingsVersion == null || settings.themeSettingsVersion < THEME_SETTINGS_VERSION) {
+    if (settings.themeSettingsVersion == null && settings.themeColors?.['--theme-color-name'] === LEGACY_DEFAULT_THEME) {
+      settings.themeColors = undefined
+      changed = true
+    }
+
+    if (settings.themeColors) {
+      const rawTheme = themes.find(([key]) => key === settings.themeColors?.['--theme-color-name'])?.[1]
+      if (rawTheme) {
+        const hasMissingKeys = Object.keys(rawTheme).some(key => !(key in settings.themeColors!))
+        if (hasMissingKeys) {
+          settings.themeColors = { ...rawTheme }
+          changed = true
+        }
+      }
+    }
+
+    settings.themeSettingsVersion = THEME_SETTINGS_VERSION
+    changed = true
+  }
+  return changed
+}
 
 export function useUserSettings() {
   const { locales } = useNuxtApp().$i18n
@@ -16,15 +42,7 @@ export function useUserSettings() {
   if (settingsStorage.value.fontSize && !settingsStorage.value.fontSize.includes('px'))
     settingsStorage.value.fontSize = oldFontSizeMap[settingsStorage.value.fontSize as OldFontSize] as FontSize
 
-  // Ink is now the default theme. Older settings stored Paper even when the
-  // user had never selected a theme, which made the primary color disagree
-  // with the new Ink base variables. Migrate that legacy default once while
-  // preserving themes selected after this version was introduced.
-  if (settingsStorage.value.themeSettingsVersion == null) {
-    if (settingsStorage.value.themeColors?.['--theme-color-name'] === LEGACY_DEFAULT_THEME)
-      settingsStorage.value.themeColors = undefined
-    settingsStorage.value.themeSettingsVersion = THEME_SETTINGS_VERSION
-  }
+  checkAndMigrateThemeSettings(settingsStorage.value)
 
   return settingsStorage
 }
