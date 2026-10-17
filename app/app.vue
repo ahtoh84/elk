@@ -20,8 +20,8 @@ const key = computed(() => `${currentUser.value?.server ?? currentServer.value}:
 
 <template>
   <NuxtLoadingIndicator color="var(--c-loading-rainbow)" error-color="var(--c-loading-rainbow)" />
-  <NuxtLayout>
-    <NuxtPage :page-key="() => `${route.fullPath}:${key}`" :transition="{ name: 'page' }" />
+  <NuxtLayout :key="key">
+    <NuxtPage :transition="{ name: 'page' }" />
   </NuxtLayout>
   <AriaAnnouncer />
 
